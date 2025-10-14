@@ -79,11 +79,11 @@ Tra cứu số lượng nhập – xuất – tồn của một sản ph�
 | MSSV | Họ tên | Vai trò |
 |------|---------|----------|
 | 3124410140 | Trương Gia Khải | Tổng hợp & tích hợp hệ thống |
-| 2 | ... | Đăng ký / Đăng nhập / Hồ sơ cá nhân |
-| 3 | ... | Hiển thị & tìm kiếm sản phẩm |
-| 4 | ... | Giỏ hàng & đặt hàng |
-| 5 | ... | Admin: Quản lý người dùng + loại sản phẩm |
-| 6 | ... | Admin: Quản lý sản phẩm, nhập hàng, đơn hàng, tồn kho |
+| 3124410069 | Võ Khải Đăng | Đăng ký / Đăng nhập / Hồ sơ cá nhân |
+| 3124560091 | Nguyễn Vương Hoàng Tịnh | Hiển thị & tìm kiếm sản phẩm |
+| 3124410159 | Nguyễn Lê Tiến Khoa | Giỏ hàng & đặt hàng |
+| 3124560059 | Trương Đình Ngân | Admin: Quản lý người dùng + loại sản phẩm |
+| 3124410215 | Lê Uyên My | Admin: Quản lý sản phẩm, nhập hàng, đơn hàng, tồn kho |
 
 ---
 
