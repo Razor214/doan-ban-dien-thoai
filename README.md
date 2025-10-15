@@ -78,12 +78,12 @@ Tra cứu số lượng nhập – xuất – tồn của một sản ph�
 
 | MSSV | Họ tên | Vai trò |
 |------|---------|----------|
-| 3124410140 | Trương Gia Khải | Tổng hợp & tích hợp hệ thống |
 | 3124410069 | Võ Khải Đăng | Đăng ký / Đăng nhập / Hồ sơ cá nhân |
 | 3124560091 | Nguyễn Vương Hoàng Tịnh | Hiển thị & tìm kiếm sản phẩm |
-| 3124410159 | Nguyễn Lê Tiến Khoa | Giỏ hàng & đặt hàng |
+| 3124410159 | Nguyễn Lê Tiến Khoa | Giỏ hàng & đặt hàng, đơn đã mua |
 | 3124560059 | Trương Đình Ngân | Admin: Quản lý người dùng + loại sản phẩm |
-| 3124410215 | Lê Uyên My | Admin: Quản lý sản phẩm, nhập hàng, đơn hàng, tồn kho |
+| 3124410140 | Trương Gia Khải |  Admin: Quản lý danh mục + nhập sản phẩm  |
+| 3124410215 | Lê Uyên My | Admin: nhập hàng, đơn hàng, tồn kho |
 
 ---
 
@@ -91,3 +91,5 @@ Tra cứu số lượng nhập – xuất – tồn của một sản ph�
 1. Tải về:  
    ```bash
    git clone https://github.com/Razor241/doan-ban-dien-thoai.git
+---
+Web lấy icon: https://fontawesome.com/icons/
