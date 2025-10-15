@@ -8,7 +8,7 @@
 
 ## 📘 Mô tả đề tài
 Website bán điện thoại cho phép khách hàng xem, tìm kiếm, đặt hàng và quản lý tài khoản; đồng thời admin có thể quản lý sản phẩm, đơn hàng và tồn kho.
-
+Web lấy icon: https://fontawesome.com/icons/
 ---
 
 ## 🧩 Tính năng chính
