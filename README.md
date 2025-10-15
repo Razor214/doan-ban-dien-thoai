@@ -8,7 +8,7 @@
 
 ## 📘 Mô tả đề tài
 Website bán điện thoại cho phép khách hàng xem, tìm kiếm, đặt hàng và quản lý tài khoản; đồng thời admin có thể quản lý sản phẩm, đơn hàng và tồn kho.
-Web lấy icon: https://fontawesome.com/icons/
+
 ---
 
 ## 🧩 Tính năng chính
@@ -91,3 +91,5 @@ Tra cứu số lượng nhập – xuất – tồn của một sản ph�
 1. Tải về:  
    ```bash
    git clone https://github.com/Razor241/doan-ban-dien-thoai.git
+---
+Web lấy icon: https://fontawesome.com/icons/
