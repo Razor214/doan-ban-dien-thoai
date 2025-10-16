@@ -1,0 +1,8 @@
+{
+  "orderId": 1,
+  "username": "dang",
+  "date": "2025-10-13",
+  "items": [{ "id": 1, "quantity": 2 }],
+  "total": 64000000,
+  "status": "Đang xử lý"
+}

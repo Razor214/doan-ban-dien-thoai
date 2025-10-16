@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaiGonPhone - Website Bán Điện Thoại</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/homepage.css">
 </head>
 <body>
     <!-- HEADER -->
@@ -15,58 +16,71 @@
         </div>
 
         <nav class="navbar">
-            <a href="index.html" class="active">Trang chủ</a>
-            <a href="user/product.html">Sản phẩm</a>
-            <a href="user/register.html">Đăng ký</a>
+            <a href="user/register.html" class="bar_right">Đăng ký/</a>
             <a href="user/login.html">Đăng nhập</a>
+            <a href="user/cart.html">Giỏ Hàng</a>
             <a href="admin/dashboard.html" class="admin-link">Admin</a>
         </nav>
     </header>
+    <div class="topmenu">
+    <div class="dropdown">
+        <span>iPhone</span>
+        <div class="dropdown-content">
+            <a href="#">iPhone 16 Pro Max</a>
+            <a href="#">iPhone 15 Pro Max</a>
+            <a href="#">iPhone 14 Pro Max</a>
+            <a href="#">iPhone 13 Pro Max</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <span>Samsung</span>
+        <div class="dropdown-content">
+            <a href="#">Galaxy S24 Ultra</a>
+            <a href="#">Galaxy A55</a>
+            <a href="#">Galaxy Z Fold 5</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <span>Xiaomi</span>
+        <div class="dropdown-content">
+            <a href="#">Xiaomi 14 Ultra</a>
+            <a href="#">Xiaomi 15T</a>
+            <a href="#">Xiaomi 15T pro</a>
+        </div>
+    </div>
+    
+    </div>
 
     <!-- MAIN -->
     <main>
         <section class="hero">
             <h2>Chào mừng bạn đến với SaiGonPhone!</h2>
-            <p>Tìm kiếm điện thoại bạn yêu thích với giá tốt nhất.</p>
-            <a href="user/product.html" class="btn">Tìm kiếm</a>
+            <p>Khám phá những chiếc điện thoại mới nhất với giá cực hấp dẫn.</p>
+            <a href="user/product.html" class="btn">Mua ngay</a>
         </section>
 
-        <section class="store-layout">
-            <!-- Bên trái: Danh mục -->
-            <div class="category-panel">
-                <h3>Thương hiệu</h3>
-                <ul>
-                    <li><a href="#">iPhone</a></li>
-                    <li><a href="#">Samsung</a></li>
-                    <li><a href="#">Xiaomi</a></li>
-                    <li><a href="#">Oppo</a></li>
-                    <li><a href="#">Vivo</a></li>
-                    <li><a href="#">Realme</a></li>
-                </ul>
-            </div>
-
-            <!-- Bên phải: Sản phẩm -->
-            <div class="product-area">
-                <h3>Điện thoại nổi bật</h3>
-                <div class="product-list">
-                    <div class="product-card">
-                        <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro">
-                        <h4>iPhone 15 Pro</h4>
-                        <p>Giá: 32.000.000đ</p>
-                        <button>Xem chi tiết</button>
-                    </div>
-                    <div class="product-card">
-                        <img src="assets/img/samsung.jpg" alt="Samsung Galaxy S24">
-                        <h4>Samsung Galaxy S24</h4>
-                        <p>Giá: 25.000.000đ</p>
-                        <button>Xem chi tiết</button>
-                    </div>
-                    <div class="product-card">
-                        <img src="assets/img/xiaomi.jpg" alt="Xiaomi 14 Ultra">
-                        <h4>Xiaomi 14 Ultra</h4>
-                        <p>Giá: 21.000.000đ</p>
-                        <button>Xem chi tiết</button>
-                    </div>
+        <section class="featured">
+            <h3>Sản phẩm nổi bật</h3>
+            <div class="product-list">
+                <div class="product-card">
+                    <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro">
+                    <h4>iPhone 15 Pro</h4>
+                    <p>Giá: 32.000.000đ</p>
+                    <button>Thêm vào giỏ</button>
+                </div>
+                <div class="product-card">
+                    <img src="assets/img/samsung.jpg" alt="Samsung Galaxy S24">
+                    <h4>Samsung Galaxy S24</h4>
+                    <p>Giá: 25.000.000đ</p>
+                    <button>Thêm vào giỏ</button>
+                </div>
+                <div class="product-card">
+                    <img src="assets/img/xiaomi.jpg" alt="Xiaomi 14 Ultra">
+                    <h4>Xiaomi 14 Ultra</h4>
+                    <p>Giá: 21.000.000đ</p>
+                    <button>Thêm vào giỏ</button>
                 </div>
             </div>
         </section>
@@ -74,8 +88,8 @@
 
     <!-- FOOTER -->
     <footer>
-        <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 6 – Khoa CNTT, Đại học Sài Gòn</p>
-        <p>Liên hệ: <a href="mailto:contact@saigonphone.vn">contact@saigonphone.vn</a></p>
+        <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn</p>
+        <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
     </footer>
 </body>
 </html>
