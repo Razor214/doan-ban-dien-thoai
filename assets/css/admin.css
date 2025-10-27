@@ -1,0 +1,134 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* ==== LOGIN ==== */
+#admin-login {
+  max-width: 400px;
+  margin: 100px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* ==== DASHBOARD ==== */
+#admin-dashboard {
+  display: flex;
+  height: 100px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background-color: #004aad;
+  color: white;
+  transition: width 0.3s ease;
+  position: fixed;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebar:hover {
+  width: 220px;
+}
+
+.sidebar:not(:hover) {
+  width: 70px;
+}
+
+.sidebar .logo {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  gap: 10px;
+}
+
+.sidebar .logo img {
+  width: 40px;
+  border-radius: 50%;
+}
+
+.sidebar .logo h2 {
+  font-size: 18px;
+  transition: opacity 0.3s;
+}
+
+.sidebar:not(:hover) .logo h2 {
+  opacity: 0;
+}
+
+/* Menu items */
+.menu {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.2s;
+  font-size: 15px;
+}
+
+.menu-item:hover {
+  background-color: #0066cc;
+}
+
+/* Hide text when sidebar is collapsed */
+.sidebar:not(:hover) .menu-item {
+  justify-content: center;
+}
+
+.sidebar:not(:hover) .menu-item::after {
+  content: attr(data-icon);
+}
+
+/* Main content */
+.main-content {
+  margin-left: 220px;
+  flex: 1;
+  transition: margin-left 0.3s;
+}
+
+.sidebar:not(:hover) ~ .main-content {
+  margin-left: 70px;
+}
+
+header {
+  background-color: #004aad;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-info button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.content-section {
+  background: white;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
