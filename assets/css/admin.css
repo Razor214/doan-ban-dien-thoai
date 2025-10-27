@@ -284,11 +284,3 @@ th {
 #cancelBtn:hover,#xacnhankhong:hover,#confirmno:hover,#confirm-no:hover {
     background-color: rgb(95, 91, 91);  
 }
-/* FOOTER */
-footer {
-    text-align: center;
-    background-color: #1447b6;
-    color: white;
-    padding: 15px 0;
-    margin-top: 50px;
-}

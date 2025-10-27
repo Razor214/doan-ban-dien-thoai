@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaiGonPhone - Website Bán Điện Thoại</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 <body>
     <!-- HEADER -->
@@ -21,10 +21,280 @@
             <a href="admin/dashboard.html" class="admin-link">Admin</a>
         </nav>
     </header>
-
     
 <!------------------ INPUT BODY HERE ------------------>
 
+    <div class="admin6">
+        <h2>Quản lý giá bán<span class="close" onclick="confirmExit()">X</span></h2>
+        <div class="top-bar">
+            <input type="text" id="Timkiem" placeholder="Tìm kiếm sản phẩm...">
+            <button onclick="searchProduct()">Tìm kiếm</button>
+            <button onclick="openModal('add')">Thêm sản phẩm</button>
+        </div>
+        <div class="wraptable">
+            <table id="Bangsp">
+                <thead>
+                    <tr>
+                        <th>Nhãn hiệu</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá vốn</th>
+                        <th>% Lợi nhuận</th>
+                        <th>Giá bán</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                    <tbody id="khungbang"></tbody>
+                </table>
+                <div class="footerad">
+                    <button onclick="exportData()">Xuất dữ liệu</button>
+                    <button onclick="alert('Lưu thay đổi thành công!')">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <form id="productadd">
+                <label for="category">Nhãn hiệu: </label>
+                <select id="category" required>
+                    <option value="">-- Chọn nhãn hiệu --</option>
+                    <option value="Apple">Apple</option>
+                    <option value="Samsung">Samsung</option>
+                    <option value="Xiaomi">Xiaomi</option>
+                    <option value="Huawei">Huawei</option>
+                </select>
+
+                <label for="name">Tên sản phẩm:</label>
+                <input type="text" id="name" placeholder="Nhập tên sản phẩm..." required>
+
+                <label for="cost">Giá vốn (VND)</label>
+                <input type="text" id="cost" required>
+
+                <label for="profit">% Lợi nhuận: </label>
+                <div style="display: flex; align-items: center;gap: 5px; ">
+                    <input type="number" id="profit" step="any" style="flex: 1" required><span>%</span> 
+                </div>
+
+                <label for="sell">Giá bán: </label>
+                <input type="text" id="sell">
+                <div class="popup-foot">
+                    <button type="submit" id="saveBtn">Lưu</button>
+                    <button type="button" id="cancelBtn">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="popup" id="xacnhan">
+        <div class="popup-content small">
+            <p> Bạn có chắc chắn muốn xóa sản phẩm ?</p>
+            <div class="popup-foot">
+                <button id="xacnhanxoa"> Có </button>
+                <button id="xacnhankhong">Không</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup" id="xacnhanthoat">
+        <div class="popup-content small">
+            <p>Bạn có chắc chắn muốn thoát không ?</p>
+            <div class="popup-foot">
+                <button id="confirmco">Thoát</button>
+                <button id="confirmno" >Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup" id="Xuatfile">
+        <div class="popup-content small">
+            <p>Bạn có muốn xuất danh sách sản phẩm ?</p>
+            <div class="popup-foot">
+                <button id="confirm">Xuất</button>
+                <button id="confirm-no" >Hủy</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    const modal = document.getElementById('popup');
+    const form = document.getElementById('productadd');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const table = document.querySelector('#Bangsp tbody');
+    const searchInput = document.getElementById('Timkiem')
+    const categoryInput = document.getElementById('category');
+    const nameInput = document.getElementById('name');
+    const costInput = document.getElementById('cost');
+    const profitInput = document.getElementById('profit');
+    const priceInput = document.getElementById('sell');
+
+    let editingRow = null;
+    fetch("../data/manageproduct.json")
+        .then(r => r.json())
+        .then(d => khungbang.innerHTML = d.map(sp => `
+            <tr>
+                <td>${sp.brand}</td>
+                <td>${sp.name}</td>
+                <td>${sp.cost.toLocaleString("vi-VN")}</td>
+                <td>${sp.profit}%</td>
+                <td>${(sp.price*(1+sp.profit/100)).toLocaleString("vi-VN")}</td>
+                <td class="action">
+                    <button class="edit">Sửa</button> 
+                    <button class="delete">Xóa</button>
+                </td>
+            </tr>`
+        ).join("")
+    );
+    table.addEventListener("click", (e) => {
+        if (e.target.classList.contains("edit")) {
+            openModal("edit", e.target);
+        } else if (e.target.classList.contains("delete")) {
+            confirmDelete(e.target);
+        }
+    });
+
+    function openModal(mode, btn) {
+        form.reset();
+        priceInput.value = '';
+        modal.style.display = 'flex'; 
+        editingRow = null;
+
+        if (mode === 'edit' && btn) {
+            const row = btn.closest('tr');
+            categoryInput.value = row.cells[0].innerText;
+            nameInput.value = row.cells[1].innerText;
+            costInput.value = row.cells[2].innerText.replace(/,/g,'');
+            profitInput.value = parseFloat(row.cells[3].innerText);
+            priceInput.value = row.cells[4].innerText.replace(/,/g,'');
+            editingRow = row;
+        }
+    }
+
+    cancelBtn.onclick = () => modal.style.display = 'none';
+
+    
+    costInput.addEventListener('input', updatePrice);
+    profitInput.addEventListener('input', updatePrice);
+    priceInput.addEventListener('input', updateProfit);
+
+    function cleanNumber(value){
+        return parseFloat(value.replace(/[.,\s]/g, ''))||0;
+    }
+    function formatNumber(num){
+        return num.toLocaleString('vi-VN');
+    }
+    function updatePrice() {
+        const cost = cleanNumber(costInput.value);
+        const profit = parseFloat(profitInput.value);
+        if (cost >0  && !isNaN(profit)) {
+            const price = cost + (cost * profit / 100);
+            priceInput.value = formatNumber(Math.round(price));
+        }else{
+            priceInput.value='';
+        }
+    }
+
+    function updateProfit() {
+        const cost = cleanNumber(costInput.value);
+        const price = cleanNumber(priceInput.value);
+        if (cost > 0 && price>0) {
+            const profit = ((price - cost) / cost) * 100;
+            profitInput.value = profit.toFixed(2);
+        }
+    }
+    function formatOnInput(input){
+        let val = cleanNumber(input.value);
+        input.value = val ? formatNumber(val) : '';
+    }
+    
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        const category = categoryInput.value;
+        const name = nameInput.value;
+        const cost = costInput.value;
+        const profit = profitInput.value;
+        const price = priceInput.value;
+
+        if (!category || !name || !cost || !profit) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+
+        if (editingRow) {
+            editingRow.cells[0].innerText = category;
+            editingRow.cells[1].innerText = name;
+            editingRow.cells[2].innerText = cost;
+            editingRow.cells[3].innerText = profit + '%';
+            editingRow.cells[4].innerText = price;
+        } else {
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td>${category}</td>
+                <td>${name}</td>
+                <td>${cost}</td>
+                <td>${profit}%</td>
+                <td>${price}</td>
+                <td class="action">
+                    <button class="edit" onclick="openModal('edit', this)">Sửa</button>
+                    <button class="delete" onclick="confirmDelete(this)">Xóa</button>
+                </td>
+            `;
+        }
+        modal.style.display = 'none';
+    };
+
+    function searchProduct(){
+        const keyword = searchInput.value.trim().toLowerCase();
+        const rows = table.getElementsByTagName('tr');
+
+        for(let row of rows){
+            const productName = row.cells[1].innerText.toLowerCase();
+            row.style.display = productName.startsWith(keyword) || keyword === '' ? '' : 'none';
+
+        }
+    }
+    searchInput.addEventListener('input', searchProduct);
+    costInput.addEventListener('blur', ()=>{
+        let val = cleanNumber(costInput.value);
+        costInput.value = val ? formatNumber(val) : '';
+    });
+    updatePrice();
+    priceInput.addEventListener('blur', ()=>{
+        let val = cleanNumber(priceInput.value);
+        priceInput.value = val ? formatNumber(val) : '';
+    });
+    updatePrice();
+
+
+    function confirmDelete(btn) {
+        const popup = document.getElementById('xacnhan');
+        popup.style.display = 'flex';
+        const row = btn.closest('tr');
+        document.getElementById('xacnhanxoa').onclick = () => {
+            row.remove();
+            popup.style.display = 'none';
+        };
+        document.getElementById('xacnhankhong').onclick = () => popup.style.display = 'none';
+    }
+
+    function confirmExit() {
+        document.getElementById('xacnhanthoat').style.display = 'flex';
+        document.getElementById('confirmco').onclick = () => {
+            document.getElementById('xacnhanthoat').style.display='none';
+            document.querySelector('.admin6').style.display ='none';
+        }
+        document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
+    }
+
+    function exportData() {
+        document.getElementById('Xuatfile').style.display = 'flex';
+        document.getElementById('confirm').onclick = () => {
+            alert('Xuất dữ liệu thành công!');
+            document.getElementById('Xuatfile').style.display = 'none';
+        };
+        document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
+    }
+
+</script>
     <!-- FOOTER -->
     <footer>
         <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn</p>
