@@ -1,34 +1,62 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaiGonPhone - Website Bán Điện Thoại</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - SaiGonPhone</title>
+  <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 <body>
-    <!-- HEADER -->
-    <header>
-        <div class="logo">
-            <img src="assets/img/logo.png" alt="SaiGonPhone Logo">
-            <h1>SaiGonPhone</h1>
+
+  <!-- ==== ĐĂNG NHẬP ADMIN ==== -->
+  <section id="admin-login">
+    <h2>Đăng nhập quản trị</h2>
+    <form id="adminLoginForm">
+      <input type="text" id="adminUser" placeholder="Tên đăng nhập" required>
+      <input type="password" id="adminPass" placeholder="Mật khẩu" required>
+      <button type="submit">Đăng nhập</button>
+    </form>
+    <p id="loginMessage"></p>
+  </section>
+
+  <!-- ==== GIAO DIỆN ADMIN ==== -->
+  <section id="admin-dashboard" style="display:none;">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">
+        <img src="assets/img/logo.png" alt="Logo">
+        <h2>SaiGonPhone</h2>
+      </div>
+
+      <nav class="menu">
+        <a href="#" data-section="home" class="menu-item">🏠 Trang chủ</a>
+        <a href="#" data-section="products" class="menu-item">📱 Sản phẩm</a>
+        <a href="#" data-section="orders" class="menu-item">🧾 Đơn hàng</a>
+        <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
+        <a href="#" data-section="info" class="menu-item">⚙️ Quản lý thông tin</a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <header>
+        <h1>Bảng điều khiển quản trị</h1>
+        <div class="admin-info">
+          <span id="adminName"></span>
+          <button id="logoutBtn">Đăng xuất</button>
         </div>
+      </header>
 
-        <nav class="navbar">
-            <a href="user/register.html" class="bar_right">Đăng ký/</a>
-            <a href="user/login.html">Đăng nhập</a>
-            <a href="user/cart.html">Giỏ Hàng</a>
-            <a href="admin/dashboard.html" class="admin-link">Admin</a>
-        </nav>
-    </header>
+      <main>
+        <section id="section-home" class="content-section">Chào mừng đến trang quản trị.</section>
+        <section id="section-products" class="content-section" style="display:none;">Phần sản phẩm</section>
+        <section id="section-orders" class="content-section" style="display:none;">Phần đơn hàng</section>
+        <section id="section-customers" class="content-section" style="display:none;">Phần khách hàng</section>
+        <section id="section-info" class="content-section" style="display:none;">Phần quản lý thông tin</section>
+      </main>
+    </div>
+  </section>
 
-    
-<!------------------ INPUT BODY HERE ------------------>
-
-    <!-- FOOTER -->
-    <footer>
-        <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn</p>
-        <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
-    </footer>
+  <script src="assets/js/admin.js"></script>
 </body>
 </html>
