@@ -73,7 +73,7 @@ header .logo img {
 }
 /*QUẢN LÝ GIÁ BÁN*/
 .admin6{
-    width: 100vw;
+    width: 100%;
     background: #fff;
     animation: zoomIn 0.25s ease;
     height: 100vh;
@@ -81,13 +81,16 @@ header .logo img {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 h2 {
+    font-weight: bold;
     position: relative;
     text-align: center;
     color: #333;
-    font-size: 30px;
-    padding: 20px 15px;
+    font-size: 25px;
+    padding: 25px 15px;
     margin: 0;
 }
 .close {
@@ -129,7 +132,7 @@ button {
 button:hover {
     background: #0056b3;
 }
-table {
+.price-table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
@@ -139,11 +142,10 @@ table {
     overflow: hidden;
 }
 .wraptable {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    padding: 0 15px 15px 15px;
+    overflow: auto;
+    padding: 0px 15px 0px 15px;
 }
 #Bangsp {
     width: 100%;
@@ -151,7 +153,7 @@ table {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
-    flex: 1;
+    font-size: 15px;
     overflow: hidden;
 }
 #Bangsp thead {
@@ -162,7 +164,7 @@ table {
 }
 #Bangsp tbody {
     display: block;
-    flex: 1;
+    height: 330px;
     overflow-y: auto;  
 }
 #Bangsp thead, #Bangsp tbody tr {
@@ -171,12 +173,12 @@ table {
     table-layout: fixed;
 }
 
-th, td {
+.price-table th,.price-table td {
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid #eee;
 }
-th {
+.price-table th {
     background: #e9ecef;
 }
 .action button {
@@ -188,8 +190,9 @@ th {
 .footerad {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    margin-top: 0px;
     flex-shrink: 0;
+    padding: 15px 0 15px 0;
 }
 .popup {
     display: none;
@@ -259,16 +262,253 @@ th {
 #cancelBtn:hover,#xacnhankhong:hover,#confirmno:hover,#confirm-no:hover {
     background-color: rgb(95, 91, 91);  
 }
+/*QUẢN LÝ ĐƠN ĐẶT*/
+.topheader {
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    padding: 5px 10px;
+    background: #fff;
+    border-radius: 8px 8px 0 0;
+}
+.topheader h2 {
+    font-size: 25px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 0;
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+}
+.all {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 100%;
+}
+.close-main{
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 22px;
+    color: #333;
+    transition: color 0.2s ease;
+    margin-left: auto;
+}
+.close-main:hover {
+    color: red;
+}
+.box {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.box label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+.box input[type="date"],
+.box select {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-width: 200px;
+}
+.box button {
+    background-color: #007bff;
+    color:white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.box button:hover {
+    background-color: #0056b3;
+}
+.wraporders-table {
+    box-sizing: border-box;
+    padding: 20px; 
+    width: 100%;
+}
+.orders-table {
+    width: 100%;
+    border-collapse:collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    table-layout: fixed;
+    font-size: 14px;
+}
+.orders-table th, .orders-table td {
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    text-align: center;
+}
+.orders-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+.orders-table thead {
+    display: table;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f1f1f1;
+    width: 100%;
+    table-layout: fixed;
+}
+.orders-table tbody {
+    display: block;
+    height: 240px;
+    overflow-y: auto;
+}
+.orders-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+.orders-table tr:hover {
+    background-color: #f9f9f9;
+}
+.orders-table button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.orders-table button:hover {
+    background-color: #0056b3;
+}
+.details{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.details-content {
+    background: #fff;
+    padding: 25px;
+    width: 600px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    margin: auto;
+}
+.details-content h3 {
+    margin-top: 0;
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+.close-btn{
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #888;
+    z-index: 99;
+    transition: color 0.2s
+}
+.close-btn:hover {
+    color: #000;
+}
+.infoorder{
+    background: #f8f8f8;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.infoorder p {
+    margin: 6px 0;
+}
+.mini-table th, .mini-table td{
+    border: 1px solid black;
+    padding: 5px 10px;
+    text-align: center;
+}
+.mini-table{
+    width: 100%;
+    border-collapse:collapse;
+}
+.mini-table thead {
+    background-color: #f1f1f1;
+}
+.detailsstatus{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+}
+.detailsstatus th, .detailsstatus td {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+.detailsstatus th {
+    background-color: #f1f1f1;
+}
+.popup-btn {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.popup-btn button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.popup-btn button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+.popup-btn button:last-child {
+    background-color: #6c757d;
+    color: white;
+}
+
+.popup-btn button:hover:first-child {
+    background-color: #0056b3;
+}
+
+.popup-btn button:hover:last-child {
+    background-color: #555;
+}
+
 /* ==== SIDEBAR ==== */
 .sidebar {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 15px;
+  left: -217px;
+  width: 220px;
   height: 100vh;
   background-color: #1447b6;
   color: white;
-  transition: width 0.3s ease;
+  transition: left 0.3s ease;
   overflow: hidden;
   z-index: 1000;
   display: flex;
@@ -276,7 +516,7 @@ th {
   align-items: center;
 }
 .sidebar:hover {
-  width: 220px;
+  left: 0;
 }
 
 .sidebar-logo {
@@ -325,9 +565,11 @@ th {
 
 /* ==== CHỈNH LẠI NỘI DUNG BÊN PHẢI ==== */
 .admin-container {
-  
-  transition: margin-left 0.3s ease;
-  padding: 20px;
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+    margin-left: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 .sidebar:hover ~ .admin-container {
   margin-left: 220px;
