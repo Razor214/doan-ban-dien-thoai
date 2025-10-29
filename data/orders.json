@@ -1,8 +1,58 @@
-{
-  "orderId": 1,
-  "username": "dang",
-  "date": "2025-10-13",
-  "items": [{ "id": 1, "quantity": 2 }],
-  "total": 64000000,
-  "status": "Đang xử lý"
-}
+[
+    {
+        "id": "AB100",
+        "customer": "Nguyễn Văn A",
+        "date": "2025-10-20",
+        "total": 34000000,
+        "status": "Đã giao",
+        "details": [
+            {"product": "iPhone 17", "quantity": 1, "price": 34000000}
+        ]
+
+    },
+    {
+        "id": "AB101",
+        "customer": "Lê Thị C",
+        "date": "2025-10-28",
+        "total": 29990000,
+        "status": "Đang xác nhận",
+        "details": [
+            {"product": "Samsung Galaxy Z Fold5", "quantity": 1, "price": 29990000}
+        ]
+
+    },
+    {
+        "id": "AB102",
+        "customer": "Ngô Văn B",
+        "date": "2025-9-25",
+        "total": 35090000,
+        "status": "Đã hủy",
+        "details": [
+            {"product": "iPhone 13", "quantity": 1, "price": 8090000},
+            {"product": "iPhone 17", "quantity": 1, "price": 35000000}
+        ]
+        
+
+    },
+    {
+        "id": "AB103",
+        "customer": "Ly Thanh V",
+        "date": "2025-10-25",
+        "total": 14000000,
+        "status": "Đang vận chuyển",
+        "details": [
+            {"product": "iPhone 14", "quantity": 1, "price": 14000000}
+        ]
+    },
+    {
+        "id": "AB100",
+        "customer": "Nguyễn Lê Thị D",
+        "date": "2025-8-10",
+        "total": 25000000,
+        "status": "Đã giao",
+        "details": [
+            {"product": "iPhone 17", "quantity": 1, "price": 25000000}
+        ]
+
+    }
+]
