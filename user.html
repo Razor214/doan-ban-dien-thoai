@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaiGonPhone - Website Bán Điện Thoại</title>
+    <title>SaiGonPhone - Đăng Nhập</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <!-- THÊM ĐƯỜNG DẪN ĐẾN FILE CSS MỚI -->
     <link rel="stylesheet" href="user.css">
 </head>
 <body>
@@ -17,14 +16,136 @@
         </div>
 
         <nav class="navbar">
-            <a href="user/register.html" class="bar_right">Đăng ký/</a>
-            <a href="user/login.html">Đăng nhập</a>
+            <a href="index.html" class="bar_right">Trang Chủ</a>
             <a href="user/cart.html">Giỏ Hàng</a>
             <a href="admin/dashboard.html" class="admin-link">Admin</a>
         </nav>
     </header>
 
-    <!------------------ INPUT BODY HERE ------------------>
+    <!------------------ AUTHENTICATION SECTION ------------------>
+    <div class="auth-container">
+        <div class="container">
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('login')">Đăng Nhập</button>
+                <button class="tab" onclick="showTab('register')">Đăng Ký</button>
+                <button class="tab" onclick="showTab('profile')">Hồ Sơ</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- LOGIN PAGE -->
+                <div id="login-page" class="form-page active">
+                    <h2 class="form-title">Đăng Nhập</h2>
+                    
+                    <div id="login-alert"></div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">Tên đăng nhập hoặc Email</label>
+                            <input type="text" id="loginUsername" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" id="loginPassword" class="form-input" required>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Đăng Nhập</button>
+                        
+                        <div class="form-footer">
+                            <p>Chưa có tài khoản? <span class="form-link" onclick="showTab('register')">Đăng ký ngay</span></p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- REGISTER PAGE -->
+                <div id="register-page" class="form-page">
+                    <h2 class="form-title">Đăng Ký</h2>
+                    
+                    <div id="register-alert"></div>
+                    
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label">Họ và Tên</label>
+                            <input type="text" id="fullName" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Tên đăng nhập</label>
+                            <input type="text" id="username" class="form-input" required minlength="6">
+                            <small id="usernameError" class="error-text"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" required>
+                            <small id="emailError" class="error-text"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" id="password" class="form-input" required minlength="8">
+                            <small id="passwordError" class="error-text"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <input type="password" id="confirmPassword" class="form-input" required>
+                            <small id="confirmPasswordError" class="error-text"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="phone" class="form-input">
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Đăng Ký</button>
+                        
+                        <div class="form-footer">
+                            <p>Đã có tài khoản? <span class="form-link" onclick="showTab('login')">Đăng nhập</span></p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- PROFILE PAGE -->
+                <div id="profile-page" class="form-page">
+                    <h2 class="form-title">Hồ Sơ Cá Nhân</h2>
+                    
+                    <div id="profile-alert"></div>
+                    
+                    <div class="profile-info" id="profile-info">
+                        <p>Vui lòng đăng nhập để xem thông tin</p>
+                    </div>
+                    
+                    <form id="profileForm" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Họ và Tên</label>
+                            <input type="text" id="profileFullName" class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="profileEmail" class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="profilePhone" class="form-input">
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Cập Nhật</button>
+                    </form>
+                    
+                    <button class="btn-primary logout-btn" onclick="logout()" style="display: none;">Đăng Xuất</button>
+                    
+                    <div class="form-footer">
+                        <p>Quay lại <span class="form-link" onclick="showTab('login')">Đăng nhập</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer>
@@ -32,7 +153,6 @@
         <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
     </footer>
 
-    <!-- THÊM ĐƯỜNG DẪN ĐẾN FILE JS MỚI -->
     <script src="user.js"></script>
 </body>
 </html>
