@@ -8,24 +8,23 @@
 </head>
 <body>
     <!-- HEADER -->
-    <header>
+    <header class ="headerbar">
         <nav class="navbar">
-            <a href="admin/dashboard.html" class="admin-link">Admin</a>
+            <a href="admin/dashboard.html">Admin</a>
         </nav>
     </header>
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-        <img src="assets/img/iphone15promax.png" alt="Logo">
         <h2 class="sidebar-title">SaiGonPhone</h2>
         </div>
         <nav class="sidebar-menu">
-        <a href="#" data-section="home" class="menu-item">🏠 Trang chủ</a>
-        <a href="#" data-section="products" class="menu-item">📱 Sản phẩm</a>
-        <a href="#" data-section="price" class="menu-item">💰 Giá bán</a>
-        <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
-        <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
-        <a href="#" data-section="info" class="menu-item">⚙️ Quản lý thông tin</a>
+        <a href="#" data-section="home" class="menu-item">🏠   Trang chủ</a>
+        <a href="#" data-section="product" class="menu-item">📱   Sản phẩm</a>
+        <a href="#" data-section="price" class="menu-item">💰   Giá bán</a>
+        <a href="#" data-section="order" class="menu-item">🧾   Đơn hàng</a>
+        <a href="#" data-section="customers" class="menu-item">👥   Khách hàng</a>
+        <a href="#" data-section="info" class="menu-item">⚙️   Quản lý thông tin</a>
         </nav>
     </aside>
     <div class="admin-container">
@@ -35,7 +34,53 @@
             <h2>Trang chủ quản trị</h2>
             <p>Chào mừng bạn đến hệ thống SaiGonPhone Admin!</p>
         </section>
-
+        <!-- === QUẢN LÝ DANH MỤC SẢN PHẨM === -->
+        <section id="product-section" class="admin-section" style="display:none">
+            <div class="admin6">
+                <h2>Quản lý danh mục sản phẩm <span class="close" onclick="confirmExit()">X</span></h2>
+                <div class="top-bar">
+                <input type="text" id="searchProductCategory" placeholder="Tìm kiếm sản phẩm...">
+      <button onclick="searchProductCategory()">Tìm kiếm</button>
+      <button onclick="openProductModal('add')">Thêm sản phẩm</button>
+    </div>
+    <div class="wraptable">
+      <table class="price-table" id="ProductTable">
+        <thead>
+          <tr>
+            <th>Loại</th>
+            <th>Mã</th>
+            <th>Tên</th>
+            <th>Hình ảnh</th>
+            <th>Mô tả</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Popup thêm/sửa -->
+  <div class="popup" id="ProductPopup">
+    <div class="popup-content">
+      <form id="ProductForm">
+        <label>Loại:</label>
+        <input type="text" id="prodType" required>
+        <label>Mã:</label>
+        <input type="text" id="prodCode" required>
+        <label>Tên:</label>
+        <input type="text" id="prodName" required>
+        <label>Hình ảnh (URL):</label>
+        <input type="text" id="prodImg" required>
+        <label>Mô tả:</label>
+        <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>
+        <div class="popup-foot">
+          <button type="submit">Lưu</button>
+          <button type="button" id="cancelProduct">Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
         <section id="price-section" class="admin-section" style="display:none;">
             <div class="admin6">
                 <h2>Quản lý giá bán<span class="close" onclick="confirmExit()">X</span></h2>

@@ -10,6 +10,11 @@
     const profitInput = document.getElementById('profit');
     const priceInput = document.getElementById('sell');
 
+    const productTable = document.querySelector("#ProductTable tbody");
+    const productModal = document.getElementById("ProductPopup");
+    const productForm = document.getElementById("ProductForm");
+    let editingProduct = null; 
+
     let editingRow = null;
     fetch("../data/manageproduct.json")
         .then(r => r.json())
@@ -260,6 +265,51 @@ function update() {
     } else {
         alert("Không tìm thấy đơn hàng để cập nhật!");
     }
+}
+//Quản lý sản phẩm
+function openProductModal(mode, btn){
+  productForm.reset();
+  productModal.style.display = 'flex';
+  editingProduct = null;
+  if(mode === 'edit' && btn){
+    const row = btn.closest('tr');
+    productForm.prodType.value = row.cells[0].innerText;
+    productForm.prodCode.value = row.cells[1].innerText;
+    productForm.prodName.value = row.cells[2].innerText;
+    productForm.prodImg.value = row.cells[3].innerText;
+    productForm.prodDesc.value = row.cells[4].innerText;
+    editingProduct = row;
+  }
+}
+
+productForm.onsubmit = e => {
+  e.preventDefault();
+  const data = [
+    productForm.prodType.value,
+    productForm.prodCode.value,
+    productForm.prodName.value,
+    productForm.prodImg.value,
+    productForm.prodDesc.value
+  ];
+  if(editingProduct){
+    data.forEach((v,i)=> editingProduct.cells[i].innerText = v);
+  } else {
+    const row = productTable.insertRow();
+    row.innerHTML = `
+      <td>${data[0]}</td><td>${data[1]}</td><td>${data[2]}</td>
+      <td>${data[3]}</td><td>${data[4]}</td>
+      <td class="action">
+        <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
+        <button class="delete" onclick="deleteProduct(this)">Xóa</button>
+      </td>`;
+  }
+  productModal.style.display = 'none';
+};
+
+function deleteProduct(btn){
+  if(confirm("Bạn có chắc muốn xóa sản phẩm này?")){
+    btn.closest('tr').remove();
+  }
 }
 // sidebar
 document.addEventListener("DOMContentLoaded", () => {
