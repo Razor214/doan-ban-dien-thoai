@@ -25,10 +25,10 @@ if (!localStorage.getItem('users')) {
 
 // Khởi tạo ứng dụng khi DOM loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('User.js loaded successfully!'); // Kiểm tra load JS
+    console.log('User.js loaded successfully!');
     initializeApp();
     setupEventListeners();
-    handleUrlParams(); // Xử lý tham số từ URL
+    handleUrlParams();
 });
 
 function initializeApp() {
@@ -151,7 +151,7 @@ function validateRegisterForm() {
     return isValid;
 }
 
-// Hàm xử lý đăng nhập
+// Hàm xử lý đăng nhập - SỬA LỖI CHUYỂN HƯỚNG
 function handleLogin() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
@@ -166,15 +166,14 @@ function handleLogin() {
         if (user) {
             // Login thành công
             localStorage.setItem('currentUser', JSON.stringify(user));
-            showAlert('login-alert', 'Đăng nhập thành công!', 'success');
+            showAlert('login-alert', 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
             
             // Reset form
             document.getElementById('loginForm').reset();
             
-            // Load profile data và chuyển tab
+            // CHUYỂN HƯỚNG VỀ TRANG CHỦ SAU 1 GIÂY
             setTimeout(() => {
-                showTab('profile');
-                loadProfileData();
+                window.location.href = 'index.html';
             }, 1000);
         } else {
             showAlert('login-alert', 'Sai tên đăng nhập hoặc mật khẩu!', 'error');
@@ -185,7 +184,7 @@ function handleLogin() {
     }
 }
 
-// Hàm xử lý đăng ký
+// Hàm xử lý đăng ký - SỬA LỖI CHUYỂN HƯỚNG
 function handleRegister() {
     if (!validateRegisterForm()) {
         return;
@@ -215,13 +214,13 @@ function handleRegister() {
     usersData.push(newUser);
     localStorage.setItem('users', JSON.stringify(usersData));
     
-    showAlert('register-alert', 'Đăng ký thành công!', 'success');
+    showAlert('register-alert', 'Đăng ký thành công! Đang chuyển hướng...', 'success');
     
-    // Reset form và chuyển về tab login
+    // Reset form và CHUYỂN VỀ TAB LOGIN SAU 1 GIÂY
     setTimeout(() => {
         showTab('login');
         document.getElementById('registerForm').reset();
-    }, 2000);
+    }, 1000);
 }
 
 // Hàm xử lý cập nhật profile

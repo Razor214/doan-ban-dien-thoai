@@ -15,7 +15,7 @@
         <h1>SaiGonPhone</h1>
       </div>
 
-      <nav class="navbar">
+      <nav class="navbar" id="navbar">
         <!-- THAY ĐỔI LINK Ở ĐÂY -->
         <a href="user.html?tab=register" class="bar_right">Đăng ký</a>
         <a href="user.html?tab=login">Đăng nhập</a>
@@ -111,5 +111,29 @@
         <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
       </p>
     </footer>
+
+    <script>
+      // Kiểm tra trạng thái đăng nhập khi trang chủ load
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const navbar = document.getElementById('navbar');
+        
+        if (currentUser) {
+          // Nếu đã đăng nhập, thay đổi navigation
+          navbar.innerHTML = `
+            <a href="index.html" class="bar_right">Trang Chủ</a>
+            <a href="user/cart.html">Giỏ Hàng</a>
+            <a href="user.html?tab=profile" class="bar_right">Xin chào, ${currentUser.fullName || currentUser.username}</a>
+            <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+            ${currentUser.role === 'admin' ? '<a href="admin/dashboard.html" class="admin-link">Admin</a>' : ''}
+          `;
+        }
+      });
+
+      function logoutFromHome() {
+        localStorage.removeItem('currentUser');
+        window.location.reload();
+      }
+    </script>
   </body>
 </html>
