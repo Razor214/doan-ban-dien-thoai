@@ -66,7 +66,7 @@ function setupEventListeners() {
         });
     }
     
-    // Tab click events
+    // Tab click events - THÊM SỰ KIỆN CLICK CHO TABS
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', function() {
             const tabName = this.getAttribute('data-tab');
@@ -88,8 +88,10 @@ function handleUrlParams() {
     }
 }
 
-// Tab management
+// Tab management - SỬA LẠI HÀM NÀY
 function showTab(tabName) {
+    console.log('Switching to tab:', tabName); // Debug
+    
     // Hide all pages
     document.querySelectorAll('.form-page').forEach(page => {
         page.classList.remove('active');
@@ -101,11 +103,18 @@ function showTab(tabName) {
     });
     
     // Show selected page and activate tab
-    const targetPage = document.getElementById(tabName + '-page');
+    const targetPage = document.getElementById(tabName);
     const targetTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
     
-    if (targetPage) targetPage.classList.add('active');
-    if (targetTab) targetTab.classList.add('active');
+    console.log('Target page:', targetPage); // Debug
+    console.log('Target tab:', targetTab); // Debug
+    
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
+    if (targetTab) {
+        targetTab.classList.add('active');
+    }
     
     // Nếu chuyển đến tab profile, load dữ liệu
     if (tabName === 'profile') {
@@ -151,7 +160,7 @@ function validateRegisterForm() {
     return isValid;
 }
 
-// Hàm xử lý đăng nhập - SỬA LỖI CHUYỂN HƯỚNG
+// Hàm xử lý đăng nhập
 function handleLogin() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
@@ -184,7 +193,7 @@ function handleLogin() {
     }
 }
 
-// Hàm xử lý đăng ký - SỬA LỖI CHUYỂN HƯỚNG
+// Hàm xử lý đăng ký
 function handleRegister() {
     if (!validateRegisterForm()) {
         return;
@@ -288,4 +297,10 @@ function logout() {
     document.querySelector('#profile-info p').style.display = 'block';
     showAlert('profile-alert', 'Đã đăng xuất!', 'success');
     setTimeout(() => showTab('login'), 1000);
+}
+
+// THÊM HÀM DEBUG
+function debugTabs() {
+    console.log('All form pages:', document.querySelectorAll('.form-page'));
+    console.log('All tabs:', document.querySelectorAll('.tab'));
 }

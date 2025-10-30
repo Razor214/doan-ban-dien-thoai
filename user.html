@@ -18,6 +18,7 @@
         <nav class="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
             <a href="user/cart.html">Giỏ Hàng</a>
+            <!-- SỬA ONCLICK -->
             <a href="#" onclick="showTab('login')" class="bar_right">Đăng nhập</a>
             <a href="#" onclick="showTab('register')">Đăng ký</a>
             <a href="#" onclick="showTab('profile')">Hồ sơ</a>
@@ -30,15 +31,15 @@
         <div class="container">
             <!-- Tabs Navigation -->
             <div class="tabs">
-                <button class="tab active" data-tab="login">Đăng Nhập</button>
-                <button class="tab" data-tab="register">Đăng Ký</button>
-                <button class="tab" data-tab="profile">Hồ Sơ</button>
+                <button class="tab active" data-tab="login" onclick="showTab('login')">Đăng Nhập</button>
+                <button class="tab" data-tab="register" onclick="showTab('register')">Đăng Ký</button>
+                <button class="tab" data-tab="profile" onclick="showTab('profile')">Hồ Sơ</button>
             </div>
 
             <!-- Tab Content -->
             <div class="tab-content">
                 <!-- LOGIN PAGE -->
-                <div id="login-page" class="form-page active">
+                <div id="login" class="form-page active">
                     <h2 class="form-title">Đăng Nhập</h2>
                     
                     <div id="login-alert"></div>
@@ -63,7 +64,7 @@
                 </div>
 
                 <!-- REGISTER PAGE -->
-                <div id="register-page" class="form-page">
+                <div id="register" class="form-page">
                     <h2 class="form-title">Đăng Ký</h2>
                     
                     <div id="register-alert"></div>
@@ -112,7 +113,7 @@
                 </div>
 
                 <!-- PROFILE PAGE -->
-                <div id="profile-page" class="form-page">
+                <div id="profile" class="form-page">
                     <h2 class="form-title">Hồ Sơ Cá Nhân</h2>
                     
                     <div id="profile-alert"></div>

@@ -41,16 +41,24 @@
     border-bottom: 3px solid #4CAF50;
 }
 
+.tab:hover {
+    background: #e9ecef;
+}
+
 .tab-content {
     padding: 30px;
+    position: relative;
 }
 
 .form-page {
     display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .form-page.active {
     display: block;
+    opacity: 1;
 }
 
 .form-title {
@@ -78,6 +86,7 @@
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
 .form-input:focus {
@@ -182,5 +191,10 @@
     
     .form-title {
         font-size: 20px;
+    }
+    
+    .tab {
+        padding: 12px;
+        font-size: 14px;
     }
 }
