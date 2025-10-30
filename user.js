@@ -1,4 +1,4 @@
-// DỮ LIỆU USERS - nhúng trực tiếp vào code
+// DỮ LIỆU USERS
 let usersData = JSON.parse(localStorage.getItem('users')) || [
     {
         "username": "dang",
@@ -65,6 +65,14 @@ function setupEventListeners() {
             handleProfileUpdate();
         });
     }
+    
+    // Tab click events
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+            showTab(tabName);
+        });
+    });
 }
 
 // Xử lý URL hash để chuyển tab tự động
@@ -89,9 +97,7 @@ function showTab(tabName) {
     
     // Show selected page and activate tab
     const targetPage = document.getElementById(tabName + '-page');
-    const targetTab = Array.from(document.querySelectorAll('.tab')).find(tab => 
-        tab.textContent.toLowerCase().includes(tabName.toLowerCase())
-    );
+    const targetTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
     
     if (targetPage) targetPage.classList.add('active');
     if (targetTab) targetTab.classList.add('active');

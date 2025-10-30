@@ -1,17 +1,11 @@
 /* USER AUTHENTICATION STYLES */
-#auth-section {
-    padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 70vh;
+.auth-container {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.auth-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    min-height: 80vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .container {
@@ -21,7 +15,6 @@
     overflow: hidden;
     width: 90%;
     max-width: 400px;
-    margin: 0 auto;
 }
 
 .tabs {
@@ -159,21 +152,6 @@
     text-align: center;
 }
 
-.info-item {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.info-label {
-    font-weight: 500;
-    color: #555;
-}
-
-.info-value {
-    color: #333;
-}
-
 .logout-btn {
     background: #dc3545;
     margin-top: 10px;
@@ -185,7 +163,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    #auth-section {
+    .auth-container {
         padding: 20px 10px;
         min-height: 60vh;
     }
