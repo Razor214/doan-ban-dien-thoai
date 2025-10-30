@@ -3,8 +3,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
-    padding: 20px;
+    min-height: 70vh;
+    padding: 40px 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
@@ -155,6 +155,14 @@
 .logout-btn {
     background: #dc3545;
     margin-top: 10px;
+    width: 100%;
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .logout-btn:hover {
@@ -174,9 +182,5 @@
     
     .form-title {
         font-size: 20px;
-    }
-    
-    .container {
-        margin: 10px auto;
     }
 }

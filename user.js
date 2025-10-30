@@ -27,14 +27,13 @@ if (!localStorage.getItem('users')) {
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     setupEventListeners();
-    handleUrlHash(); // Xử lý hash từ URL
+    handleUrlParams(); // Xử lý tham số từ URL
 });
 
 function initializeApp() {
     // Kiểm tra nếu đã đăng nhập
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
-        showTab('profile');
         loadProfileData();
     }
 }
@@ -75,11 +74,16 @@ function setupEventListeners() {
     });
 }
 
-// Xử lý URL hash để chuyển tab tự động
-function handleUrlHash() {
-    const hash = window.location.hash.substring(1); // Bỏ dấu # đầu tiên
-    if (hash === 'login' || hash === 'register' || hash === 'profile') {
-        showTab(hash);
+// Xử lý tham số URL để chuyển tab tự động
+function handleUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    
+    if (tabParam === 'login' || tabParam === 'register' || tabParam === 'profile') {
+        showTab(tabParam);
+    } else {
+        // Mặc định hiển thị tab đăng nhập
+        showTab('login');
     }
 }
 
@@ -101,9 +105,6 @@ function showTab(tabName) {
     
     if (targetPage) targetPage.classList.add('active');
     if (targetTab) targetTab.classList.add('active');
-    
-    // Cập nhật URL hash
-    window.location.hash = tabName;
     
     // Nếu chuyển đến tab profile, load dữ liệu
     if (tabName === 'profile') {
