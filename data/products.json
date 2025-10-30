@@ -1,9 +1,6 @@
 {
-  "id": 1,
-  "name": "iPhone 15 Pro Max",
-  "brand": "Apple",
-  "price": 35000000,
-  "stock": 5,
-  "image": "iphone15promax.png",
-  "description": "Mẫu cao cấp mới nhất..."
+  "username": "dang",
+  "password": "123456",
+  "role": "user",
+  "email": "dang@gmail.com"
 }
