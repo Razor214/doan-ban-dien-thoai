@@ -25,6 +25,7 @@ if (!localStorage.getItem('users')) {
 
 // Khởi tạo ứng dụng khi DOM loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('User.js loaded successfully!'); // Kiểm tra load JS
     initializeApp();
     setupEventListeners();
     handleUrlParams(); // Xử lý tham số từ URL
