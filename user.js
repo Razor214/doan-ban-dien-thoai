@@ -27,17 +27,15 @@ if (!localStorage.getItem('users')) {
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     setupEventListeners();
+    handleUrlHash(); // Xử lý hash từ URL
 });
 
 function initializeApp() {
     // Kiểm tra nếu đã đăng nhập
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
-        showUserMenu(currentUser);
         showTab('profile');
         loadProfileData();
-    } else {
-        showAuthButtons();
     }
 }
 
@@ -69,6 +67,14 @@ function setupEventListeners() {
     }
 }
 
+// Xử lý URL hash để chuyển tab tự động
+function handleUrlHash() {
+    const hash = window.location.hash.substring(1); // Bỏ dấu # đầu tiên
+    if (hash === 'login' || hash === 'register' || hash === 'profile') {
+        showTab(hash);
+    }
+}
+
 // Tab management
 function showTab(tabName) {
     // Hide all pages
@@ -90,29 +96,13 @@ function showTab(tabName) {
     if (targetPage) targetPage.classList.add('active');
     if (targetTab) targetTab.classList.add('active');
     
+    // Cập nhật URL hash
+    window.location.hash = tabName;
+    
     // Nếu chuyển đến tab profile, load dữ liệu
     if (tabName === 'profile') {
         loadProfileData();
     }
-}
-
-// UI Management
-function showUserMenu(user) {
-    const authButtons = document.getElementById('auth-buttons');
-    const userMenu = document.getElementById('user-menu');
-    const welcomeMessage = document.getElementById('welcome-message');
-    
-    if (authButtons) authButtons.style.display = 'none';
-    if (userMenu) userMenu.style.display = 'flex';
-    if (welcomeMessage) welcomeMessage.textContent = `Xin chào, ${user.fullName || user.username}!`;
-}
-
-function showAuthButtons() {
-    const authButtons = document.getElementById('auth-buttons');
-    const userMenu = document.getElementById('user-menu');
-    
-    if (authButtons) authButtons.style.display = 'flex';
-    if (userMenu) userMenu.style.display = 'none';
 }
 
 // Register form validation
@@ -169,9 +159,6 @@ function handleLogin() {
             // Login thành công
             localStorage.setItem('currentUser', JSON.stringify(user));
             showAlert('login-alert', 'Đăng nhập thành công!', 'success');
-            
-            // Cập nhật UI
-            showUserMenu(user);
             
             // Reset form
             document.getElementById('loginForm').reset();
@@ -255,8 +242,6 @@ function handleProfileUpdate() {
             localStorage.setItem('users', JSON.stringify(usersData));
         }
         
-        // Cập nhật UI
-        showUserMenu(currentUser);
         showAlert('profile-alert', 'Cập nhật thông tin thành công!', 'success');
     }
 }
@@ -272,47 +257,28 @@ function showAlert(containerId, message, type) {
 
 function loadProfileData() {
     const userData = JSON.parse(localStorage.getItem('currentUser'));
-    const profileInfo = document.getElementById('profile-info');
-    const profileForm = document.getElementById('profileForm');
-    const logoutBtn = document.querySelector('.logout-btn');
-    
     if (userData) {
-        // Ẩn thông báo và hiển thị form
-        if (profileInfo) profileInfo.style.display = 'none';
-        if (profileForm) profileForm.style.display = 'block';
-        if (logoutBtn) logoutBtn.style.display = 'block';
+        document.getElementById('profile-info').style.display = 'none';
+        document.getElementById('profileForm').style.display = 'block';
+        document.querySelector('.logout-btn').style.display = 'block';
         
-        // Điền thông tin vào form
+        // Điền thông tin HIỆN TẠI từ localStorage (có thể đã được cập nhật)
         document.getElementById('profileFullName').value = userData.fullName || '';
         document.getElementById('profileEmail').value = userData.email || '';
         document.getElementById('profilePhone').value = userData.phone || '';
-    } else {
-        // Hiển thị thông báo đăng nhập
-        if (profileInfo) profileInfo.style.display = 'block';
-        if (profileForm) profileForm.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'none';
+        
+        // Ẩn thông báo "Vui lòng đăng nhập"
+        document.querySelector('#profile-info p').style.display = 'none';
     }
 }
 
 function logout() {
     localStorage.removeItem('currentUser');
+    document.getElementById('profileForm').style.display = 'none';
+    document.querySelector('.logout-btn').style.display = 'none';
+    document.getElementById('profile-info').style.display = 'block';
+    // Hiển thị lại thông báo
+    document.querySelector('#profile-info p').style.display = 'block';
     showAlert('profile-alert', 'Đã đăng xuất!', 'success');
-    
-    // Cập nhật UI
-    showAuthButtons();
-    
-    // Reset UI
-    const profileInfo = document.getElementById('profile-info');
-    const profileForm = document.getElementById('profileForm');
-    const logoutBtn = document.querySelector('.logout-btn');
-    
-    if (profileInfo) profileInfo.style.display = 'block';
-    if (profileForm) profileForm.style.display = 'none';
-    if (logoutBtn) logoutBtn.style.display = 'none';
-    
-    // Reset forms
-    document.getElementById('loginForm').reset();
-    document.getElementById('registerForm').reset();
-    
     setTimeout(() => showTab('login'), 1000);
 }

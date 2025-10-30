@@ -1,11 +1,17 @@
 /* USER AUTHENTICATION STYLES */
-.auth-container {
+#auth-section {
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .container {
@@ -15,7 +21,7 @@
     overflow: hidden;
     width: 90%;
     max-width: 400px;
-    margin: 20px auto;
+    margin: 0 auto;
 }
 
 .tabs {
@@ -177,24 +183,9 @@
     background: #c82333;
 }
 
-/* Header Auth Styles */
-#auth-buttons, #user-menu {
-    display: flex;
-    align-items: center;
-}
-
-#user-menu {
-    color: #333;
-}
-
-#welcome-message {
-    color: #4CAF50;
-    font-weight: 500;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-    .auth-container {
+    #auth-section {
         padding: 20px 10px;
         min-height: 60vh;
     }
