@@ -96,10 +96,23 @@
             <option value="Xiaomi">Xiaomi</option>
           </select>
 
-          <select id="sortFilter">
-            <option value="default">Giá</option>
-            <option value="price-asc">Thấp đến cao</option>
-            <option value="price-desc">Cao đến thấp</option>
+          <select id="ramFilter">
+            <option value="all">RAM</option>
+            <option value="4">4GB</option>
+            <option value="6">6GB</option>
+            <option value="8">8GB</option>
+            <option value="12">12GB</option>
+            <option value="16">16GB</option>
+          </select>
+
+          <select id="storageFilter">
+            <option value="all">Bộ nhớ trong</option>
+            <option value="32">32GB</option>
+            <option value="64">64GB</option>
+            <option value="128">128GB</option>
+            <option value="256">256GB</option>
+            <option value="512">512GB</option>
+            <option value="1024">1TB</option>
           </select>
 
           <select id="priceRangeFilter">
@@ -108,6 +121,12 @@
             <option value="10000000-20000000">10 - 20 triệu</option>
             <option value="20000000-25000000">20 - 25 triệu</option>
             <option value="25000000-999999999">Trên 25 triệu</option>
+          </select>
+
+          <select id="sortFilter">
+            <option value="default">Sắp xếp</option>
+            <option value="price-asc">Giá: Thấp đến cao</option>
+            <option value="price-desc">Giá: Cao đến thấp</option>
           </select>
 
           <button id="resetFilters" class="reset-btn">
@@ -128,7 +147,7 @@
           </button>
         </div>
 
-        <!--hiển thị sản phẩm -->
+        <!-- Hiển thị sản phẩm -->
         <div class="product-grid" id="productGrid"></div>
 
         <!-- Phân trang -->

@@ -6,6 +6,8 @@ class ProductManager {
     this.productsPerPage = 6;
     this.filters = {
       brand: "all",
+      ram: "all",
+      storage: "all",
       priceRange: "all",
       sort: "default",
     };
@@ -29,6 +31,8 @@ class ProductManager {
         price: 32000000,
         stock: 5,
         image: "iphone15promax.png",
+        ram: 8,
+        storage: 512,
       },
       {
         id: 2,
@@ -37,14 +41,18 @@ class ProductManager {
         price: 30590000,
         stock: 10,
         image: "iphone16promax.jpg",
+        ram: 8,
+        storage: 256,
       },
       {
         id: 3,
-        name: "Samsung Galaxy S24 5G 8GB/256GB ",
+        name: "Samsung Galaxy S24 5G 8GB/256GB",
         brand: "Samsung",
         price: 25000000,
         stock: 7,
         image: "samsunggalaxys24.jpg",
+        ram: 8,
+        storage: 256,
       },
       {
         id: 4,
@@ -53,6 +61,8 @@ class ProductManager {
         price: 8490000,
         stock: 3,
         image: "samsunggalaxyA55-5g.jpg",
+        ram: 8,
+        storage: 128,
       },
       {
         id: 5,
@@ -61,6 +71,8 @@ class ProductManager {
         price: 21000000,
         stock: 2,
         image: "xiaomi14ultra.jpg",
+        ram: 16,
+        storage: 512,
       },
       {
         id: 6,
@@ -69,6 +81,8 @@ class ProductManager {
         price: 25590000,
         stock: 14,
         image: "iphone14promax.jpg",
+        ram: 6,
+        storage: 128,
       },
       {
         id: 7,
@@ -77,6 +91,8 @@ class ProductManager {
         price: 22990000,
         stock: 8,
         image: "iphone13promax.jpg",
+        ram: 6,
+        storage: 128,
       },
       {
         id: 8,
@@ -85,6 +101,8 @@ class ProductManager {
         price: 27990000,
         stock: 9,
         image: "samsungzfold5.jpg",
+        ram: 12,
+        storage: 256,
       },
       {
         id: 9,
@@ -93,6 +111,8 @@ class ProductManager {
         price: 14690000,
         stock: 1,
         image: "xiaomi15t-5g.jpg",
+        ram: 12,
+        storage: 256,
       },
       {
         id: 10,
@@ -101,6 +121,8 @@ class ProductManager {
         price: 19190000,
         stock: 4,
         image: "xiaomi15Tpro.jpg",
+        ram: 12,
+        storage: 256,
       },
     ];
 
@@ -113,6 +135,8 @@ class ProductManager {
 
     // Sự kiện cho bộ lọc
     const brandFilter = document.getElementById("brandFilter");
+    const ramFilter = document.getElementById("ramFilter");
+    const storageFilter = document.getElementById("storageFilter");
     const priceRangeFilter = document.getElementById("priceRangeFilter");
     const sortFilter = document.getElementById("sortFilter");
     const resetBtn = document.getElementById("resetFilters");
@@ -120,6 +144,22 @@ class ProductManager {
     if (brandFilter) {
       brandFilter.addEventListener("change", (e) => {
         this.filters.brand = e.target.value;
+        this.currentPage = 1;
+        this.applyFilters();
+      });
+    }
+
+    if (ramFilter) {
+      ramFilter.addEventListener("change", (e) => {
+        this.filters.ram = e.target.value;
+        this.currentPage = 1;
+        this.applyFilters();
+      });
+    }
+
+    if (storageFilter) {
+      storageFilter.addEventListener("change", (e) => {
+        this.filters.storage = e.target.value;
         this.currentPage = 1;
         this.applyFilters();
       });
@@ -145,7 +185,7 @@ class ProductManager {
       resetBtn.addEventListener("click", () => this.resetAllFilters());
     }
 
-    // tìm kiếm
+    // Tìm kiếm
     document
       .getElementById("headerSearchBtn")
       ?.addEventListener("click", () => this.performHeaderSearch());
@@ -159,13 +199,21 @@ class ProductManager {
   }
 
   resetAllFilters() {
-    this.filters = { brand: "all", priceRange: "all", sort: "default" };
+    this.filters = {
+      brand: "all",
+      ram: "all",
+      storage: "all",
+      priceRange: "all",
+      sort: "default",
+    };
     this.searchQuery = "";
     this.isSearching = false;
     this.currentPage = 1;
 
     // Đặt lại giá trị form
     document.getElementById("brandFilter").value = "all";
+    document.getElementById("ramFilter").value = "all";
+    document.getElementById("storageFilter").value = "all";
     document.getElementById("priceRangeFilter").value = "all";
     document.getElementById("sortFilter").value = "default";
     document.getElementById("headerSearch").value = "";
@@ -190,21 +238,33 @@ class ProductManager {
 
     let filtered = [...this.products];
 
-    // bộ lọc tìm kiếm
+    // Bộ lọc tìm kiếm
     if (this.isSearching && this.searchQuery) {
       filtered = filtered.filter((product) =>
         product.name.toLowerCase().includes(this.searchQuery)
       );
     }
 
-    // bộ lọc thương hiệu
+    // Bộ lọc thương hiệu
     if (this.filters.brand !== "all") {
       filtered = filtered.filter(
         (product) => product.brand === this.filters.brand
       );
     }
 
-    // bộ lọc khoảng giá
+    // Bộ lọc RAM
+    if (this.filters.ram !== "all") {
+      const ramValue = parseInt(this.filters.ram);
+      filtered = filtered.filter((product) => product.ram === ramValue);
+    }
+
+    // Bộ lọc dung lượng lưu trữ
+    if (this.filters.storage !== "all") {
+      const storageValue = parseInt(this.filters.storage);
+      filtered = filtered.filter((product) => product.storage === storageValue);
+    }
+
+    // Bộ lọc khoảng giá
     if (this.filters.priceRange !== "all") {
       const [minPrice, maxPrice] = this.filters.priceRange
         .split("-")
@@ -214,7 +274,7 @@ class ProductManager {
       );
     }
 
-    // sắp xếp
+    // Sắp xếp
     if (this.filters.sort === "price-asc") {
       filtered.sort((a, b) => a.price - b.price);
     } else if (this.filters.sort === "price-desc") {
@@ -266,11 +326,23 @@ class ProductManager {
     console.log("✅ Đã render sản phẩm thành công");
   }
 
+  formatStorage(storage) {
+    if (storage >= 1024) {
+      return "1TB";
+    }
+    return `${storage}GB`;
+  }
+
   getNoProductsMessage() {
     if (this.isSearching) {
       return "Không tìm thấy sản phẩm phù hợp với từ khóa tìm kiếm.";
     }
-    if (this.filters.brand !== "all" || this.filters.priceRange !== "all") {
+    if (
+      this.filters.brand !== "all" ||
+      this.filters.priceRange !== "all" ||
+      this.filters.ram !== "all" ||
+      this.filters.storage !== "all"
+    ) {
       return "Không có sản phẩm nào phù hợp với bộ lọc đã chọn.";
     }
     return "Không có sản phẩm nào.";
