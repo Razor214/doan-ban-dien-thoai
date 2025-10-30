@@ -24,7 +24,7 @@ class ProductManager {
     this.products = [
       {
         id: 1,
-        name: "iPhone 15 Pro",
+        name: "iPhone 15 Pro 512GB",
         brand: "Apple",
         price: 32000000,
         stock: 5,
@@ -32,7 +32,7 @@ class ProductManager {
       },
       {
         id: 2,
-        name: "iPhone 16 Pro Max",
+        name: "iPhone 16 Pro Max 256GB",
         brand: "Apple",
         price: 30590000,
         stock: 10,
@@ -40,7 +40,7 @@ class ProductManager {
       },
       {
         id: 3,
-        name: "Samsung Galaxy S24 5G",
+        name: "Samsung Galaxy S24 5G 8GB/256GB ",
         brand: "Samsung",
         price: 25000000,
         stock: 7,
@@ -48,7 +48,7 @@ class ProductManager {
       },
       {
         id: 4,
-        name: "Samsung Galaxy A55 5G",
+        name: "Samsung Galaxy A55 5G 8GB/128GB",
         brand: "Samsung",
         price: 8490000,
         stock: 3,
@@ -56,7 +56,7 @@ class ProductManager {
       },
       {
         id: 5,
-        name: "Xiaomi 14 Ultra 5G",
+        name: "Xiaomi 14 Ultra 5G 16GB|512GB",
         brand: "Xiaomi",
         price: 21000000,
         stock: 2,
@@ -72,7 +72,7 @@ class ProductManager {
       },
       {
         id: 7,
-        name: "iPhone 13 Pro Max",
+        name: "iPhone 13 Pro Max 128GB",
         brand: "Apple",
         price: 22990000,
         stock: 8,
@@ -80,7 +80,7 @@ class ProductManager {
       },
       {
         id: 8,
-        name: "Samsung Z Fold 5",
+        name: "Samsung Z Fold 5 12GB/256GB",
         brand: "Samsung",
         price: 27990000,
         stock: 9,
@@ -88,7 +88,7 @@ class ProductManager {
       },
       {
         id: 9,
-        name: "Xiaomi 15T 5G",
+        name: "Xiaomi 15T 5G 12GB/256GB",
         brand: "Xiaomi",
         price: 14690000,
         stock: 1,
@@ -96,7 +96,7 @@ class ProductManager {
       },
       {
         id: 10,
-        name: "Xiaomi 15T Pro 5G",
+        name: "Xiaomi 15T Pro 5G 12GB/256GB",
         brand: "Xiaomi",
         price: 19190000,
         stock: 4,
