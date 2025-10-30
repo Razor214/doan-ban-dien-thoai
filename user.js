@@ -33,8 +33,11 @@ function initializeApp() {
     // Kiểm tra nếu đã đăng nhập
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
+        showUserMenu(currentUser);
         showTab('profile');
         loadProfileData();
+    } else {
+        showAuthButtons();
     }
 }
 
@@ -93,6 +96,25 @@ function showTab(tabName) {
     }
 }
 
+// UI Management
+function showUserMenu(user) {
+    const authButtons = document.getElementById('auth-buttons');
+    const userMenu = document.getElementById('user-menu');
+    const welcomeMessage = document.getElementById('welcome-message');
+    
+    if (authButtons) authButtons.style.display = 'none';
+    if (userMenu) userMenu.style.display = 'flex';
+    if (welcomeMessage) welcomeMessage.textContent = `Xin chào, ${user.fullName || user.username}!`;
+}
+
+function showAuthButtons() {
+    const authButtons = document.getElementById('auth-buttons');
+    const userMenu = document.getElementById('user-menu');
+    
+    if (authButtons) authButtons.style.display = 'flex';
+    if (userMenu) userMenu.style.display = 'none';
+}
+
 // Register form validation
 function validateRegisterForm() {
     let isValid = true;
@@ -147,6 +169,9 @@ function handleLogin() {
             // Login thành công
             localStorage.setItem('currentUser', JSON.stringify(user));
             showAlert('login-alert', 'Đăng nhập thành công!', 'success');
+            
+            // Cập nhật UI
+            showUserMenu(user);
             
             // Reset form
             document.getElementById('loginForm').reset();
@@ -230,6 +255,8 @@ function handleProfileUpdate() {
             localStorage.setItem('users', JSON.stringify(usersData));
         }
         
+        // Cập nhật UI
+        showUserMenu(currentUser);
         showAlert('profile-alert', 'Cập nhật thông tin thành công!', 'success');
     }
 }
@@ -270,6 +297,9 @@ function loadProfileData() {
 function logout() {
     localStorage.removeItem('currentUser');
     showAlert('profile-alert', 'Đã đăng xuất!', 'success');
+    
+    // Cập nhật UI
+    showAuthButtons();
     
     // Reset UI
     const profileInfo = document.getElementById('profile-info');

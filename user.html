@@ -18,6 +18,15 @@
         <nav class="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
             <a href="user/cart.html">Giỏ Hàng</a>
+            <div id="auth-buttons">
+                <a href="#" onclick="showTab('login')" class="bar_right">Đăng nhập</a>
+                <a href="#" onclick="showTab('register')">Đăng ký</a>
+            </div>
+            <div id="user-menu" style="display: none;">
+                <span id="welcome-message" style="margin-right: 15px;"></span>
+                <a href="#" onclick="showTab('profile')">Hồ sơ</a>
+                <a href="#" onclick="logout()" style="margin-left: 10px;">Đăng xuất</a>
+            </div>
             <a href="admin/dashboard.html" class="admin-link">Admin</a>
         </nav>
     </header>
