@@ -458,6 +458,7 @@
         table-layout: fixed;
         font-size: 14px;
     }
+
     .orders-table thead {
         display: table;
         width: 100%;
@@ -467,11 +468,13 @@
         z-index: 10;
         background-color: #f1f1f1;
     }
+
     .orders-table tbody {
         display: block;
         height: 310px;
         overflow-y: auto;
     }
+
     .orders-table tbody tr {
         display: table;
         width: 100%;
@@ -507,6 +510,7 @@
     .orders-table button:hover {
         background-color: #0056b3;
     }
+
     .details {
         display: none;
         position: fixed;
@@ -562,6 +566,7 @@
     .infoorder p {
         margin: 6px 0;
     }
+
     .mini-table {
         width: 100%;
         border-collapse: collapse;
@@ -569,6 +574,7 @@
         table-layout: auto;
         margin: 10px auto;
     }
+
     .mini-table th,
     .mini-table td {
         border: 1px solid #ddd;
@@ -713,3 +719,79 @@
     
     }
 
+    /* Quan ly khach hang */
+    #Bangkh {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    #Bangkh thead {
+        background-color: #e9ecef;
+        position: sticky;
+        top: 0;
+        flex-shrink: 0;
+    }
+
+    #Bangkh tbody {
+        display: block;
+        height: 330px;
+        overflow-y: auto;
+        font-size: 14px;
+    }
+
+    #Bangkh thead,
+    #Bangkh tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+
+    .action button.toggle {
+        background: #28a745;
+    }
+
+    .action button.reset {
+        background: #dc3545;
+    }
+    /* --- QUẢN LÝ DANH MỤC SẢN PHẨM --- */
+#ProductTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: white;
+    margin-top: 10px;
+}
+
+#ProductTable th,
+#ProductTable td {
+    padding: 10;
+    border: 1px solid #ddd;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+#ProductTable thead {
+    background-color: #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#ProductTable tbody {
+    display: block;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#ProductTable thead,
+#ProductTable tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}

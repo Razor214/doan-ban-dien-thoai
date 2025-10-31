@@ -1,19 +1,26 @@
 //Quản lý giá bán
-    const modal = document.getElementById('popup');
-    const form = document.getElementById('productadd');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const table = document.querySelector('#Bangsp tbody');
-    const searchInput = document.getElementById('Timkiem')
-    const categoryInput = document.getElementById('category');
-    const nameInput = document.getElementById('name');
-    const costInput = document.getElementById('cost');
-    const profitInput = document.getElementById('profit');
-    const priceInput = document.getElementById('sell');
+const modal = document.getElementById('popup');
+const form = document.getElementById('productadd');
+const cancelBtn = document.getElementById('cancelBtn');
+const table = document.querySelector('#Bangsp tbody');
+const searchInput = document.getElementById('Timkiem')
+const categoryInput = document.getElementById('category');
+const nameInput = document.getElementById('name');
+const costInput = document.getElementById('cost');
+const profitInput = document.getElementById('profit');
+const priceInput = document.getElementById('sell');
 
-    const productTable = document.querySelector("#ProductTable tbody");
-    const productModal = document.getElementById("ProductPopup");
-    const productForm = document.getElementById("ProductForm");
-    let editingProduct = null; 
+// ======================= QUẢN LÝ SẢN PHẨM ==========================
+const productModal = document.getElementById('ProductPopup');
+const productForm = document.getElementById('ProductForm');
+const productTable = document.querySelector('#ProductTable tbody');
+const cancelProduct = document.getElementById('cancelProduct');
+const searchInputProd = document.getElementById('searchProductCategory');
+const imgInput = document.getElementById('prodImgFile');
+const imgPreview = document.getElementById('previewImg');
+
+let productData = [];
+let editingProduct = null;
 
     let editingRow = null;
     fetch("../data/manageproduct.json")
@@ -24,98 +31,98 @@
                 <td>${sp.name}</td>
                 <td>${sp.cost.toLocaleString("vi-VN")}</td>
                 <td>${sp.profit}%</td>
-                <td>${(sp.price*(1+sp.profit/100)).toLocaleString("vi-VN")}</td>
+                <td>${(sp.price * (1 + sp.profit / 100)).toLocaleString("vi-VN")}</td>
                 <td class="action">
                     <button class="edit">Sửa</button> 
                     <button class="delete">Xóa</button>
                 </td>
             </tr>`
-        ).join("")
+    ).join("")
     );
-    table.addEventListener("click", (e) => {
-        if (e.target.classList.contains("edit")) {
-            openModal("edit", e.target);
-        } else if (e.target.classList.contains("delete")) {
-            confirmDelete(e.target);
-        }
-    });
+table.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit")) {
+        openModal("edit", e.target);
+    } else if (e.target.classList.contains("delete")) {
+        confirmDelete(e.target);
+    }
+});
 
-    function openModal(mode, btn) {
-        form.reset();
+function openModal(mode, btn) {
+    form.reset();
+    priceInput.value = '';
+    modal.style.display = 'flex';
+    editingRow = null;
+
+    if (mode === 'edit' && btn) {
+        const row = btn.closest('tr');
+        categoryInput.value = row.cells[0].innerText;
+        nameInput.value = row.cells[1].innerText;
+        costInput.value = row.cells[2].innerText.replace(/,/g, '');
+        profitInput.value = parseFloat(row.cells[3].innerText);
+        priceInput.value = row.cells[4].innerText.replace(/,/g, '');
+        editingRow = row;
+    }
+}
+
+cancelBtn.onclick = () => modal.style.display = 'none';
+
+
+costInput.addEventListener('input', updatePrice);
+profitInput.addEventListener('input', updatePrice);
+priceInput.addEventListener('input', updateProfit);
+
+function cleanNumber(value) {
+    return parseFloat(value.replace(/[.,\s]/g, '')) || 0;
+}
+function formatNumber(num) {
+    return num.toLocaleString('vi-VN');
+}
+function updatePrice() {
+    const cost = cleanNumber(costInput.value);
+    const profit = parseFloat(profitInput.value);
+    if (cost > 0 && !isNaN(profit)) {
+        const price = cost + (cost * profit / 100);
+        priceInput.value = formatNumber(Math.round(price));
+    } else {
         priceInput.value = '';
-        modal.style.display = 'flex'; 
-        editingRow = null;
+    }
+}
 
-        if (mode === 'edit' && btn) {
-            const row = btn.closest('tr');
-            categoryInput.value = row.cells[0].innerText;
-            nameInput.value = row.cells[1].innerText;
-            costInput.value = row.cells[2].innerText.replace(/,/g,'');
-            profitInput.value = parseFloat(row.cells[3].innerText);
-            priceInput.value = row.cells[4].innerText.replace(/,/g,'');
-            editingRow = row;
-        }
+function updateProfit() {
+    const cost = cleanNumber(costInput.value);
+    const price = cleanNumber(priceInput.value);
+    if (cost > 0 && price > 0) {
+        const profit = ((price - cost) / cost) * 100;
+        profitInput.value = profit.toFixed(2);
+    }
+}
+function formatOnInput(input) {
+    let val = cleanNumber(input.value);
+    input.value = val ? formatNumber(val) : '';
+}
+
+form.onsubmit = (e) => {
+    e.preventDefault();
+    const category = categoryInput.value;
+    const name = nameInput.value;
+    const cost = costInput.value;
+    const profit = profitInput.value;
+    const price = priceInput.value;
+
+    if (!category || !name || !cost || !profit) {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+        return;
     }
 
-    cancelBtn.onclick = () => modal.style.display = 'none';
-
-    
-    costInput.addEventListener('input', updatePrice);
-    profitInput.addEventListener('input', updatePrice);
-    priceInput.addEventListener('input', updateProfit);
-
-    function cleanNumber(value){
-        return parseFloat(value.replace(/[.,\s]/g, ''))||0;
-    }
-    function formatNumber(num){
-        return num.toLocaleString('vi-VN');
-    }
-    function updatePrice() {
-        const cost = cleanNumber(costInput.value);
-        const profit = parseFloat(profitInput.value);
-        if (cost >0  && !isNaN(profit)) {
-            const price = cost + (cost * profit / 100);
-            priceInput.value = formatNumber(Math.round(price));
-        }else{
-            priceInput.value='';
-        }
-    }
-
-    function updateProfit() {
-        const cost = cleanNumber(costInput.value);
-        const price = cleanNumber(priceInput.value);
-        if (cost > 0 && price>0) {
-            const profit = ((price - cost) / cost) * 100;
-            profitInput.value = profit.toFixed(2);
-        }
-    }
-    function formatOnInput(input){
-        let val = cleanNumber(input.value);
-        input.value = val ? formatNumber(val) : '';
-    }
-    
-    form.onsubmit = (e) => {
-        e.preventDefault();
-        const category = categoryInput.value;
-        const name = nameInput.value;
-        const cost = costInput.value;
-        const profit = profitInput.value;
-        const price = priceInput.value;
-
-        if (!category || !name || !cost || !profit) {
-            alert('Vui lòng nhập đầy đủ thông tin!');
-            return;
-        }
-
-        if (editingRow) {
-            editingRow.cells[0].innerText = category;
-            editingRow.cells[1].innerText = name;
-            editingRow.cells[2].innerText = cost;
-            editingRow.cells[3].innerText = profit + '%';
-            editingRow.cells[4].innerText = price;
-        } else {
-            const row = table.insertRow();
-            row.innerHTML = `
+    if (editingRow) {
+        editingRow.cells[0].innerText = category;
+        editingRow.cells[1].innerText = name;
+        editingRow.cells[2].innerText = cost;
+        editingRow.cells[3].innerText = profit + '%';
+        editingRow.cells[4].innerText = price;
+    } else {
+        const row = table.insertRow();
+        row.innerHTML = `
                 <td>${category}</td>
                 <td>${name}</td>
                 <td>${cost}</td>
@@ -126,64 +133,64 @@
                     <button class="delete" onclick="confirmDelete(this)">Xóa</button>
                 </td>
             `;
-        }
-        modal.style.display = 'none';
+    }
+    modal.style.display = 'none';
+};
+
+function searchProduct() {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const rows = table.getElementsByTagName('tr');
+
+    for (let row of rows) {
+        const productName = row.cells[1].innerText.toLowerCase();
+        row.style.display = productName.startsWith(keyword) || keyword === '' ? '' : 'none';
+
+    }
+}
+searchInput.addEventListener('input', searchProduct);
+costInput.addEventListener('blur', () => {
+    let val = cleanNumber(costInput.value);
+    costInput.value = val ? formatNumber(val) : '';
+});
+updatePrice();
+priceInput.addEventListener('blur', () => {
+    let val = cleanNumber(priceInput.value);
+    priceInput.value = val ? formatNumber(val) : '';
+});
+updatePrice();
+
+
+function confirmDelete(btn) {
+    const popup = document.getElementById('xacnhan');
+    popup.style.display = 'flex';
+    const row = btn.closest('tr');
+    document.getElementById('xacnhanxoa').onclick = () => {
+        row.remove();
+        popup.style.display = 'none';
     };
+    document.getElementById('xacnhankhong').onclick = () => popup.style.display = 'none';
+}
 
-    function searchProduct(){
-        const keyword = searchInput.value.trim().toLowerCase();
-        const rows = table.getElementsByTagName('tr');
-
-        for(let row of rows){
-            const productName = row.cells[1].innerText.toLowerCase();
-            row.style.display = productName.startsWith(keyword) || keyword === '' ? '' : 'none';
-
-        }
+function confirmExit() {
+    document.getElementById('xacnhanthoat').style.display = 'flex';
+    document.getElementById('confirmco').onclick = () => {
+        document.getElementById('xacnhanthoat').style.display = 'none';
+        document.getElementById('price-section').style.display = 'none';
+        document.getElementById('home-section').style.display = 'block';
     }
-    searchInput.addEventListener('input', searchProduct);
-    costInput.addEventListener('blur', ()=>{
-        let val = cleanNumber(costInput.value);
-        costInput.value = val ? formatNumber(val) : '';
-    });
-    updatePrice();
-    priceInput.addEventListener('blur', ()=>{
-        let val = cleanNumber(priceInput.value);
-        priceInput.value = val ? formatNumber(val) : '';
-    });
-    updatePrice();
+    document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
+}
 
-
-    function confirmDelete(btn) {
-        const popup = document.getElementById('xacnhan');
-        popup.style.display = 'flex';
-        const row = btn.closest('tr');
-        document.getElementById('xacnhanxoa').onclick = () => {
-            row.remove();
-            popup.style.display = 'none';
-        };
-        document.getElementById('xacnhankhong').onclick = () => popup.style.display = 'none';
-    }
-
-    function confirmExit() {
-        document.getElementById('xacnhanthoat').style.display = 'flex';
-        document.getElementById('confirmco').onclick = () => {
-            document.getElementById('xacnhanthoat').style.display='none';
-            document.getElementById('price-section').style.display='none';
-            document.getElementById('home-section').style.display='block';
-        }
-        document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
-    }
-
-    function exportData() {
-        document.getElementById('Xuatfile').style.display = 'flex';
-        document.getElementById('confirm').onclick = () => {
-            alert('Xuất dữ liệu thành công!');
-            document.getElementById('Xuatfile').style.display = 'none';
-        };
-        document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
-    }
+function exportData() {
+    document.getElementById('Xuatfile').style.display = 'flex';
+    document.getElementById('confirm').onclick = () => {
+        alert('Xuất dữ liệu thành công!');
+        document.getElementById('Xuatfile').style.display = 'none';
+    };
+    document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
+}
 //Quản lý đơn đặt hàng 
-let orderData=[];
+let orderData = [];
 fetch("/data/orders.json")
     .then(response => response.json())
     .then(data => {
@@ -191,13 +198,13 @@ fetch("/data/orders.json")
         displayOrder(orderData);
     })
     .catch(error => console.error("Lỗi khi tải JSON: ", error));
-function displayOrder(orders){
+function displayOrder(orders) {
     const tableBody = document.getElementById("orderTable");
-    tableBody.innerHTML ="";
+    tableBody.innerHTML = "";
 
-    orders.forEach(order=> {
+    orders.forEach(order => {
         const row = document.createElement("tr");
-        row.innerHTML =`
+        row.innerHTML = `
             <td>${order.id}</td>
             <td>${order.customer}</td>
             <td>${order.date}</td>
@@ -208,15 +215,15 @@ function displayOrder(orders){
         tableBody.appendChild(row);
     });
 }
-function Orders(){
-    const fromDate =document.getElementById("fromDate").value;
+function Orders() {
+    const fromDate = document.getElementById("fromDate").value;
     const toDate = document.getElementById("toDate").value;
     const status = document.getElementById("status").value;
 
     const filtered = orderData.filter(order => {
         const orderDate = new Date(order.date);
-        const from = fromDate ? new Date(fromDate): null;
-        const to = toDate ? new Date(toDate): null;
+        const from = fromDate ? new Date(fromDate) : null;
+        const to = toDate ? new Date(toDate) : null;
 
         const inDateRange = (!from || orderDate >= from) && (!to || orderDate <= to);
         const statusMatch = !status || order.status === status;
@@ -224,8 +231,8 @@ function Orders(){
     });
     displayOrder(filtered);
 }
-function showDetails(orderId){
-    const order = orderData.find(o=>o.id ===orderId);
+function showDetails(orderId) {
+    const order = orderData.find(o => o.id === orderId);
     const popup = document.getElementById("details");
 
     document.getElementById("detail-id").textContent = order.id;
@@ -248,9 +255,9 @@ function showDetails(orderId){
 function closeDetails() {
     document.getElementById("details").style.display = "none";
 }
-function closeMain(){
+function closeMain() {
     document.getElementById("order-section").style.display = "none";
-    document.getElementById("home-section").style.display ="block";
+    document.getElementById("home-section").style.display = "block";
 }
 function update() {
     const id = document.getElementById("detail-id").textContent;
@@ -267,70 +274,191 @@ function update() {
     }
 }
 //Quản lý sản phẩm
-function openProductModal(mode, btn){
+fetch("../data/products.json")
+  .then(r => r.json())
+  .then(d => {
+    productData = d;
+    renderProductTable(productData);
+  })
+  .catch(err => console.error("Lỗi tải JSON:", err));
+
+function renderProductTable(data) {
+  productTable.innerHTML = data.map(p => `
+    <tr>
+      <td>${p.type}</td>
+      <td>${p.code}</td>
+      <td>${p.name}</td>
+      <td><img src="${p.image || 'assets/img/logo.png'}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"></td>
+      <td>${p.desc}</td>
+      <td class="action">
+        <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
+        <button class="delete" onclick="deleteProduct(this)">Xóa</button>
+      </td>
+    </tr>`).join("");
+}
+
+function openProductModal(mode, btn) {
   productForm.reset();
+  imgPreview.src = "assets/img/logo.png";
   productModal.style.display = 'flex';
   editingProduct = null;
-  if(mode === 'edit' && btn){
+
+  if (mode === 'edit' && btn) {
     const row = btn.closest('tr');
-    productForm.prodType.value = row.cells[0].innerText;
-    productForm.prodCode.value = row.cells[1].innerText;
-    productForm.prodName.value = row.cells[2].innerText;
-    productForm.prodImg.value = row.cells[3].innerText;
-    productForm.prodDesc.value = row.cells[4].innerText;
+    const cells = row.cells;
+    document.getElementById('prodType').value = cells[0].innerText;
+    document.getElementById('prodCode').value = cells[1].innerText;
+    document.getElementById('prodName').value = cells[2].innerText;
+    imgPreview.src = cells[3].querySelector('img').src;
+    document.getElementById('prodDesc').value = cells[4].innerText;
     editingProduct = row;
   }
 }
 
+imgInput.addEventListener("change", () => {
+  const file = imgInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => imgPreview.src = e.target.result;
+    reader.readAsDataURL(file);
+  } else {
+    imgPreview.src = "assets/img/logo.png";
+  }
+});
+
+cancelProduct.onclick = () => productModal.style.display = 'none';
+
 productForm.onsubmit = e => {
   e.preventDefault();
-  const data = [
-    productForm.prodType.value,
-    productForm.prodCode.value,
-    productForm.prodName.value,
-    productForm.prodImg.value,
-    productForm.prodDesc.value
-  ];
-  if(editingProduct){
-    data.forEach((v,i)=> editingProduct.cells[i].innerText = v);
+  const type = document.getElementById('prodType').value.trim();
+  const code = document.getElementById('prodCode').value.trim();
+  const name = document.getElementById('prodName').value.trim();
+  const desc = document.getElementById('prodDesc').value.trim();
+  const image = imgPreview.src || 'assets/img/logo.png';
+
+  if (!type || !code || !name) {
+    alert("Vui lòng nhập đầy đủ thông tin!");
+    return;
+  }
+
+  const newProduct = { type, code, name, image, desc };
+
+  if (editingProduct) {
+    const cells = editingProduct.cells;
+    cells[0].innerText = type;
+    cells[1].innerText = code;
+    cells[2].innerText = name;
+    cells[3].querySelector("img").src = image;
+    cells[4].innerText = desc;
   } else {
     const row = productTable.insertRow();
     row.innerHTML = `
-      <td>${data[0]}</td><td>${data[1]}</td><td>${data[2]}</td>
-      <td>${data[3]}</td><td>${data[4]}</td>
+      <td>${type}</td>
+      <td>${code}</td>
+      <td>${name}</td>
+      <td><img src="${image}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"></td>
+      <td>${desc}</td>
       <td class="action">
         <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
         <button class="delete" onclick="deleteProduct(this)">Xóa</button>
       </td>`;
+    productData.push(newProduct);
   }
+
   productModal.style.display = 'none';
+  localStorage.setItem("products_local_v1", JSON.stringify(productData));
 };
 
-function deleteProduct(btn){
-  if(confirm("Bạn có chắc muốn xóa sản phẩm này?")){
-    btn.closest('tr').remove();
+function deleteProduct(btn) {
+  if (confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
+    const row = btn.closest('tr');
+    const code = row.cells[1].innerText;
+    productData = productData.filter(p => p.code !== code);
+    row.remove();
+    localStorage.setItem("products_local_v1", JSON.stringify(productData));
   }
 }
+
+function searchProductCategory() {
+  const keyword = searchInputProd.value.trim().toLowerCase();
+  const filtered = productData.filter(p =>
+    p.name.toLowerCase().includes(keyword) || p.type.toLowerCase().includes(keyword)
+  );
+  renderProductTable(filtered);
+}
+// quan ly khach hang
+
+const data1 = document.getElementById("data1");
+function closeTab() {
+    document.getElementById("customers-section").style.display = "none";
+    document.getElementById("home-section").style.display = "block";
+}
+
+let users = [];
+fetch("data/users.json")
+    .then(r => r.json())
+    .then(d => {
+        users = d;
+        data1.innerHTML = users.map(kh => `
+            <tr>
+                <td>${kh.id}</td>
+                <td>${kh.username}</td>
+                <td>${kh.email}</td>
+                <td class="status">${kh.status}</td>
+                <td class="action">
+                    <button class="toggle">${kh.status === "active" ? "Khóa" : "Mở khóa"}</button>
+                    <button class="reset">Reset mật khẩu</button>
+                </td>
+            </tr>`
+        ).join("");
+
+        const rows = data1.querySelectorAll("tr");
+        rows.forEach((row, index) => {
+            const toggleBtn = row.querySelector(".toggle");
+            const resetBtn = row.querySelector(".reset");
+            const statusCell = row.querySelector(".status");
+
+            toggleBtn.addEventListener("click", () => {
+                const currentStatus = statusCell.textContent;
+                const newStatus = currentStatus === "active" ? "blocked" : "active";
+                statusCell.textContent = newStatus;
+                toggleBtn.textContent = newStatus === "active" ? "Khóa" : "Mở khóa";
+                users[index].status = newStatus;
+                alert(`Tài khoản "${users[index].username}" đã được ${newStatus === "active" ? "mở khóa" : "khóa"}.`);
+            });
+
+            resetBtn.addEventListener("click", () => {
+                const newPassword = prompt(`Nhập mật khẩu mới cho "${users[index].username}":`);
+                if (newPassword) {
+                    users[index].password = newPassword;
+                    alert(`Mật khẩu của "${users[index].username}" đã được cập nhật.`);
+                }
+            });
+        });
+    });
+
+
+
 // sidebar
 document.addEventListener("DOMContentLoaded", () => {
-  const menuItems = document.querySelectorAll(".sidebar-menu a");
-  const sections = document.querySelectorAll(".admin-section");
+    const menuItems = document.querySelectorAll(".sidebar-menu a");
+    const sections = document.querySelectorAll(".admin-section");
 
-  menuItems.forEach(item => {
-    item.addEventListener("click", (e) => {
-      e.preventDefault();
-      const target = item.dataset.section;
+    menuItems.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const target = item.dataset.section;
 
-      // Ẩn tất cả phần
-      sections.forEach(sec => sec.style.display = "none");
+            // Ẩn tất cả phần
+            sections.forEach(sec => sec.style.display = "none");
 
-      // Hiện phần tương ứng
-      const active = document.getElementById(`${target}-section`);
-      if (active) active.style.display = "block";
-        
+            // Hiện phần tương ứng
+            const active = document.getElementById(`${target}-section`);
+            if (active) active.style.display = "block";
+
+        });
     });
-  });
 
-  // Mặc định hiển thị Trang chủ
-  document.getElementById("home-section").style.display = "block";
+    // Mặc định hiển thị Trang chủ
+    document.getElementById("home-section").style.display = "block";
 });
