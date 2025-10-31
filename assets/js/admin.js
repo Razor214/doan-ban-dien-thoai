@@ -1,5 +1,5 @@
 //Quản lý giá bán
-    const modal = document.getElementById('popup');
+    const priceModal = document.getElementById('popup');
     const form = document.getElementById('productadd');
     const cancelBtn = document.getElementById('cancelBtn');
     const table = document.querySelector('#Bangsp tbody');
@@ -11,7 +11,7 @@
     const priceInput = document.getElementById('sell');
 
     let editingRow = null;
-    fetch("../data/manageproduct.json")
+    fetch("/data/manageproduct.json")
         .then(r => r.json())
         .then(d => khungbang.innerHTML = d.map(sp => `
             <tr>
@@ -29,16 +29,16 @@
     );
     table.addEventListener("click", (e) => {
         if (e.target.classList.contains("edit")) {
-            openModal("edit", e.target);
+            openPriceModal("edit", e.target);
         } else if (e.target.classList.contains("delete")) {
             confirmDelete(e.target);
         }
     });
 
-    function openModal(mode, btn) {
+    function openPriceModal(mode, btn) {
         form.reset();
         priceInput.value = '';
-        modal.style.display = 'flex'; 
+        priceModal.style.display = 'flex'; 
         editingRow = null;
 
         if (mode === 'edit' && btn) {
@@ -52,9 +52,8 @@
         }
     }
 
-    cancelBtn.onclick = () => modal.style.display = 'none';
+    cancelBtn.onclick = () => priceModal.style.display = 'none';
 
-    
     costInput.addEventListener('input', updatePrice);
     profitInput.addEventListener('input', updatePrice);
     priceInput.addEventListener('input', updateProfit);
@@ -122,7 +121,7 @@
                 </td>
             `;
         }
-        modal.style.display = 'none';
+        priceModal.style.display = 'none';
     };
 
     function searchProduct(){
@@ -140,7 +139,6 @@
         let val = cleanNumber(costInput.value);
         costInput.value = val ? formatNumber(val) : '';
     });
-    updatePrice();
     priceInput.addEventListener('blur', ()=>{
         let val = cleanNumber(priceInput.value);
         priceInput.value = val ? formatNumber(val) : '';
@@ -160,12 +158,10 @@
     }
 
     function confirmExit() {
-        document.getElementById('xacnhanthoat').style.display = 'flex';
-        document.getElementById('confirmco').onclick = () => {
+            openSection("home-section");
             document.getElementById('xacnhanthoat').style.display='none';
             document.getElementById('price-section').style.display='none';
             document.getElementById('home-section').style.display='block';
-        }
         document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
     }
 
@@ -244,8 +240,7 @@ function closeDetails() {
     document.getElementById("details").style.display = "none";
 }
 function closeMain(){
-    document.getElementById("order-section").style.display = "none";
-    document.getElementById("home-section").style.display ="block";
+    openSection("home-section");
 }
 function update() {
     const id = document.getElementById("detail-id").textContent;
@@ -261,26 +256,199 @@ function update() {
         alert("Không tìm thấy đơn hàng để cập nhật!");
     }
 }
+//Quản lý tồn kho
+
+const tableBody = document.querySelector('#Table tbody');
+const Modal = document.getElementById('detailModal');
+const summaryModal = document.getElementById('popup-modal');
+const btnSearch = document.getElementById('Btnsearch');
+const exportBtn = document.getElementById('exportBtn');
+const viewDetails = document.querySelector('.view-details');
+const closeBtns = document.querySelectorAll('.close-btn, .closepopup');
+const nameSearch = document.getElementById('Namesearch');
+const nhanhieuSelect = document.getElementById('danhsach');
+const cuahangSelect = document.getElementById('kho');
+let inventory =[];
+let filterData=[];
+fetch("/data/ton.json")
+    .then(response => response.json())
+    .then(data => {
+        inventory=data;
+        filterData = [...inventory];
+        renderTable(filterData);
+        renderSummary(filterData);
+    })
+    .catch(error => console.error("Lỗi khi tải JSON: ", error));
+function renderTable(data){
+    if(!tableBody) return;
+    tableBody.innerHTML='';
+    if(data.length===0){
+        tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">Không tìm thấy sản phẩm.</td></tr>';
+        return;
+    }
+    data.forEach(item=>{
+        const row = document.createElement('tr');
+        let statusText = 'Còn hàng', statusClass = 'ok';
+        if(item.slTon===0){statusText = 'Hết hàng';statusClass = 'out';}
+        else if(item.slTon<=item.minTon){statusText = 'Sắp hết';statusClass = 'low';}
+        row.innerHTML=`
+            <td>${item.maSP}</td>
+            <td>${item.nhanHieu}</td>
+            <td>${item.tenSP}</td>
+            <td>${item.slNhap.toLocaleString()}</td>
+            <td>${item.slXuat.toLocaleString()}</td>
+            <td>${item.slTon.toLocaleString()}</td>
+            <td>${item.ngayCapNhat}</td>
+            <td><span class="${statusClass}">${statusText}</span></td>
+        `;
+        row.addEventListener('click', () => openModal(item));
+        tableBody.appendChild(row);
+    });
+}
+function renderSummary(data){
+    document.getElementById('outcount').textContent = data.filter(i => i.slTon === 0).length;
+    document.getElementById('lowcount').textContent = data.filter(i => i.slTon >0 && i.slTon <= i.minTon).length;
+    document.getElementById('okcount').textContent = data.filter(i => i.slTon > i.minTon).length;
+}
+function openModal(item){
+    if(!Modal) return;
+    document.getElementById('modalMaSP').textContent=item.maSP;
+    document.getElementById('modalTenSP').textContent=item.tenSP;
+    document.getElementById('modalNhanhieuSP').textContent=item.nhanHieu;
+    document.getElementById('modalKhoSP').textContent=item.khoHang;
+    document.getElementById('modalGhichuSP').textContent=item.ghiChu || 'Không có ghi chú';
+
+    const historyBody = document.getElementById('modalHistoryBody');
+    historyBody.innerHTML='';
+    if (item.history && item.history.length > 0) {
+        item.history
+            .sort((a,b) => new Date(b.ngay) - new Date(a.ngay))
+            .slice(0,5)
+            .forEach(hist => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${hist.ngay}</td>
+                    <td class="${hist.hanhDong === 'Xuất' ? 'action-xuat':'action-nhap'}">${hist.hanhDong}</td>
+                    <td>${hist.soLuong.toLocaleString()}</td>
+                    <td>${hist.nguoiThucHien}</td>
+                `;
+            historyBody.appendChild(row);
+        });
+    } else {
+         historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Không có lịch sử nhập/xuất gần đây.</td></tr>';
+    }
+    Modal.classList.add('show');
+} 
+function openSummaryModal(){
+    if(!summaryModal) return;
+    const outOfStock = inventory.filter(item=>item.slTon === 0);
+    const lowStock = inventory.filter(item=>item.slTon>0 && item.slTon <= item.minTon);
+    const inStock = inventory.filter(item => item.slTon > item.minTon);
+    document.getElementById('sum-outcount').textContent = `(${outOfStock.length})`;
+    document.getElementById('sum-lowcount').textContent = `(${lowStock.length})`;
+    document.getElementById('sum-okcount').textContent = `(${inStock.length})`;
+    const outList = document.getElementById('sum-outList');
+    const lowList = document.getElementById('sum-lowlist');
+    const okList = document.getElementById('sum-oklist');
+    const createListItems = (list) => list.map(item => 
+        `<li><span class="summary-code">[${item.maSP}]</span> ${item.tenSP}</li>`
+    ).join('');
+
+    outList.innerHTML = outOfStock.length ? createListItems(outOfStock) : '<li>Không có sản phẩm nào.</li>';
+    lowList.innerHTML = lowStock.length ? createListItems(lowStock) : '<li>Không có sản phẩm nào.</li>';
+    okList.innerHTML = inStock.length ? createListItems(inStock) : '<li>Không có sản phẩm nào.</li>';
+
+    summaryModal.classList.add('show');
+}
+if(btnSearch) {
+    btnSearch.addEventListener('click', () => {
+        const keyword = nameSearch.value.toLowerCase();
+        const nhanHieu = nhanhieuSelect.value;
+        const kho = cuahangSelect.value;
+        let startDate = null, endDate = null;
+        const startInput = document.getElementById("startDate").value;
+        const endInput = document.getElementById("endDate").value;
+        filterData = inventory.filter(item => {
+            const itemDate = new Date(item.ngayCapNhat);
+            return (
+                (item.maSP.toLowerCase().includes(keyword) || item.tenSP.toLowerCase().includes(keyword)) &&
+                (!nhanHieu || item.nhanHieu === nhanHieu) &&
+                (!kho || item.khoHang === kho) &&
+                (!startDate || !endDate || (itemDate >= startDate && itemDate <= endDate))
+            );
+        });
+        renderTable(filterData);
+        renderSummary(filterData);
+    });
+}
+if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+        alert('Đã xuất báo cáo thành công! (Dữ liệu dựa trên kết quả lọc hiện tại)');
+    });
+}
+if (viewDetails) {
+    viewDetails.addEventListener('click', (e) => {
+        e.preventDefault(); 
+        openSummaryModal();
+    });
+}
+closeBtns.forEach(btn => {
+    btn.onclick = function() {
+        if(Modal) Modal.classList.remove('show');
+        if(summaryModal) summaryModal.classList.remove('show');
+    }
+});
+function closeInventory(){
+    const stockSection = document.getElementById("stock-section");
+    if (stockSection) stockSection.style.display = "none";
+    const modal = document.getElementById("detailModal");
+    const popup = document.getElementById("popup-modal");
+    if (modal) modal.classList.remove("show");
+    if (popup) popup.classList.remove("show");
+    openSection("home-section");
+
+}
+function openDetailModal(item) {
+    Modal.classList.add('show');
+}
+function closeModal() {
+    Modal.classList.remove('show');
+}
+function openminiPU() {
+    summaryModal.classList.add('show');
+}
+function closeMiniPU() {
+    summaryModal.classList.remove('show');
+}
+
 // sidebar
 document.addEventListener("DOMContentLoaded", () => {
   const menuItems = document.querySelectorAll(".sidebar-menu a");
-  const sections = document.querySelectorAll(".admin-section");
 
   menuItems.forEach(item => {
     item.addEventListener("click", (e) => {
       e.preventDefault();
       const target = item.dataset.section;
-
-      // Ẩn tất cả phần
-      sections.forEach(sec => sec.style.display = "none");
-
-      // Hiện phần tương ứng
-      const active = document.getElementById(`${target}-section`);
-      if (active) active.style.display = "block";
-        
+      openSection(`${target}-section`);
     });
   });
 
-  // Mặc định hiển thị Trang chủ
-  document.getElementById("home-section").style.display = "block";
+  // Hiển thị mặc định
+  openSection("home-section");
 });
+function openSection(id) {
+  // Ẩn tất cả section
+  document.querySelectorAll(".admin-section").forEach(sec => {
+    sec.style.display = "none";
+  });
+
+  // Ẩn tất cả popup/modal nếu có
+  document.querySelectorAll(".modal, .popup").forEach(p => {
+    p.style.display = "none";
+    p.classList.remove("show");
+  });
+
+  // Hiện section được chọn
+  const target = document.getElementById(id);
+  if (target) target.style.display = "block";
+}
