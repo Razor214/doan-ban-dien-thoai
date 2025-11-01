@@ -15,7 +15,14 @@ body, html {
 button {
   cursor: pointer;
 }
-
+#cancelBtn,#xacnhankhong,#confirmno,#confirm-no {
+    background-color: grey;
+    color: white;
+    transition: background 0.2s;
+}
+#cancelBtn:hover,#xacnhankhong:hover,#confirmno:hover,#confirm-no:hover {
+    background-color: rgb(95, 91, 91);
+}
 /* ========================== HEADER ========================== */
 header {
   display: flex;
@@ -75,7 +82,6 @@ header .logo img {
   height: 40px;
 }
 .sidebar-title {
-  
   color: white;
   display: none;
   font-size: 30px;
@@ -143,6 +149,21 @@ th {
 }
 .action .delete {
   background: #dc3545;
+}
+.wraptable {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 15px 15px 15px;
+}
+
+.footerad {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    flex-shrink: 0;
+    padding: 10px;
 }
 
 /* ========================== POPUP (THÊM / SỬA) ========================== */
@@ -232,13 +253,17 @@ th {
 
 /* ========================== QUẢN LÝ GIÁ BÁN ========================== */
 .admin6 {
-  width: 100%;
-  background: #fff;
-  animation: zoomIn 0.25s ease;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    background: #fff;
+    animation: zoomIn 0.25s ease;
+    height: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
+
 h2 {
   position: relative;
   text-align: center;
