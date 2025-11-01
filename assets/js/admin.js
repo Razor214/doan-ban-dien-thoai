@@ -19,13 +19,13 @@
                 <td>${sp.name}</td>
                 <td>${sp.cost.toLocaleString("vi-VN")}</td>
                 <td>${sp.profit}%</td>
-                <td>${(sp.price*(1+sp.profit/100)).toLocaleString("vi-VN")}</td>
+                <td>${(sp.price * (1 + sp.profit / 100)).toLocaleString("vi-VN")}</td>
                 <td class="action">
                     <button class="edit">Sửa</button> 
                     <button class="delete">Xóa</button>
                 </td>
             </tr>`
-        ).join("")
+    ).join("")
     );
     table.addEventListener("click", (e) => {
         if (e.target.classList.contains("edit")) {
@@ -51,6 +51,7 @@
             editingRow = row;
         }
     }
+}
 
     cancelBtn.onclick = () => priceModal.style.display = 'none';
 
@@ -58,58 +59,62 @@
     profitInput.addEventListener('input', updatePrice);
     priceInput.addEventListener('input', updateProfit);
 
-    function cleanNumber(value){
-        return parseFloat(value.replace(/[.,\s]/g, ''))||0;
+costInput.addEventListener('input', updatePrice);
+profitInput.addEventListener('input', updatePrice);
+priceInput.addEventListener('input', updateProfit);
+
+function cleanNumber(value) {
+    return parseFloat(value.replace(/[.,\s]/g, '')) || 0;
+}
+function formatNumber(num) {
+    return num.toLocaleString('vi-VN');
+}
+function updatePrice() {
+    const cost = cleanNumber(costInput.value);
+    const profit = parseFloat(profitInput.value);
+    if (cost > 0 && !isNaN(profit)) {
+        const price = cost + (cost * profit / 100);
+        priceInput.value = formatNumber(Math.round(price));
+    } else {
+        priceInput.value = '';
     }
-    function formatNumber(num){
-        return num.toLocaleString('vi-VN');
+}
+
+function updateProfit() {
+    const cost = cleanNumber(costInput.value);
+    const price = cleanNumber(priceInput.value);
+    if (cost > 0 && price > 0) {
+        const profit = ((price - cost) / cost) * 100;
+        profitInput.value = profit.toFixed(2);
     }
-    function updatePrice() {
-        const cost = cleanNumber(costInput.value);
-        const profit = parseFloat(profitInput.value);
-        if (cost >0  && !isNaN(profit)) {
-            const price = cost + (cost * profit / 100);
-            priceInput.value = formatNumber(Math.round(price));
-        }else{
-            priceInput.value='';
-        }
+}
+function formatOnInput(input) {
+    let val = cleanNumber(input.value);
+    input.value = val ? formatNumber(val) : '';
+}
+
+form.onsubmit = (e) => {
+    e.preventDefault();
+    const category = categoryInput.value;
+    const name = nameInput.value;
+    const cost = costInput.value;
+    const profit = profitInput.value;
+    const price = priceInput.value;
+
+    if (!category || !name || !cost || !profit) {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+        return;
     }
 
-    function updateProfit() {
-        const cost = cleanNumber(costInput.value);
-        const price = cleanNumber(priceInput.value);
-        if (cost > 0 && price>0) {
-            const profit = ((price - cost) / cost) * 100;
-            profitInput.value = profit.toFixed(2);
-        }
-    }
-    function formatOnInput(input){
-        let val = cleanNumber(input.value);
-        input.value = val ? formatNumber(val) : '';
-    }
-    
-    form.onsubmit = (e) => {
-        e.preventDefault();
-        const category = categoryInput.value;
-        const name = nameInput.value;
-        const cost = costInput.value;
-        const profit = profitInput.value;
-        const price = priceInput.value;
-
-        if (!category || !name || !cost || !profit) {
-            alert('Vui lòng nhập đầy đủ thông tin!');
-            return;
-        }
-
-        if (editingRow) {
-            editingRow.cells[0].innerText = category;
-            editingRow.cells[1].innerText = name;
-            editingRow.cells[2].innerText = cost;
-            editingRow.cells[3].innerText = profit + '%';
-            editingRow.cells[4].innerText = price;
-        } else {
-            const row = table.insertRow();
-            row.innerHTML = `
+    if (editingRow) {
+        editingRow.cells[0].innerText = category;
+        editingRow.cells[1].innerText = name;
+        editingRow.cells[2].innerText = cost;
+        editingRow.cells[3].innerText = profit + '%';
+        editingRow.cells[4].innerText = price;
+    } else {
+        const row = table.insertRow();
+        row.innerHTML = `
                 <td>${category}</td>
                 <td>${name}</td>
                 <td>${cost}</td>
@@ -124,15 +129,14 @@
         priceModal.style.display = 'none';
     };
 
-    function searchProduct(){
-        const keyword = searchInput.value.trim().toLowerCase();
-        const rows = table.getElementsByTagName('tr');
+function searchProduct() {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const rows = table.getElementsByTagName('tr');
 
-        for(let row of rows){
-            const productName = row.cells[1].innerText.toLowerCase();
-            row.style.display = productName.startsWith(keyword) || keyword === '' ? '' : 'none';
+    for (let row of rows) {
+        const productName = row.cells[1].innerText.toLowerCase();
+        row.style.display = productName.startsWith(keyword) || keyword === '' ? '' : 'none';
 
-        }
     }
     searchInput.addEventListener('input', searchProduct);
     costInput.addEventListener('blur', ()=>{
@@ -146,16 +150,16 @@
     updatePrice();
 
 
-    function confirmDelete(btn) {
-        const popup = document.getElementById('xacnhan');
-        popup.style.display = 'flex';
-        const row = btn.closest('tr');
-        document.getElementById('xacnhanxoa').onclick = () => {
-            row.remove();
-            popup.style.display = 'none';
-        };
-        document.getElementById('xacnhankhong').onclick = () => popup.style.display = 'none';
-    }
+function confirmDelete(btn) {
+    const popup = document.getElementById('xacnhan');
+    popup.style.display = 'flex';
+    const row = btn.closest('tr');
+    document.getElementById('xacnhanxoa').onclick = () => {
+        row.remove();
+        popup.style.display = 'none';
+    };
+    document.getElementById('xacnhankhong').onclick = () => popup.style.display = 'none';
+}
 
     function confirmExit() {
             openSection("home-section");
@@ -164,17 +168,19 @@
             document.getElementById('home-section').style.display='block';
         document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
     }
+    document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
+}
 
-    function exportData() {
-        document.getElementById('Xuatfile').style.display = 'flex';
-        document.getElementById('confirm').onclick = () => {
-            alert('Xuất dữ liệu thành công!');
-            document.getElementById('Xuatfile').style.display = 'none';
-        };
-        document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
-    }
+function exportData() {
+    document.getElementById('Xuatfile').style.display = 'flex';
+    document.getElementById('confirm').onclick = () => {
+        alert('Xuất dữ liệu thành công!');
+        document.getElementById('Xuatfile').style.display = 'none';
+    };
+    document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
+}
 //Quản lý đơn đặt hàng 
-let orderData=[];
+let orderData = [];
 fetch("/data/orders.json")
     .then(response => response.json())
     .then(data => {
@@ -182,13 +188,13 @@ fetch("/data/orders.json")
         displayOrder(orderData);
     })
     .catch(error => console.error("Lỗi khi tải JSON: ", error));
-function displayOrder(orders){
+function displayOrder(orders) {
     const tableBody = document.getElementById("orderTable");
-    tableBody.innerHTML ="";
+    tableBody.innerHTML = "";
 
-    orders.forEach(order=> {
+    orders.forEach(order => {
         const row = document.createElement("tr");
-        row.innerHTML =`
+        row.innerHTML = `
             <td>${order.id}</td>
             <td>${order.customer}</td>
             <td>${order.date}</td>
@@ -199,15 +205,15 @@ function displayOrder(orders){
         tableBody.appendChild(row);
     });
 }
-function Orders(){
-    const fromDate =document.getElementById("fromDate").value;
+function Orders() {
+    const fromDate = document.getElementById("fromDate").value;
     const toDate = document.getElementById("toDate").value;
     const status = document.getElementById("status").value;
 
     const filtered = orderData.filter(order => {
         const orderDate = new Date(order.date);
-        const from = fromDate ? new Date(fromDate): null;
-        const to = toDate ? new Date(toDate): null;
+        const from = fromDate ? new Date(fromDate) : null;
+        const to = toDate ? new Date(toDate) : null;
 
         const inDateRange = (!from || orderDate >= from) && (!to || orderDate <= to);
         const statusMatch = !status || order.status === status;
@@ -215,8 +221,8 @@ function Orders(){
     });
     displayOrder(filtered);
 }
-function showDetails(orderId){
-    const order = orderData.find(o=>o.id ===orderId);
+function showDetails(orderId) {
+    const order = orderData.find(o => o.id === orderId);
     const popup = document.getElementById("details");
 
     document.getElementById("detail-id").textContent = order.id;
@@ -431,7 +437,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const target = item.dataset.section;
       openSection(`${target}-section`);
     });
-  });
 
   // Hiển thị mặc định
   openSection("home-section");
