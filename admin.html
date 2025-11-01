@@ -27,6 +27,7 @@
         <a href="#" data-section="price" class="menu-item">💰 Giá bán</a>
         <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
         <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
+        <a href="#" data-section="stock" class="stock">📦 Tồn kho</a>
         <a href="#" data-section="info" class="menu-item">⚙️   Quản lý thông tin</a>
         </nav>
     </aside>
@@ -95,11 +96,11 @@
 
         <section id="price-section" class="admin-section" style="display:none;">
             <div class="admin6">
-                <h2>Quản lý giá bán<span class="close" onclick="confirmExit()">X</span></h2>
+                <h2>Quản lý giá bán<span class="close" onclick="confirmExit()">x</span></h2>
                 <div class="top-bar">
                     <input type="text" id="Timkiem" placeholder="Tìm kiếm sản phẩm...">
                     <button onclick="searchProduct()">Tìm kiếm</button>
-                    <button onclick="openModal('add')">Thêm sản phẩm</button>
+                    <button onclick="openPriceModal('add')">Thêm sản phẩm</button>
                 </div>
                 <div class="wraptable">
                     <table class="price-table" id="Bangsp">
@@ -148,7 +149,7 @@
                         <input type="text" id="sell">
                         <div class="popup-foot">
                             <button type="submit" id="saveBtn">Lưu</button>
-                            <button type="button" id="cancelBtn">Hủy</button>
+                            <button type="button" id="cancelBtn" onclick="closeModal()">Hủy</button>
                         </div>
                     </form>
                 </div>
@@ -183,10 +184,8 @@
                 </div>
             </div>
         </section>
-
-
-        <section class="admin-section" id="order-section" style="display: none">
-            <div class="all" id="all">
+        <section class="admin-section" id="order-section" style="display: none;">
+            <div  class="all" id="all">
                 <div class="topheader">
                     <h2> Quản lý đơn đặt hàng</h2>
                     <span class="close-main" onclick="closeMain()">x</span>
@@ -224,7 +223,6 @@
             </div>
             <div id="details" class="details">
                 <div class="details-content">
-                    <span class="close-btn" onclick="closeDetails()">x</span>
                     <h3> Chi tiết đơn hàng </h3>
                     <div class="infoorder">
                         <p><strong>Mã đơn: </strong><span id="detail-id"></span></p>
@@ -256,6 +254,125 @@
                 </div>
             </div>
         </section>
+        <section id="stock-section" class="admin-section" style="display: none;">
+            <div id="inventory" class="inventory">
+                <div class="header-stock">
+                    <h2> Quản lý số lượng tồn kho</h2>
+                    <span class="closeinventory" onclick="closeInventory()"> x </span>
+                </div>
+                <div class="filter">
+                    <input type="text" id="Namesearch" placeholder="Mã sản phẩm / Tên sản phẩm">
+                    <select id="danhsach">
+                        <option value="">Nhãn hiệu</option>
+                        <option value="Apple">Apple</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="Xiaomi">Xiaomi</option>
+                        <option value="Vivo">Vivo</option>
+                        <option value="Huawei">Huawei</option>
+                    </select>
+                    <select id="kho">
+                        <option value="">Chọn cửa hàng</option>
+                        <option value="Cửa hàng Bình Chánh"> Cửa hàng Quận 10 </option>
+                        <option value="Cửa hàng Quận 8"> Cửa hàng Quận 8 </option>
+                        <option value="Cửa hàng Quận 5"> Cửa hàng Quận 5 </option>
+                    </select>
+                    <div class="date-filter">
+                        <label for="time">Thời gian: </label>
+                        <input type="date" id="startDate">
+                        <input type="date" id="endDate">
+                    </div>
+
+                    <button id="Btnsearch">Tìm kiếm</button>
+                </div>
+                <div class="sum">
+                    <div class="sum-status">
+                        <span class="out">🔴<span id="outcount"></span> sản phẩm đã hết hàng</span>
+                        <span class="low">❗<span id="lowcount"></span> sản phẩm sắp hết hàng</span>
+                        <span class="ok">🟢<span id="okcount"></span> sản phẩm còn hàng </span>
+                    </div>
+                    <a href="#" class="view-details">Xem chi tiết</a>
+                </div>
+                <div class="tablestock-wrap">
+                    <table class="tablestock" id="Table">
+                        <thead>
+                            <tr>
+                                <th>Mã SP</th>
+                                <th>Nhãn hiệu</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Số lượng nhập</th>
+                                <th>Số lượng xuất</th>
+                                <th>Số lượng tồn</th>
+                                <th>Ngày cập nhật</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="detailModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeModal()">x</span>
+                    <h3>Chi tiết sản phẩm</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Mã SP:</label>
+                            <span id="modalMaSP"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Tên SP:</label>
+                            <span id="modalTenSP"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Nhãn hiệu:</label>
+                            <span id="modalNhanhieuSP"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Kho hàng:</label>
+                            <span id="modalKhoSP"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Ghi chú:</label>
+                            <span id="modalGhichuSP"></span>
+                        </div>
+                    </div>
+                    <h4>Lịch sử Nhập/Xuất gần nhất: </h4>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Hành động</th>
+                                <th>Số lượng</th>
+                                <th>Người thực hiện</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalHistoryBody"></tbody>
+                    </table>
+                    <div class="hanhdong">
+                        <button id="exportBtn">Xuất báo cáo</button>
+                    </div>
+                </div>
+            </div>
+            <div id="popup-modal" class="popup-modal">
+                <div class="modalcontent">
+                    <span class="close-popup" onclick="closeMiniPU()"> x </span>
+                    <h3>Số lượng tồn kho</h3>
+                    <div class="sum-section">
+                        <h4>🔴 Hết hàng <span id="sum-outcount">0</span></h4>
+                        <ul id="sum-outList"></ul>
+                    </div>
+                    <div class="sum-section">
+                        <h4>❗Sắp hết hàng <span id="sum-lowcount">0</span></h4>
+                        <ul id="sum-lowlist"></ul>
+                    </div>
+                    <div class="sum-section">
+                        <h4>🟢 Còn hàng <span id="sum-okcount">0</span></h4>
+                        <ul id="sum-oklist"></ul>
+                    </div>
+                </div>
+            </div>
+            </section>
+        </div>
 
         <!---Quan ly khach hang-->
         <section id="customers-section" class="admin-section" style="display: none;">
@@ -278,6 +395,9 @@
             </div>
         </section>
     </div>
+    <script src="data/users.js"></script>
+    <script src="data/ton.json"></script>
+    <script src="data/manageproduct.json"></script>
     <script src="assets/js/admin.js"></script>
 
     <!-- FOOTER -->
