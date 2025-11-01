@@ -1,4 +1,4 @@
-const products = [
+const productList = [
   {
     "id": 1,
     "name": "iPhone 15 Pro",

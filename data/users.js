@@ -1,4 +1,4 @@
-const userdata = [
+const users = [
     {
         "id": 1,
         "username": "dang",
