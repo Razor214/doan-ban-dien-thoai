@@ -1,4 +1,4 @@
-// DỮ LIỆU USERS
+// DỮ LIỆU USERS (mẫu nếu chưa có trong localStorage)
 let usersData = JSON.parse(localStorage.getItem('users')) || [
     {
         "username": "dang",
@@ -25,27 +25,11 @@ if (!localStorage.getItem('users')) {
 
 // Khởi tạo ứng dụng khi DOM loaded
 document.addEventListener('DOMContentLoaded', function() {
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  const navbar = document.getElementById('navbar');
-  
-  if (currentUser) {
-    // 🔹 Nếu là admin thì chuyển luôn sang trang quản trị
-    if (currentUser.role === 'admin') {
-      window.location.href = 'admin.html';
-      return;
-    }
-}
-
-    // 🔹 Nếu là user bình thường thì cập nhật navbar
-    navbar.innerHTML = `
-      <a href="index.html" class="bar_right">Trang Chủ</a>
-      <a href="user/cart.html">Giỏ Hàng</a>
-      <a href="user.html?tab=profile" class="bar_right">Xin chào, ${currentUser.fullName || currentUser.username}</a>
-      <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
-    `;
-  }
-);
-
+    console.log('User.js loaded successfully!');
+    initializeApp();
+    setupEventListeners();
+    handleUrlParams();
+});
 
 function initializeApp() {
     // Kiểm tra nếu đã đăng nhập
@@ -82,11 +66,23 @@ function setupEventListeners() {
         });
     }
     
-    // Tab click events - THÊM SỰ KIỆN CLICK CHO TABS
+    // Tab click events
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', function() {
             const tabName = this.getAttribute('data-tab');
             showTab(tabName);
+        });
+    });
+
+    // Các link nội bộ (ví dụ "Đăng ký ngay" / "Đăng nhập") sử dụng onclick trực tiếp trong HTML,
+    // nhưng để đảm bảo nếu là link động, lắng nghe sự kiện cho các .form-link
+    document.querySelectorAll('.form-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // nếu có data-tab trên element thì dùng showTab
+            const target = this.getAttribute('data-tab');
+            if (target) {
+                showTab(target);
+            }
         });
     });
 }
@@ -104,10 +100,8 @@ function handleUrlParams() {
     }
 }
 
-// Tab management - SỬA LẠI HÀM NÀY
+// Tab management
 function showTab(tabName) {
-    console.log('Switching to tab:', tabName); // Debug
-    
     // Hide all pages
     document.querySelectorAll('.form-page').forEach(page => {
         page.classList.remove('active');
@@ -121,9 +115,6 @@ function showTab(tabName) {
     // Show selected page and activate tab
     const targetPage = document.getElementById(tabName);
     const targetTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
-    
-    console.log('Target page:', targetPage); // Debug
-    console.log('Target tab:', targetTab); // Debug
     
     if (targetPage) {
         targetPage.classList.add('active');
@@ -144,14 +135,14 @@ function validateRegisterForm() {
     
     document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
     
-    const username = document.getElementById('username').value;
+    const username = document.getElementById('username').value.trim();
     if (username.length < 6) {
         const usernameError = document.getElementById('usernameError');
         if (usernameError) usernameError.textContent = 'Tên đăng nhập phải có ít nhất 6 ký tự';
         isValid = false;
     }
     
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         const emailError = document.getElementById('emailError');
@@ -176,46 +167,53 @@ function validateRegisterForm() {
     return isValid;
 }
 
-// Hàm xử lý đăng nhập
+// Hàm xử lý đăng nhập (chuyển hướng ngay lập tức theo role)
 function handleLogin() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
-
-    const user = usersData.find(u =>
-        (u.username === username || u.email === username) &&
-        u.password === password
-    );
-
-    if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        showAlert('login-alert', 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
-        document.getElementById('loginForm').reset();
-
-        setTimeout(() => {
+    
+    try {
+        // Tìm user khớp trong dữ liệu
+        const user = usersData.find(u => 
+            (u.username === username || u.email === username) && 
+            u.password === password
+        );
+        
+        if (user) {
+            // Lưu currentUser
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            showAlert('login-alert', 'Đăng nhập thành công!', 'success');
+            
+            // Reset form
+            document.getElementById('loginForm').reset();
+            
+            // CHUYỂN HƯỚNG NGAY (không delay)
             if (user.role === 'admin') {
                 window.location.href = 'admin.html';
             } else {
                 window.location.href = 'index.html';
             }
-        }, 1000);
-    } else {
-        showAlert('login-alert', 'Sai tên đăng nhập hoặc mật khẩu!', 'error');
+        } else {
+            showAlert('login-alert', 'Sai tên đăng nhập hoặc mật khẩu!', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('login-alert', 'Lỗi hệ thống!', 'error');
     }
 }
 
-
-// Hàm xử lý đăng ký
+// Hàm xử lý đăng ký (sang tab login ngay lập tức)
 function handleRegister() {
     if (!validateRegisterForm()) {
         return;
     }
     
     const newUser = {
-        username: document.getElementById('username').value,
+        username: document.getElementById('username').value.trim(),
         password: document.getElementById('password').value,
-        email: document.getElementById('email').value,
-        fullName: document.getElementById('fullName').value,
-        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value.trim(),
+        fullName: document.getElementById('fullName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
         role: 'user'
     };
     
@@ -234,20 +232,18 @@ function handleRegister() {
     usersData.push(newUser);
     localStorage.setItem('users', JSON.stringify(usersData));
     
-    showAlert('register-alert', 'Đăng ký thành công! Đang chuyển hướng...', 'success');
+    showAlert('register-alert', 'Đăng ký thành công! Vui lòng đăng nhập.', 'success');
     
-    // Reset form và CHUYỂN VỀ TAB LOGIN SAU 1 GIÂY
-    setTimeout(() => {
-        showTab('login');
-        document.getElementById('registerForm').reset();
-    }, 1000);
+    // Chuyển ngay sang tab login và reset form
+    showTab('login');
+    if (document.getElementById('registerForm')) document.getElementById('registerForm').reset();
 }
 
 // Hàm xử lý cập nhật profile
 function handleProfileUpdate() {
-    const newFullName = document.getElementById('profileFullName').value;
-    const newEmail = document.getElementById('profileEmail').value;
-    const newPhone = document.getElementById('profilePhone').value;
+    const newFullName = document.getElementById('profileFullName').value.trim();
+    const newEmail = document.getElementById('profileEmail').value.trim();
+    const newPhone = document.getElementById('profilePhone').value.trim();
     
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     
@@ -295,7 +291,8 @@ function loadProfileData() {
         document.getElementById('profilePhone').value = userData.phone || '';
         
         // Ẩn thông báo "Vui lòng đăng nhập"
-        document.querySelector('#profile-info p').style.display = 'none';
+        const p = document.querySelector('#profile-info p');
+        if (p) p.style.display = 'none';
     }
 }
 
@@ -304,14 +301,8 @@ function logout() {
     document.getElementById('profileForm').style.display = 'none';
     document.querySelector('.logout-btn').style.display = 'none';
     document.getElementById('profile-info').style.display = 'block';
-    // Hiển thị lại thông báo
-    document.querySelector('#profile-info p').style.display = 'block';
+    const p = document.querySelector('#profile-info p');
+    if (p) p.style.display = 'block';
     showAlert('profile-alert', 'Đã đăng xuất!', 'success');
-    setTimeout(() => showTab('login'), 1000);
-}
-
-// THÊM HÀM DEBUG
-function debugTabs() {
-    console.log('All form pages:', document.querySelectorAll('.form-page'));
-    console.log('All tabs:', document.querySelectorAll('.tab'));
+    showTab('login');
 }
