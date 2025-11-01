@@ -119,62 +119,6 @@ header .logo img {
   display: block;
 }
 
-/* ========================== QUẢN LÝ GIÁ BÁN ========================== */
-.admin6 {
-  width: 100%;
-  background: #fff;
-  animation: zoomIn 0.25s ease;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-h2 {
-  position: relative;
-  text-align: center;
-  color: #333;
-  font-size: 30px;
-  padding: 20px 15px;
-  margin: 0;
-}
-.close {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  font-size: 20px;
-  color: #555;
-  cursor: pointer;
-  transition: 0.2s;
-}
-.close:hover {
-  color: red;
-  transform: scale(1.1);
-}
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  gap: 10px;
-  padding: 0 15px;
-}
-input[type="text"], input[type="number"], select, textarea {
-  flex: 1;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-button {
-  padding: 8px 14px;
-  border: none;
-  background: #007bff;
-  color: #fff;
-  border-radius: 4px;
-  transition: 0.2s;
-}
-button:hover {
-  background: #0056b3;
-}
-
 /* ========================== BẢNG DỮ LIỆU ========================== */
 table {
   width: 100%;
@@ -284,7 +228,63 @@ th {
     width: 100%;
     table-layout: fixed;
 }
+/* ========================== QUẢN LÝ LOẠI SẢN PHẨM ========================== */
 
+/* ========================== QUẢN LÝ GIÁ BÁN ========================== */
+.admin6 {
+  width: 100%;
+  background: #fff;
+  animation: zoomIn 0.25s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+h2 {
+  position: relative;
+  text-align: center;
+  color: #333;
+  font-size: 30px;
+  padding: 20px 15px;
+  margin: 0;
+}
+.close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.close:hover {
+  color: red;
+  transform: scale(1.1);
+}
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+  padding: 0 15px;
+}
+input[type="text"], input[type="number"], select, textarea {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  padding: 8px 14px;
+  border: none;
+  background: #007bff;
+  color: #fff;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+button:hover {
+  background: #0056b3;
+}
 
 /* ========================== QUẢN LÝ ĐƠN HÀNG ========================== */
     .topheader {

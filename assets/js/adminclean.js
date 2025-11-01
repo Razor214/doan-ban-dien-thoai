@@ -199,7 +199,7 @@ if (typeof productList !== "undefined") {
       <td>${p.type}</td>
       <td>${p.code}</td>
       <td>${p.name}</td>
-      <td><img src="${p.image || 'assets/img/logo.png'}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"></td>
+      <td><img src="${p.imG || 'assets/img/logo.png'}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"></td>
       <td>${p.desc}</td>
       <td class="action">
         <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
@@ -276,7 +276,135 @@ function searchProductCategory() {
   renderProductTable(filtered);
 }
 
-document.addEventListener('DOMContentLoaded', renderProductTable);
+// ================== QUẢN LÝ ĐƠN HÀNG ==================
+const orderTable = document.getElementById("orderTable");
+if (typeof orders !== "undefined") {
+  orderTable.innerHTML = orders.map(o => `
+    <tr>
+      <td>${o.id}</td>
+      <td>${o.customer}</td>
+      <td>${o.date}</td>
+      <td>${o.total.toLocaleString()}đ</td>
+      <td>${o.status}</td>
+      <td><button onclick="showDetails('${o.id}')">Xem chi tiết</button></td>
+    </tr>
+  `).join("");
+} else {
+  console.warn("⚠️ orders.js chưa được nạp.");
+}
+
+function showDetails(orderId) {
+  alert("Chi tiết đơn hàng: " + orderId);
+}
+
+function displayOrder(orders) {
+    const tableBody = document.getElementById("orderTable");
+    tableBody.innerHTML = "";
+
+    orders.forEach(order => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${order.customer}</td>
+            <td>${order.date}</td>
+            <td>${order.total.toLocaleString()}đ</td>
+            <td>${order.status}</td>
+            <td><button onclick ="showDetails('${order.id}')">Xem chi tiết</button></td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+function Orders() {
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+    const status = document.getElementById("status").value;
+
+    const filtered = orderData.filter(order => {
+        const orderDate = new Date(order.date);
+        const from = fromDate ? new Date(fromDate) : null;
+        const to = toDate ? new Date(toDate) : null;
+
+        const inDateRange = (!from || orderDate >= from) && (!to || orderDate <= to);
+        const statusMatch = !status || order.status === status;
+        return inDateRange && statusMatch;
+    });
+    displayOrder(filtered);
+}
+function showDetails(orderId) {
+    const order = orderData.find(o => o.id === orderId);
+    const popup = document.getElementById("details");
+
+    document.getElementById("detail-id").textContent = order.id;
+    document.getElementById("detail-cus").textContent = order.customer;
+    document.getElementById("detail-date").textContent = order.date;
+    document.getElementById("detail-total").textContent = order.total.toLocaleString() + " đ";
+
+    document.getElementById("detailsstatus").value = order.status;
+
+    const listBody = document.querySelector("#list tbody");
+    listBody.innerHTML = order.details.map(d => `
+        <tr>
+            <td>${d.product}</td>
+            <td>${d.quantity}</td>
+            <td>${d.price.toLocaleString()} đ</td>
+        </tr>
+    `).join("");
+    popup.style.display = "flex";
+}
+function closeDetails() {
+    document.getElementById("details").style.display = "none";
+}
+function closeMain(){
+    openSection("home-section");
+}
+function update() {
+    const id = document.getElementById("detail-id").textContent;
+    const newStatus = document.getElementById("detailsstatus").value;
+
+    const order = orderData.find(o => o.id === id);
+    if (order) {
+        order.status = newStatus;
+        displayOrder(orderData); // Cập nhật lại bảng
+        alert("Đã cập nhật trạng thái đơn hàng!");
+        closeDetails();
+    } else {
+        alert("Không tìm thấy đơn hàng để cập nhật!");
+    }
+}
+
+// ================== QUẢN LÝ KHÁCH HÀNG ==================
+const data1 = document.getElementById("data1");
+if (typeof users !== "undefined") {
+  data1.innerHTML = users.map(kh => `
+    <tr>
+      <td>${kh.id}</td>
+      <td>${kh.username}</td>
+      <td>${kh.email}</td>
+      <td class="status">${kh.status}</td>
+      <td class="action">
+        <button class="toggle">${kh.status === "active" ? "Khóa" : "Mở khóa"}</button>
+        <button class="reset">Reset mật khẩu</button>
+      </td>
+    </tr>
+  `).join("");
+} else {
+  console.warn("⚠️ users.js chưa được nạp.");
+}
+
+function toggleUserStatus(btn) {
+  const row = btn.closest("tr");
+  const statusCell = row.querySelector(".status");
+  const current = statusCell.innerText;
+  statusCell.innerText = current === "active" ? "blocked" : "active";
+  btn.innerText = current === "active" ? "Mở khóa" : "Khóa";
+}
+
+function resetPassword(btn) {
+  const username = btn.closest("tr").cells[1].innerText;
+  const newPass = prompt(`Nhập mật khẩu mới cho ${username}:`);
+  if (newPass) alert(`Đã cập nhật mật khẩu mới cho ${username}`);
+}
+
 
 //Quản lý tồn kho
 
@@ -293,10 +421,8 @@ const cuahangSelect = document.getElementById('kho');
 let inventory =[];
 let filterData=[];
 
-const stockTable = document.querySelector("#Table tbody");
-
 if (typeof inventoryList !== "undefined") {
-  stockTable.innerHTML = inventoryList.map(item => {
+  tableBody.innerHTML = inventoryList.map(item => {
     let statusText = "Còn hàng", statusClass = "ok";
     if (item.slTon === 0) { statusText = "Hết hàng"; statusClass = "out"; }
     else if (item.slTon <= item.minTon) { statusText = "Sắp hết"; statusClass = "low"; }

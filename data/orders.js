@@ -1,4 +1,4 @@
-[
+const orders = [
     {
         "id": "AB100",
         "customer": "Nguyễn Văn A",
