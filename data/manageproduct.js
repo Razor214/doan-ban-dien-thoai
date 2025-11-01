@@ -1,4 +1,4 @@
-[
+const manageproduct = [
     {
         "brand": "Apple",
         "name": "iPhone 15",

@@ -18,6 +18,7 @@ const cancelProduct = document.getElementById('cancelProduct');
 const searchInputProd = document.getElementById('searchProductCategory');
 const imgInput = document.getElementById('prodImgFile');
 const imgPreview = document.getElementById('previewImg');
+const khungbang = document.getElementById("khungbang");
 
 let productData = [];
 let editingProduct = null;
@@ -69,10 +70,6 @@ let editingProduct = null;
     costInput.addEventListener('input', updatePrice);
     profitInput.addEventListener('input', updatePrice);
     priceInput.addEventListener('input', updateProfit);
-
-costInput.addEventListener('input', updatePrice);
-profitInput.addEventListener('input', updatePrice);
-priceInput.addEventListener('input', updateProfit);
 
 function cleanNumber(value) {
     return parseFloat(value.replace(/[.,\s]/g, '')) || 0;
@@ -615,4 +612,3 @@ function openSection(id) {
   const target = document.getElementById(id);
   if (target) target.style.display = "block";
 }
-
