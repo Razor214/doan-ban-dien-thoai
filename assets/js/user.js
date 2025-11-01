@@ -25,11 +25,27 @@ if (!localStorage.getItem('users')) {
 
 // Khởi tạo ứng dụng khi DOM loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('User.js loaded successfully!');
-    initializeApp();
-    setupEventListeners();
-    handleUrlParams();
-});
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const navbar = document.getElementById('navbar');
+  
+  if (currentUser) {
+    // 🔹 Nếu là admin thì chuyển luôn sang trang quản trị
+    if (currentUser.role === 'admin') {
+      window.location.href = 'admin.html';
+      return;
+    }
+}
+
+    // 🔹 Nếu là user bình thường thì cập nhật navbar
+    navbar.innerHTML = `
+      <a href="index.html" class="bar_right">Trang Chủ</a>
+      <a href="user/cart.html">Giỏ Hàng</a>
+      <a href="user.html?tab=profile" class="bar_right">Xin chào, ${currentUser.fullName || currentUser.username}</a>
+      <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+    `;
+  }
+);
+
 
 function initializeApp() {
     // Kiểm tra nếu đã đăng nhập
@@ -162,36 +178,31 @@ function validateRegisterForm() {
 
 // Hàm xử lý đăng nhập
 function handleLogin() {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    try {
-        // Tìm user khớp trong dữ liệu
-        const user = usersData.find(u => 
-            (u.username === username || u.email === username) && 
-            u.password === password
-        );
-        
-        if (user) {
-            // Login thành công
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            showAlert('login-alert', 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
-            
-            // Reset form
-            document.getElementById('loginForm').reset();
-            
-            // CHUYỂN HƯỚNG VỀ TRANG CHỦ SAU 1 GIÂY
-            setTimeout(() => {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    const user = usersData.find(u =>
+        (u.username === username || u.email === username) &&
+        u.password === password
+    );
+
+    if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        showAlert('login-alert', 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
+        document.getElementById('loginForm').reset();
+
+        setTimeout(() => {
+            if (user.role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
                 window.location.href = 'index.html';
-            }, 1000);
-        } else {
-            showAlert('login-alert', 'Sai tên đăng nhập hoặc mật khẩu!', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('login-alert', 'Lỗi hệ thống!', 'error');
+            }
+        }, 1000);
+    } else {
+        showAlert('login-alert', 'Sai tên đăng nhập hoặc mật khẩu!', 'error');
     }
 }
+
 
 // Hàm xử lý đăng ký
 function handleRegister() {
