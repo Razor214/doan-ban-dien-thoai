@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SaiGonPhone - Website Bán Điện Thoại</title>
+    <title>Chi tiết sản phẩm - SaiGonPhone</title>
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/homepage.css" />
+    <link rel="stylesheet" href="assets/css/product-details.css" />
   </head>
   <body>
     <!-- HEADER -->
@@ -14,15 +14,164 @@
         <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
         <h1>SaiGonPhone</h1>
       </div>
-
+      <div class="search-bar">
+        <input
+          type="text"
+          id="headerSearch"
+          placeholder="Bạn muốn tìm kiếm gì?"
+        />
+        <button id="headerSearchBtn">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+        </button>
+      </div>
       <nav class="navbar">
-        <a href="#">Trang Chủ</a>
+        <a href="index.html">Trang Chủ</a>
         <a href="user/register.html" class="bar_right">Đăng ký/</a>
         <a href="user/login.html">Đăng nhập</a>
         <a href="user/cart.html">Giỏ Hàng</a>
       </nav>
     </header>
-    <!-- FOOTER  -->
+
+    <!-- TOP MENU -->
+    <div class="topmenu">
+      <div class="dropdown">
+        <span>iPhone</span>
+        <div class="dropdown-content">
+          <a href="product-details.html?id=1" data-brand="Apple"
+            >iPhone 15 Pro 512GB</a
+          >
+          <a href="product-details.html?id=2" data-brand="Apple"
+            >iPhone 16 Pro Max 256GB</a
+          >
+          <a href="product-details.html?id=6" data-brand="Apple"
+            >iPhone 14 Pro Max 128GB</a
+          >
+          <a href="product-details.html?id=7" data-brand="Apple"
+            >iPhone 13 Pro Max 128GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Samsung</span>
+        <div class="dropdown-content">
+          <a href="product-details.html?id=3" data-brand="Samsung"
+            >Galaxy S24 Ultra 8G/256GB</a
+          >
+          <a href="product-details.html?id=4" data-brand="Samsung"
+            >Galaxy A55 5G 8G/128GB</a
+          >
+          <a href="product-details.html?id=8" data-brand="Samsung"
+            >Galaxy Z Fold 5 12G/256GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Xiaomi</span>
+        <div class="dropdown-content">
+          <a href="product-details.html?id=5" data-brand="Xiaomi"
+            >Xiaomi 14 Ultra 16G/512GB</a
+          >
+          <a href="product-details.html?id=9" data-brand="Xiaomi"
+            >Xiaomi 15T 12G/256GB</a
+          >
+          <a href="product-details.html?id=10" data-brand="Xiaomi"
+            >Xiaomi 15T Pro 12G/256GB</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- chi tiết sản phẩm -->
+    <main class="product-details-container">
+      <div class="product-details">
+        <div class="product-image-section">
+          <div class="main-image">
+            <img id="productMainImage" src="" alt="Product Image" />
+            <!-- Nút chuyển hình -->
+            <button class="nav-btn prev-btn" id="prevBtn">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button class="nav-btn next-btn" id="nextBtn">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          <div class="image-thumbnails"></div>
+        </div>
+
+        <div class="product-info-section">
+          <div class="product-header">
+            <h1 id="productName">Tên sản phẩm</h1>
+          </div>
+
+          <div class="product-colors">
+            <h3>Màu sắc:</h3>
+            <div class="color-options" id="colorOptions"></div>
+          </div>
+
+          <div class="product-price">
+            <span class="current-price" id="currentPrice">0đ</span>
+          </div>
+
+          <div class="product-specs">
+            <h3>Thông số kỹ thuật:</h3>
+            <div class="specs-list" id="specsList"></div>
+          </div>
+
+          <!-- Giỏ hàng -->
+          <div class="product-actions">
+            <button class="add-to-cart-btn" id="addToCartBtn">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path
+                  d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                ></path>
+              </svg>
+              Thêm vào giỏ hàng
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
     <footer>
       <p>
         © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
@@ -32,6 +181,7 @@
         <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
       </p>
     </footer>
-    <script src="assets/js/products.js"></script>
+
+    <script src="assets/js/product-details.js"></script>
   </body>
 </html>

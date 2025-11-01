@@ -30,7 +30,7 @@ class ProductManager {
         brand: "Apple",
         price: 32000000,
         stock: 5,
-        image: "iphone15promax.png",
+        image: "iphone/iphone15pro-White Titanium.jpg",
         ram: 8,
         storage: 512,
       },
@@ -40,7 +40,7 @@ class ProductManager {
         brand: "Apple",
         price: 30590000,
         stock: 10,
-        image: "iphone16promax.jpg",
+        image: "iphone/iphone16promax-Desert Titanium.jpg",
         ram: 8,
         storage: 256,
       },
@@ -50,7 +50,7 @@ class ProductManager {
         brand: "Samsung",
         price: 25000000,
         stock: 7,
-        image: "samsunggalaxys24.jpg",
+        image: "Samsung/samsungs24-5g-Amber Yellow.jpg",
         ram: 8,
         storage: 256,
       },
@@ -60,17 +60,17 @@ class ProductManager {
         brand: "Samsung",
         price: 8490000,
         stock: 3,
-        image: "samsunggalaxyA55-5g.jpg",
+        image: "Samsung/samsunga55-5g-violet.jpg",
         ram: 8,
         storage: 128,
       },
       {
         id: 5,
-        name: "Xiaomi 14 Ultra 5G 16GB|512GB",
+        name: "Xiaomi 14 Ultra 5G 16GB/512GB",
         brand: "Xiaomi",
         price: 21000000,
         stock: 2,
-        image: "xiaomi14ultra.jpg",
+        image: "Xiaomi/xiaomi14ultra-5g-blue.jpg",
         ram: 16,
         storage: 512,
       },
@@ -80,7 +80,7 @@ class ProductManager {
         brand: "Apple",
         price: 25590000,
         stock: 14,
-        image: "iphone14promax.jpg",
+        image: "iphone/iphone14promax-Deep Purple.jpg",
         ram: 6,
         storage: 128,
       },
@@ -90,7 +90,7 @@ class ProductManager {
         brand: "Apple",
         price: 22990000,
         stock: 8,
-        image: "iphone13promax.jpg",
+        image: "iphone/iphone13promax-Graphite.jpg",
         ram: 6,
         storage: 128,
       },
@@ -100,7 +100,7 @@ class ProductManager {
         brand: "Samsung",
         price: 27990000,
         stock: 9,
-        image: "samsungzfold5.jpg",
+        image: "Samsung/samsunggalaxyz-fone5-5g-Icy Blue.jpg",
         ram: 12,
         storage: 256,
       },
@@ -110,7 +110,7 @@ class ProductManager {
         brand: "Xiaomi",
         price: 14690000,
         stock: 1,
-        image: "xiaomi15t-5g.jpg",
+        image: "Xiaomi/xiaomi15t-5g-rose gold.jpg",
         ram: 12,
         storage: 256,
       },
@@ -120,7 +120,7 @@ class ProductManager {
         brand: "Xiaomi",
         price: 19190000,
         stock: 4,
-        image: "xiaomi15Tpro.jpg",
+        image: "Xiaomi/xiaomi15tpro-5g-gray.jpg",
         ram: 12,
         storage: 256,
       },
@@ -210,7 +210,6 @@ class ProductManager {
     this.isSearching = false;
     this.currentPage = 1;
 
-    // Đặt lại giá trị form
     document.getElementById("brandFilter").value = "all";
     document.getElementById("ramFilter").value = "all";
     document.getElementById("storageFilter").value = "all";
@@ -221,6 +220,8 @@ class ProductManager {
     this.filteredProducts = [...this.products];
     this.renderProducts();
     this.renderPagination();
+
+    this.showNotification("Đã thiết lập lại tất cả bộ lọc!");
   }
 
   performHeaderSearch() {
@@ -312,17 +313,20 @@ class ProductManager {
     productGrid.innerHTML = productsToShow
       .map(
         (product) => `
-      <div class="product-card">
+<div class="product-card">
+    <a href="product-details.html?id=${
+      product.id
+    }" style="text-decoration: none; color: inherit;">
         <img src="assets/img/${product.image}" alt="${product.name}" 
              onerror="this.src='assets/img/placeholder.jpg'">
         <h4>${product.name}</h4>
         <p class="price">${this.formatPrice(product.price)}đ</p>
-        <button class="add-to-cart">Thêm vào giỏ</button>
-      </div>
-    `
+    </a>
+    <button class="add-to-cart">Thêm vào giỏ</button>
+</div>
+`
       )
       .join("");
-
     console.log("✅ Đã render sản phẩm thành công");
   }
 
@@ -347,7 +351,54 @@ class ProductManager {
     }
     return "Không có sản phẩm nào.";
   }
+  showNotification(message, type = "success") {
+    // Tạo thông báo
+    const notification = document.createElement("div");
+    notification.className = `filter-notification ${type}`;
+    notification.innerHTML = `
+    <div class="notification-content">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span>${message}</span>
+    </div>
+  `;
 
+    notification.style.cssText = `
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: ${type === "success" ? "#4CAF50" : "#2196F3"};
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    font-weight: 500;
+    transform: translateX(400px);
+    transition: transform 0.4s ease;
+    max-width: 350px;
+    border-left: 4px solid ${type === "success" ? "#388E3C" : "#1976D2"};
+  `;
+
+    document.body.appendChild(notification);
+
+    // Hiệu ứng
+    setTimeout(() => {
+      notification.style.transform = "translateX(0)";
+    }, 100);
+
+    // Tự động ẩn sau 3 giây
+    setTimeout(() => {
+      notification.style.transform = "translateX(400px)";
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 400);
+    }, 3000);
+  }
   renderPagination() {
     const pagination = document.getElementById("pagination");
     if (!pagination) return;
