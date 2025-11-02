@@ -113,22 +113,34 @@
     </footer>
 
     <script>
-      // Kiểm tra trạng thái đăng nhập khi trang chủ load
-      document.addEventListener('DOMContentLoaded', function() {
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        const navbar = document.getElementById('navbar');
-        
-        if (currentUser) {
-          // Nếu đã đăng nhập, thay đổi navigation
-          navbar.innerHTML = `
-            <a href="index.html" class="bar_right">Trang Chủ</a>
-            <a href="user/cart.html">Giỏ Hàng</a>
-            <a href="user.html?tab=profile" class="bar_right">Xin chào, ${currentUser.fullName || currentUser.username}</a>
-            <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
-            ${currentUser.role === 'admin' ? '<a href="admin/dashboard.html" class="admin-link">Admin</a>' : ''}
-          `;
-        }
-      });
+document.addEventListener('DOMContentLoaded', () => {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const navbar = document.getElementById('navbar');
+
+  if (currentUser) {
+    navbar.innerHTML = `
+      <a href="index.html">Trang Chủ</a>
+      <a href="user/cart.html">Giỏ Hàng</a>
+
+      <div class="user-dropdown">
+        <span class="username">Xin chào, ${currentUser.fullName || currentUser.username}</span>
+        <div class="dropdown-content">
+          <a href="user.html?tab=profile">Hồ sơ</a>
+          <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+        </div>
+      </div>
+
+      ${currentUser.role === 'admin' ? '<a href="admin/dashboard.html">Admin</a>' : ''}
+    `;
+  }
+});
+
+function logoutFromHome() {
+  localStorage.removeItem('currentUser');
+  window.location.reload();
+}
+</script>
+
 
       function logoutFromHome() {
         localStorage.removeItem('currentUser');

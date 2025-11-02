@@ -292,3 +292,52 @@ footer {
     padding: 15px 0;
     margin-top: 50px;
 }
+/* ==== CÁCH KHOẢNG CÁC LINK TRÊN THANH MENU ==== */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* tạo khoảng cách giữa các link */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: white;
+  margin: 0 5px; /* thêm chút khoảng cách ngang */
+}
+/* ==== DROPDOWN CHO 'XIN CHÀO, ...' ==== */
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-dropdown .username {
+  cursor: pointer;
+  color: white;
+}
+
+.user-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  z-index: 1000;
+}
+
+.user-dropdown .dropdown-content a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.user-dropdown .dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
+
+/* Khi rê chuột vào thì hiện menu */
+.user-dropdown:hover .dropdown-content {
+  display: block;
+}
