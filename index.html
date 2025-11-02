@@ -1,151 +1,137 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SaiGonPhone - Website Bán Điện Thoại</title>
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/homepage.css" />
-  </head>
-  <body>
-    <!-- HEADER -->
-    <header>
-      <div class="logo">
-        <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
-        <h1>SaiGonPhone</h1>
-      </div>
 
-      <!-- THANH TÌM KIẾM -->
-      <div class="search-bar">
-        <input
-          type="text"
-          id="headerSearch"
-          placeholder="Bạn muốn tìm kiếm gì?"
-        />
-        <button id="headerSearchBtn">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </svg>
-        </button>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaiGonPhone - Website Bán Điện Thoại</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/homepage.css" />
+</head>
 
-      <nav class="navbar">
-        <a href="#">Trang Chủ</a>
-        <a href="user/register.html" class="bar_right">Đăng ký/</a>
-        <a href="user/login.html">Đăng nhập</a>
-        <a href="user/cart.html">Giỏ Hàng</a>
-      </nav>
-    </header>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
+      <h1>SaiGonPhone</h1>
+    </div>
 
-    <!-- TOP MENU -->
-    <div class="topmenu">
-      <div class="dropdown">
-        <span>iPhone</span>
-        <div class="dropdown-content">
-          <a href="#" data-brand="Apple">iPhone 16 Pro Max</a>
-          <a href="#" data-brand="Apple">iPhone 15 Pro Max</a>
-          <a href="#" data-brand="Apple">iPhone 14 Pro Max</a>
-          <a href="#" data-brand="Apple">iPhone 13 Pro Max</a>
-        </div>
-      </div>
+    <nav class="navbar" id="navbar">
+      <!-- THAY ĐỔI LINK Ở ĐÂY -->
+      <a href="user.html?tab=register" class="bar_right">Đăng ký</a>
+      <a href="user.html?tab=login">Đăng nhập</a>
+      <a href="user.html?tab=profile">Hồ sơ</a>
+      <a href="user/cart.html">Giỏ Hàng</a>
+      <a href="admin/dashboard.html" class="admin-link">Admin</a>
+    </nav>
+  </header>
 
-      <div class="dropdown">
-        <span>Samsung</span>
-        <div class="dropdown-content">
-          <a href="#" data-brand="Samsung">Galaxy S24 Ultra</a>
-          <a href="#" data-brand="Samsung">Galaxy A55 5G</a>
-          <a href="#" data-brand="Samsung">Galaxy Z Fold 5</a>
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>Xiaomi</span>
-        <div class="dropdown-content">
-          <a href="#" data-brand="Xiaomi">Xiaomi 14 Ultra</a>
-          <a href="#" data-brand="Xiaomi">Xiaomi 15T</a>
-          <a href="#" data-brand="Xiaomi">Xiaomi 15T Pro</a>
-        </div>
+  <div class="topmenu">
+    <div class="dropdown">
+      <span>iPhone</span>
+      <div class="dropdown-content">
+        <a href="#">iPhone 16 Pro Max</a>
+        <a href="#">iPhone 15 Pro Max</a>
+        <a href="#">iPhone 14 Pro Max</a>
+        <a href="#">iPhone 13 Pro Max</a>
       </div>
     </div>
 
-    <!-- MAIN -->
-    <main>
-      <section class="hero">
-        <h2>Chào mừng bạn đến với SaiGonPhone!</h2>
-        <p>Khám phá những chiếc điện thoại mới nhất với giá cực hấp dẫn.</p>
-        <a href="#products" class="btn">Mua ngay</a>
-      </section>
+    <div class="dropdown">
+      <span>Samsung</span>
+      <div class="dropdown-content">
+        <a href="#">Galaxy S24 Ultra</a>
+        <a href="#">Galaxy A55</a>
+        <a href="#">Galaxy Z Fold 5</a>
+      </div>
+    </div>
 
-      <section class="featured" id="products">
-        <h3>Sản phẩm nổi bật</h3>
+    <div class="dropdown">
+      <span>Xiaomi</span>
+      <div class="dropdown-content">
+        <a href="#">Xiaomi 14 Ultra</a>
+        <a href="#">Xiaomi 15T</a>
+        <a href="#">Xiaomi 15T pro</a>
+      </div>
+    </div>
+  </div>
 
-        <!-- Bộ lọc sản phẩm -->
-        <div class="filter-container">
-          <select id="brandFilter">
-            <option value="all">Thương hiệu</option>
-            <option value="Apple">Apple</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Xiaomi">Xiaomi</option>
-          </select>
+  <!-- MAIN -->
+  <main>
+    <section class="hero">
+      <h2>Chào mừng bạn đến với SaiGonPhone!</h2>
+      <p>Khám phá những chiếc điện thoại mới nhất với giá cực hấp dẫn.</p>
+      <a href="user/product.html" class="btn">Mua ngay</a>
+    </section>
 
-          <select id="sortFilter">
-            <option value="default">Giá</option>
-            <option value="price-asc">Thấp đến cao</option>
-            <option value="price-desc">Cao đến thấp</option>
-          </select>
-
-          <select id="priceRangeFilter">
-            <option value="all">Khoảng giá</option>
-            <option value="0-10000000">Dưới 10 triệu</option>
-            <option value="10000000-20000000">10 - 20 triệu</option>
-            <option value="20000000-25000000">20 - 25 triệu</option>
-            <option value="25000000-999999999">Trên 25 triệu</option>
-          </select>
-
-          <button id="resetFilters" class="reset-btn">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
-              ></path>
-              <path d="M3 3v5h5"></path>
-            </svg>
-            Thiết lập lại
-          </button>
+    <section class="featured">
+      <h3>Sản phẩm nổi bật</h3>
+      <div class="product-list">
+        <div class="product-card">
+          <img src="assets/img/iphone15promax.png" alt="iPhone 15 Pro" />
+          <h4>iPhone 15 Pro 256GB</h4>
+          <p>Giá: 32.000.000đ</p>
+          <button>Thêm vào giỏ</button>
+        </div>
+        <div class="product-card">
+          <img src="assets/img/samsunggalaxys24.jpg" alt="Samsung Galaxy S24 " />
+          <h4>Samsung Galaxy S24 5G 8GB/256GB</h4>
+          <p>Giá: 25.000.000đ</p>
+          <button>Thêm vào giỏ</button>
+        </div>
+        <div class="product-card">
+          <img src="assets/img/xiaomi14ultra.png" alt="Xiaomi 14 Ultra" />
+          <h4>Xiaomi 14 Ultra 16GB|512GB</h4>
+          <p>Giá: 21.000.000đ</p>
+          <button>Thêm vào giỏ</button>
         </div>
 
-        <!--hiển thị sản phẩm -->
-        <div class="product-grid" id="productGrid"></div>
+        <div class="product-card">
+          <img src="assets/img/samsunggalaxys24.jpg" alt="Samsung Galaxy S24 " />
+          <h4>Samsung Galaxy S24 5G 8GB/256GB</h4>
+          <p>Giá: 25.000.000đ</p>
+          <button>Thêm vào giỏ</button>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        <!-- Phân trang -->
-        <div class="pagination" id="pagination"></div>
-      </section>
-    </main>
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
+    </p>
+    <p>
+      Liên hệ:
+      <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
+    </p>
+  </footer>
 
-    <!-- FOOTER  -->
-    <footer>
-      <p>
-        © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
-      </p>
-      <p>
-        Liên hệ:
-        <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
-      </p>
-    </footer>
-    <script src="assets/js/products.js"></script>
-  </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      const navbar = document.getElementById('navbar');
+
+      if (currentUser) {
+        // Nếu đã đăng nhập
+        navbar.innerHTML = `
+      <a href="index.html" class="bar_right">Trang Chủ</a>
+      <a href="user/cart.html">Giỏ Hàng</a>
+      <a href="user.html?tab=profile" class="bar_right user-profile-link">
+        Xin chào, ${currentUser.fullName || currentUser.username}
+      </a>
+      <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+    `;
+      }
+    });
+
+    function logoutFromHome() {
+      localStorage.removeItem('currentUser');
+      window.location.reload();
+    }
+  </script>
+
+</body>
+
 </html>
