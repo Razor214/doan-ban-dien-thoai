@@ -140,14 +140,14 @@ function loadProfileInfo() {
   const profileInfo = document.getElementById("profile-info");
   const profileForm = document.getElementById("profileForm");
   const logoutBtn = document.querySelector(".logout-btn");
-  const editProfileBtn = document.getElementById("editProfileBtn"); // THÊM DÒNG NÀY
+  const editProfileBtn = document.getElementById("editProfileBtn");
 
   if (!currentUser) {
     // Chưa đăng nhập
     profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
     profileForm.style.display = "none";
     if (logoutBtn) logoutBtn.style.display = "none";
-    if (editProfileBtn) editProfileBtn.style.display = "none"; // ẨN NÚT CHỈNH SỬA
+    if (editProfileBtn) editProfileBtn.style.display = "none";
     return;
   }
 
@@ -177,8 +177,9 @@ function loadProfileInfo() {
   
   profileForm.style.display = "none";
   if (logoutBtn) logoutBtn.style.display = "block";
-  if (editProfileBtn) editProfileBtn.style.display = "block"; // HIỆN NÚT CHỈNH SỬA
+  if (editProfileBtn) editProfileBtn.style.display = "block";
 }
+
 // ========== HÀM ĐĂNG XUẤT ==========
 function logout() {
   localStorage.removeItem("currentUser");
@@ -186,18 +187,12 @@ function logout() {
   showTab("login");
 }
 
-// ========== KHI TRANG LOAD ==========
-document.addEventListener("DOMContentLoaded", () => {
-  setupForms();
-  handleUrlParams();
-  
-  // Load profile info nếu đang ở tab profile
+// ========== XỬ LÝ URL ==========
+function handleUrlParams() {
   const params = new URLSearchParams(window.location.search);
-  const tab = params.get("tab");
-  if (tab === "profile") {
-    loadProfileInfo();
-  }
-});
+  const tab = params.get("tab") || "login";
+  showTab(tab);
+}
 
 // ========== HÀM CHỈNH SỬA HỒ SƠ ==========
 function toggleEditProfile() {
@@ -219,10 +214,4 @@ function toggleEditProfile() {
     profileInfo.style.display = "block";
     profileForm.style.display = "none";
   }
-}
-// ========== XỬ LÝ URL ==========
-function handleUrlParams() {
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get("tab") || "login";
-  showTab(tab);
 }
