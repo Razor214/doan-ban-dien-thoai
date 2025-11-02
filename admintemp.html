@@ -116,12 +116,8 @@
                         </thead>
                         <tbody id="khungbang"></tbody>
                     </table>
-                    <div class="footerad">
-                        <button onclick="exportData()">Xuất dữ liệu</button>
-                        <button onclick="alert('Lưu thay đổi thành công!')">Lưu</button>
-                    </div>
                 </div>
-            </div>
+            </div>    
             <div class="popup" id="popup">
                 <div class="popup-content">
                     <form id="productadd">
@@ -142,7 +138,7 @@
 
                         <label for="profit">% Lợi nhuận: </label>
                         <div style="display: flex; align-items: center;gap: 5px; ">
-                            <input type="number" id="profit" step="any" style="flex: 1" required><span>%</span>
+                            <input type="number" id="profit" step="any" style="flex: 1" required><span>%</span> 
                         </div>
 
                         <label for="sell">Giá bán: </label>
@@ -169,7 +165,7 @@
                     <p>Bạn có chắc chắn muốn thoát không ?</p>
                     <div class="popup-foot">
                         <button id="confirmco">Thoát</button>
-                        <button id="confirmno">Hủy</button>
+                        <button id="confirmno" >Hủy</button>
                     </div>
                 </div>
             </div>
@@ -179,7 +175,7 @@
                     <p>Bạn có muốn xuất danh sách sản phẩm ?</p>
                     <div class="popup-foot">
                         <button id="confirm">Xuất</button>
-                        <button id="confirm-no">Hủy</button>
+                        <button id="confirm-no" >Hủy</button>
                     </div>
                 </div>
             </div>
@@ -213,8 +209,8 @@
                                 <th>Khách hàng</th>
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
-                                <th>Trạng thái</th>
-                                <th>Chi tiết</th>
+                                <th>Trạng thái</th>  
+                                <th>Chi tiết</th>              
                             </tr>
                         </thead>
                         <tbody id="orderTable"></tbody>
@@ -270,12 +266,6 @@
                         <option value="Vivo">Vivo</option>
                         <option value="Huawei">Huawei</option>
                     </select>
-                    <select id="kho">
-                        <option value="">Chọn cửa hàng</option>
-                        <option value="Cửa hàng Bình Chánh"> Cửa hàng Quận 10 </option>
-                        <option value="Cửa hàng Quận 8"> Cửa hàng Quận 8 </option>
-                        <option value="Cửa hàng Quận 5"> Cửa hàng Quận 5 </option>
-                    </select>
                     <div class="date-filter">
                         <label for="time">Thời gian: </label>
                         <input type="date" id="startDate">
@@ -328,10 +318,6 @@
                             <span id="modalNhanhieuSP"></span>
                         </div>
                         <div class="detail-item">
-                            <label>Kho hàng:</label>
-                            <span id="modalKhoSP"></span>
-                        </div>
-                        <div class="detail-item">
                             <label>Ghi chú:</label>
                             <span id="modalGhichuSP"></span>
                         </div>
@@ -373,34 +359,12 @@
             </div>
             </section>
         </div>
-
-        <!---Quan ly khach hang-->
-        <section id="customers-section" class="admin-section" style="display: none;">
-            <div class="admin6">
-                <h2>Quản lý khách hàng<span class="close" onclick="closeTab()">X</span></h2>
-                <div class="wraptable">
-                    <table id="Bangkh">
-                        <thead>
-                            <tr>
-                                <th>Mã khách hàng</th>
-                                <th>Tên người dùng</th>
-                                <th>Email</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="data1"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </div>
     <script src="data/manageproduct.js"></script>
     <script src="data/orders.js"></script>
     <script src="data/products.js"></script>
     <script src="data/tonkho.js"></script>
     <script src="data/users.js"></script>
-    <script src="assets/js/adminclean.js"></script>
+    <script src="assets/js/admin.js"></script>
 
     <!-- FOOTER -->
     <footer>
