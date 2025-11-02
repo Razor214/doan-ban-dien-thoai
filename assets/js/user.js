@@ -220,3 +220,9 @@ function toggleEditProfile() {
     profileForm.style.display = "none";
   }
 }
+// ========== XỬ LÝ URL ==========
+function handleUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get("tab") || "login";
+  showTab(tab);
+}
