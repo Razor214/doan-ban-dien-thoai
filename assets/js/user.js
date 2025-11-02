@@ -117,15 +117,85 @@ function handleRegister() {
 
 // ========== HÀM CHUYỂN TAB ==========
 function showTab(tab) {
+  // Ẩn tất cả tab content
   document.querySelectorAll(".form-page").forEach((p) => p.classList.remove("active"));
   document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
 
+  // Hiện tab được chọn
   const page = document.getElementById(tab);
   const button = document.querySelector(`.tab[data-tab="${tab}"]`);
 
   if (page) page.classList.add("active");
   if (button) button.classList.add("active");
+
+  // Nếu là tab profile, load thông tin user
+  if (tab === "profile") {
+    loadProfileInfo();
+  }
 }
+
+// ========== HÀM LOAD THÔNG TIN HỒ SƠ ==========
+function loadProfileInfo() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const profileInfo = document.getElementById("profile-info");
+  const profileForm = document.getElementById("profileForm");
+  const logoutBtn = document.querySelector(".logout-btn");
+
+  if (!currentUser) {
+    // Chưa đăng nhập
+    profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
+    profileForm.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "none";
+    return;
+  }
+
+  // Đã đăng nhập - hiển thị thông tin
+  profileInfo.innerHTML = `
+    <div class="info-item">
+      <span class="info-label">Họ và Tên:</span>
+      <span class="info-value">${currentUser.fullName || "Chưa cập nhật"}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Tên đăng nhập:</span>
+      <span class="info-value">${currentUser.username}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Email:</span>
+      <span class="info-value">${currentUser.email}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Số điện thoại:</span>
+      <span class="info-value">${currentUser.phone || "Chưa cập nhật"}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Vai trò:</span>
+      <span class="info-value">${currentUser.role === "admin" ? "Quản trị viên" : "Người dùng"}</span>
+    </div>
+  `;
+  
+  profileForm.style.display = "none";
+  if (logoutBtn) logoutBtn.style.display = "block";
+}
+
+// ========== HÀM ĐĂNG XUẤT ==========
+function logout() {
+  localStorage.removeItem("currentUser");
+  alert("Đã đăng xuất!");
+  showTab("login");
+}
+
+// ========== KHI TRANG LOAD ==========
+document.addEventListener("DOMContentLoaded", () => {
+  setupForms();
+  handleUrlParams();
+  
+  // Load profile info nếu đang ở tab profile
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get("tab");
+  if (tab === "profile") {
+    loadProfileInfo();
+  }
+});
 
 // ========== XỬ LÝ URL ==========
 function handleUrlParams() {
@@ -164,3 +234,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+// ========== HÀM CHỈNH SỬA HỒ SƠ ==========
+function toggleEditProfile() {
+  const profileInfo = document.getElementById("profile-info");
+  const profileForm = document.getElementById("profileForm");
+  
+  if (profileForm.style.display === "none") {
+    // Hiện form chỉnh sửa
+    profileInfo.style.display = "none";
+    profileForm.style.display = "block";
+    
+    // Điền thông tin hiện tại vào form
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    document.getElementById("profileFullName").value = currentUser.fullName || "";
+    document.getElementById("profileEmail").value = currentUser.email || "";
+    document.getElementById("profilePhone").value = currentUser.phone || "";
+  } else {
+    // Ẩn form chỉnh sửa
+    profileInfo.style.display = "block";
+    profileForm.style.display = "none";
+  }
+}
