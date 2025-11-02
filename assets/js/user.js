@@ -140,12 +140,14 @@ function loadProfileInfo() {
   const profileInfo = document.getElementById("profile-info");
   const profileForm = document.getElementById("profileForm");
   const logoutBtn = document.querySelector(".logout-btn");
+  const editProfileBtn = document.getElementById("editProfileBtn"); // THÊM DÒNG NÀY
 
   if (!currentUser) {
     // Chưa đăng nhập
     profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
     profileForm.style.display = "none";
     if (logoutBtn) logoutBtn.style.display = "none";
+    if (editProfileBtn) editProfileBtn.style.display = "none"; // ẨN NÚT CHỈNH SỬA
     return;
   }
 
@@ -175,8 +177,8 @@ function loadProfileInfo() {
   
   profileForm.style.display = "none";
   if (logoutBtn) logoutBtn.style.display = "block";
+  if (editProfileBtn) editProfileBtn.style.display = "block"; // HIỆN NÚT CHỈNH SỬA
 }
-
 // ========== HÀM ĐĂNG XUẤT ==========
 function logout() {
   localStorage.removeItem("currentUser");
@@ -197,43 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== XỬ LÝ URL ==========
-function handleUrlParams() {
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get("tab") || "login";
-  showTab(tab);
-}
-// ========== XỬ LÝ URL + HIỂN THỊ HỒ SƠ NGƯỜI DÙNG ==========
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get("tab") || "login";
-  showTab(tab); // gọi lại hàm hiển thị tab (đã có sẵn phía trên)
-
-  if (tab === "profile") {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    const profileInfo = document.getElementById("profile-info");
-    const profileForm = document.getElementById("profileForm");
-    const logoutBtn = document.querySelector(".logout-btn");
-
-    if (!profileInfo || !profileForm || !logoutBtn) return;
-
-    if (currentUser) {
-      // Có người đăng nhập
-      profileInfo.innerHTML = `
-        <p><strong>Họ và Tên:</strong> ${currentUser.fullName}</p>
-        <p><strong>Email:</strong> ${currentUser.email}</p>
-        <p><strong>Số điện thoại:</strong> ${currentUser.phone || "Chưa cập nhật"}</p>
-      `;
-      profileForm.style.display = "none";
-      logoutBtn.style.display = "inline-block";
-    } else {
-      // Chưa đăng nhập
-      profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
-      profileForm.style.display = "none";
-      logoutBtn.style.display = "none";
-    }
-  }
-});
 // ========== HÀM CHỈNH SỬA HỒ SƠ ==========
 function toggleEditProfile() {
   const profileInfo = document.getElementById("profile-info");
