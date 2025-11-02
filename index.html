@@ -1,137 +1,276 @@
 <!DOCTYPE html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SaiGonPhone - Website Bán Điện Thoại</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/homepage.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <div class="logo">
+        <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
+        <h1>SaiGonPhone</h1>
+      </div>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SaiGonPhone - Website Bán Điện Thoại</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="assets/css/homepage.css" />
-</head>
+      <!-- THANH TÌM KIẾM -->
+      <div class="search-bar">
+        <input
+          type="text"
+          id="headerSearch"
+          placeholder="Bạn muốn tìm kiếm gì?"
+        />
+        <button id="headerSearchBtn">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+        </button>
+      </div>
 
-<body>
-  <!-- HEADER -->
-  <header>
-    <div class="logo">
-      <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
-      <h1>SaiGonPhone</h1>
-    </div>
+        <nav class="navbar">
+            <a href="index.html" class="bar_right">Trang Chủ</a>
+            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+            <a href="user.html?tab=register">Đăng ký</a>
+            <a href="user.html?tab=profile">Hồ sơ</a>
+            <a href="user/cart.html">Giỏ Hàng</a>
+            <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
 
-    <nav class="navbar" id="navbar">
-      <!-- THAY ĐỔI LINK Ở ĐÂY -->
-      <a href="user.html?tab=register" class="bar_right">Đăng ký</a>
-      <a href="user.html?tab=login">Đăng nhập</a>
-      <a href="user.html?tab=profile">Hồ sơ</a>
-      <a href="user/cart.html">Giỏ Hàng</a>
-      <a href="admin/dashboard.html" class="admin-link">Admin</a>
-    </nav>
-  </header>
+        </nav>
+    </header>
 
-  <div class="topmenu">
-    <div class="dropdown">
-      <span>iPhone</span>
-      <div class="dropdown-content">
-        <a href="#">iPhone 16 Pro Max</a>
-        <a href="#">iPhone 15 Pro Max</a>
-        <a href="#">iPhone 14 Pro Max</a>
-        <a href="#">iPhone 13 Pro Max</a>
+    <!-- TOP MENU -->
+    <div class="topmenu">
+      <div class="dropdown">
+        <span>iPhone</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="1"
+            >iPhone 15 Pro 512GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="2"
+            >iPhone 16 Pro Max 256GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="6"
+            >iPhone 14 Pro Max 128GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="7"
+            >iPhone 13 Pro Max 128GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Samsung</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="3"
+            >Galaxy S24 Ultra 8G/256GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="4"
+            >Galaxy A55 5G 8G/128GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="8"
+            >Galaxy Z Fold 5 12G/256GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Xiaomi</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="5"
+            >Xiaomi 14 Ultra 16G/512GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="9"
+            >Xiaomi 15T 12G/256GB</a
+          >
+          <a href="#" class="product-modal-trigger" data-product-id="10"
+            >Xiaomi 15T Pro 12G/256GB</a
+          >
+        </div>
       </div>
     </div>
 
-    <div class="dropdown">
-      <span>Samsung</span>
-      <div class="dropdown-content">
-        <a href="#">Galaxy S24 Ultra</a>
-        <a href="#">Galaxy A55</a>
-        <a href="#">Galaxy Z Fold 5</a>
+    <!-- MAIN -->
+    <main>
+      <section class="hero">
+        <h2>Chào mừng bạn đến với SaiGonPhone!</h2>
+        <p>Khám phá những chiếc điện thoại mới nhất với giá cực hấp dẫn.</p>
+        <a href="#products" class="btn">Mua ngay</a>
+      </section>
+
+      <section class="featured" id="products">
+        <h3>Sản phẩm nổi bật</h3>
+
+        <!-- Bộ lọc sản phẩm -->
+        <div class="filter-container">
+          <select id="brandFilter">
+            <option value="all">Thương hiệu</option>
+            <option value="Apple">Apple</option>
+            <option value="Samsung">Samsung</option>
+            <option value="Xiaomi">Xiaomi</option>
+          </select>
+
+          <select id="ramFilter">
+            <option value="all">RAM</option>
+            <option value="4">4GB</option>
+            <option value="6">6GB</option>
+            <option value="8">8GB</option>
+            <option value="12">12GB</option>
+            <option value="16">16GB</option>
+          </select>
+
+          <select id="storageFilter">
+            <option value="all">Bộ nhớ trong</option>
+            <option value="32">32GB</option>
+            <option value="64">64GB</option>
+            <option value="128">128GB</option>
+            <option value="256">256GB</option>
+            <option value="512">512GB</option>
+            <option value="1024">1TB</option>
+          </select>
+
+          <select id="priceRangeFilter">
+            <option value="all">Khoảng giá</option>
+            <option value="0-10000000">Dưới 10 triệu</option>
+            <option value="10000000-20000000">10 - 20 triệu</option>
+            <option value="20000000-25000000">20 - 25 triệu</option>
+            <option value="25000000-999999999">Trên 25 triệu</option>
+          </select>
+
+          <select id="sortFilter">
+            <option value="default">Giá</option>
+            <option value="price-asc">Thấp đến cao</option>
+            <option value="price-desc">Cao đến thấp</option>
+          </select>
+
+          <button id="resetFilters" class="reset-btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+              ></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            Thiết lập lại
+          </button>
+        </div>
+
+        <!-- Hiển thị sản phẩm -->
+        <div class="product-grid" id="productGrid"></div>
+
+        <!-- Phân trang -->
+        <div class="pagination" id="pagination"></div>
+      </section>
+    </main>
+
+    <!-- chi tiết sản phẩm -->
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+
+        <div class="product-details">
+          <div class="product-image-section">
+            <div class="main-image">
+              <img id="modalProductMainImage" src="" alt="Product Image" />
+              <button class="nav-btn prev-btn" id="modalPrevBtn">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button class="nav-btn next-btn" id="modalNextBtn">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+            <div class="image-thumbnails" id="modalThumbnails"></div>
+          </div>
+
+          <div class="product-info-section">
+            <div class="product-header">
+              <h1 id="modalProductName">Tên sản phẩm</h1>
+            </div>
+
+            <div class="product-colors">
+              <h3>Màu sắc:</h3>
+              <div class="color-options" id="modalColorOptions"></div>
+            </div>
+
+            <div class="product-price">
+              <span class="current-price" id="modalCurrentPrice">0đ</span>
+            </div>
+
+            <div class="product-specs">
+              <h3>Thông số kỹ thuật:</h3>
+              <div class="specs-list" id="modalSpecsList"></div>
+            </div>
+
+            <div class="product-actions">
+              <button class="add-to-cart-btn" id="modalAddToCartBtn">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path
+                    d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                  ></path>
+                </svg>
+                Thêm vào giỏ hàng
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="dropdown">
-      <span>Xiaomi</span>
-      <div class="dropdown-content">
-        <a href="#">Xiaomi 14 Ultra</a>
-        <a href="#">Xiaomi 15T</a>
-        <a href="#">Xiaomi 15T pro</a>
-      </div>
-    </div>
-  </div>
+    <!-- FOOTER -->
+    <footer>
+      <p>
+        © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
+      </p>
+      <p>
+        Liên hệ:
+        <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
+      </p>
+    </footer>
 
-  <!-- MAIN -->
-  <main>
-    <section class="hero">
-      <h2>Chào mừng bạn đến với SaiGonPhone!</h2>
-      <p>Khám phá những chiếc điện thoại mới nhất với giá cực hấp dẫn.</p>
-      <a href="user/product.html" class="btn">Mua ngay</a>
-    </section>
-
-    <section class="featured">
-      <h3>Sản phẩm nổi bật</h3>
-      <div class="product-list">
-        <div class="product-card">
-          <img src="assets/img/iphone15promax.png" alt="iPhone 15 Pro" />
-          <h4>iPhone 15 Pro 256GB</h4>
-          <p>Giá: 32.000.000đ</p>
-          <button>Thêm vào giỏ</button>
-        </div>
-        <div class="product-card">
-          <img src="assets/img/samsunggalaxys24.jpg" alt="Samsung Galaxy S24 " />
-          <h4>Samsung Galaxy S24 5G 8GB/256GB</h4>
-          <p>Giá: 25.000.000đ</p>
-          <button>Thêm vào giỏ</button>
-        </div>
-        <div class="product-card">
-          <img src="assets/img/xiaomi14ultra.png" alt="Xiaomi 14 Ultra" />
-          <h4>Xiaomi 14 Ultra 16GB|512GB</h4>
-          <p>Giá: 21.000.000đ</p>
-          <button>Thêm vào giỏ</button>
-        </div>
-
-        <div class="product-card">
-          <img src="assets/img/samsunggalaxys24.jpg" alt="Samsung Galaxy S24 " />
-          <h4>Samsung Galaxy S24 5G 8GB/256GB</h4>
-          <p>Giá: 25.000.000đ</p>
-          <button>Thêm vào giỏ</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>
-      © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
-    </p>
-    <p>
-      Liên hệ:
-      <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
-    </p>
-  </footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const navbar = document.getElementById('navbar');
-
-      if (currentUser) {
-        // Nếu đã đăng nhập
-        navbar.innerHTML = `
-      <a href="index.html" class="bar_right">Trang Chủ</a>
-      <a href="user/cart.html">Giỏ Hàng</a>
-      <a href="user.html?tab=profile" class="bar_right user-profile-link">
-        Xin chào, ${currentUser.fullName || currentUser.username}
-      </a>
-      <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
-    `;
-      }
-    });
-
-    function logoutFromHome() {
-      localStorage.removeItem('currentUser');
-      window.location.reload();
-    }
-  </script>
-
-</body>
-
+    <script src="assets/js/product-data.js"></script>
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/modal-product.js"></script>
+  </body>
 </html>
