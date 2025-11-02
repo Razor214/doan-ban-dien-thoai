@@ -813,82 +813,55 @@ button:hover {
 
 /* === SIDEBAR VÀ ADMIN CONTAINER === */
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: -217px;
-    width: 220px;
-    height: 100vh;
-    background-color: #1447b6;
-    color: white;
-    transition: left 0.3s ease;
-    overflow: hidden;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 61px;
+  height: 100vh;
+  background-color: #1447b6;
+  color: white;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  z-index: 100;
 }
-
 .sidebar:hover {
-    left: 0;
+  width: 230px;
 }
-
 .sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
 }
-
 .sidebar-logo img {
-    width: 40px;
-    transition: width 0.3s;
+  width: 40px;
+  height: 40px;
 }
-
-.sidebar:hover .sidebar-logo img {
-    width: 50px;
-}
-
 .sidebar-title {
-    opacity: 0;
-    white-space: nowrap;
-    transition: opacity 0.3s;
-    color: white;
-    margin-right: 60px;
+  color: white;
+  opacity: 0;
+  font-size: 30px;
 }
-
 .sidebar:hover .sidebar-title {
-    opacity: 1;
+  opacity: 1;
 }
-
 .sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
-
 .sidebar-menu a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 15px;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-    white-space: nowrap;
+  color: #f5f5f5;
+  text-decoration: none;
+  padding: 12px 15px;
+  margin: 4px 0;
+  border-radius: 6px;
+  transition: all 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
 }
-
-.sidebar-menu a:hover {
-    background-color: #0f3a91;
-}
-
-.admin-container {
-    transition: margin-left 0.3s ease;
-    padding: 20px;
-    margin-left: 60px;
-}
-
-.sidebar:hover~.admin-container {
-    margin-left: 220px;
+.sidebar-menu a:hover, .sidebar-menu a.active {
+  background-color: #1e59e0;
+  color: #fff;
 }
 
