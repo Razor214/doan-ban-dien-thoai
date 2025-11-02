@@ -1,10 +1,17 @@
 /* USER AUTHENTICATION STYLES */
-.auth-container {
+#auth-section {
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 70vh;
-    padding: 40px 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .container {
@@ -14,6 +21,7 @@
     overflow: hidden;
     width: 90%;
     max-width: 400px;
+    margin: 0 auto;
 }
 
 .tabs {
@@ -40,24 +48,16 @@
     border-bottom: 3px solid #4CAF50;
 }
 
-.tab:hover {
-    background: #e9ecef;
-}
-
 .tab-content {
     padding: 30px;
-    position: relative;
 }
 
 .form-page {
     display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
 }
 
 .form-page.active {
     display: block;
-    opacity: 1;
 }
 
 .form-title {
@@ -85,7 +85,6 @@
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s;
-    box-sizing: border-box;
 }
 
 .form-input:focus {
@@ -160,17 +159,24 @@
     text-align: center;
 }
 
+.info-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
 .logout-btn {
     background: #dc3545;
     margin-top: 10px;
-    width: 100%;
-    padding: 12px;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s;
 }
 
 .logout-btn:hover {
@@ -179,7 +185,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .auth-container {
+    #auth-section {
         padding: 20px 10px;
         min-height: 60vh;
     }
@@ -192,8 +198,7 @@
         font-size: 20px;
     }
     
-    .tab {
-        padding: 12px;
-        font-size: 14px;
+    .container {
+        margin: 10px auto;
     }
 }
