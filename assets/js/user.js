@@ -133,3 +133,28 @@ function handleUrlParams() {
   const tab = params.get("tab") || "login";
   showTab(tab);
 }
+// ========== HIỂN THỊ THÔNG TIN HỒ SƠ ========== 
+document.addEventListener("DOMContentLoaded", () => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const profileInfo = document.getElementById("profile-info");
+  const profileForm = document.getElementById("profileForm");
+  const logoutBtn = document.querySelector(".logout-btn");
+
+  if (!profileInfo || !profileForm) return;
+
+  if (currentUser) {
+    // Hiển thị thông tin người dùng
+    profileInfo.innerHTML = `
+      <p><strong>Họ và Tên:</strong> ${currentUser.fullName}</p>
+      <p><strong>Email:</strong> ${currentUser.email}</p>
+      <p><strong>Số điện thoại:</strong> ${currentUser.phone || "Chưa cập nhật"}</p>
+    `;
+
+    profileForm.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+  } else {
+    profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
+    profileForm.style.display = "none";
+    logoutBtn.style.display = "none";
+  }
+});
