@@ -1,7 +1,7 @@
 /* USER AUTHENTICATION STYLES */
 #auth-section {
     padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     min-height: 70vh;
     display: flex;
     align-items: center;
