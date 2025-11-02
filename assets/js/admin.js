@@ -261,6 +261,113 @@ function update() {
         alert("Không tìm thấy đơn hàng để cập nhật!");
     }
 }
+
+// quan ly khach hang
+/*----
+const data1 = document.getElementById("data1");
+function closeTab() {
+    document.getElementById("customers-section").style.display = "none";
+    document.getElementById("home-section").style.display = "block";
+}
+-----*/
+/*let users = [];
+fetch("data/users.json")
+    .then(r => r.json())
+    .then(d => {
+        users = d; */
+/*
+data1.innerHTML = userdata.map(kh => `
+            <tr>
+                <td>${kh.id}</td>
+                <td>${kh.username}</td>
+                <td>${kh.email}</td>
+                <td class="status">${kh.status}</td>
+                <td class="action">
+                    <button class="toggle">${kh.status === "active" ? "Khóa" : "Mở khóa"}</button>
+                    <button class="reset">Reset mật khẩu</button>
+                </td>
+            </tr>`
+).join("");
+
+const rows = data1.querySelectorAll("tr");
+rows.forEach((row, index) => {
+    const toggleBtn = row.querySelector(".toggle");
+    const resetBtn = row.querySelector(".reset");
+    const statusCell = row.querySelector(".status");
+
+    toggleBtn.addEventListener("click", () => {
+        const currentStatus = statusCell.textContent;
+        const newStatus = currentStatus === "active" ? "blocked" : "active";
+        statusCell.textContent = newStatus;
+        toggleBtn.textContent = newStatus === "active" ? "Khóa" : "Mở khóa";
+        userdata[index].status = newStatus;
+        alert(`Tài khoản "${userdata[index].username}" đã được ${newStatus === "active" ? "mở khóa" : "khóa"}.`);
+    });
+
+    resetBtn.addEventListener("click", () => {
+        const newPassword = prompt(`Nhập mật khẩu mới cho "${userdata[index].username}":`);
+        if (newPassword) {
+            userdata[index].password = newPassword;
+            alert(`Mật khẩu của "${userdata[index].username}" đã được cập nhật.`);
+        }
+    });
+});
+//  });
+*/
+const data1 = document.getElementById("data1");
+function closeTab() {
+    document.getElementById("customers-section").style.display = "none";
+    document.getElementById("home-section").style.display = "block";
+}
+
+// Ưu tiên dữ liệu đã lưu, nếu chưa có thì dùng từ users.js
+let users;
+const savedData = localStorage.getItem("userdata");
+users = savedData ? JSON.parse(savedData) : userdata;
+
+// Hiển thị bảng
+data1.innerHTML = users.map(kh => `
+    <tr>
+        <td>${kh.id}</td>
+        <td>${kh.username}</td>
+        <td>${kh.email}</td>
+        <td class="status">${kh.status}</td>
+        <td class="action">
+            <button class="toggle">${kh.status === "active" ? "Khóa" : "Mở khóa"}</button>
+            <button class="reset">Reset mật khẩu</button>
+        </td>
+    </tr>`
+).join("");
+
+// Gán sự kiện
+const rows = data1.querySelectorAll("tr");
+rows.forEach((row, index) => {
+    const toggleBtn = row.querySelector(".toggle");
+    const resetBtn = row.querySelector(".reset");
+    const statusCell = row.querySelector(".status");
+
+    toggleBtn.addEventListener("click", () => {
+        const currentStatus = statusCell.textContent;
+        const newStatus = currentStatus === "active" ? "blocked" : "active";
+        statusCell.textContent = newStatus;
+        toggleBtn.textContent = newStatus === "active" ? "Khóa" : "Mở khóa";
+        users[index].status = newStatus;
+        localStorage.setItem("userdata", JSON.stringify(users)); // lưu lại
+        alert(`Tài khoản "${users[index].username}" đã được ${newStatus === "active" ? "mở khóa" : "khóa"}.`);
+    });
+
+    resetBtn.addEventListener("click", () => {
+        const newPassword = prompt(`Nhập mật khẩu mới cho "${users[index].username}":`);
+        if (newPassword) {
+            users[index].password = newPassword;
+            localStorage.setItem("userdata", JSON.stringify(users)); // lưu lại
+            alert(`Mật khẩu của "${users[index].username}" đã được cập nhật.`);
+        }
+    });
+});
+
+
+
 // sidebar
 document.addEventListener("DOMContentLoaded", () => {
   const menuItems = document.querySelectorAll(".sidebar-menu a");
