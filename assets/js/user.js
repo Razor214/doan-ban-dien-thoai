@@ -133,28 +133,34 @@ function handleUrlParams() {
   const tab = params.get("tab") || "login";
   showTab(tab);
 }
-// ========== HIỂN THỊ THÔNG TIN HỒ SƠ ========== 
+// ========== HIỂN THỊ HỒ SƠ NGƯỜI DÙNG ==========
 document.addEventListener("DOMContentLoaded", () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const profileTab = document.getElementById("profile");
   const profileInfo = document.getElementById("profile-info");
   const profileForm = document.getElementById("profileForm");
   const logoutBtn = document.querySelector(".logout-btn");
 
-  if (!profileInfo || !profileForm) return;
+  // Kiểm tra nếu đang ở tab hồ sơ
+  const params = new URLSearchParams(window.location.search);
+  const activeTab = params.get("tab");
 
-  if (currentUser) {
-    // Hiển thị thông tin người dùng
-    profileInfo.innerHTML = `
-      <p><strong>Họ và Tên:</strong> ${currentUser.fullName}</p>
-      <p><strong>Email:</strong> ${currentUser.email}</p>
-      <p><strong>Số điện thoại:</strong> ${currentUser.phone || "Chưa cập nhật"}</p>
-    `;
-
-    profileForm.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-  } else {
-    profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
-    profileForm.style.display = "none";
-    logoutBtn.style.display = "none";
+  if (activeTab === "profile") {
+    if (currentUser) {
+      // Nếu có người dùng đăng nhập
+      profileInfo.innerHTML = `
+        <p><strong>Họ và Tên:</strong> ${currentUser.fullName}</p>
+        <p><strong>Email:</strong> ${currentUser.email}</p>
+        <p><strong>Số điện thoại:</strong> ${currentUser.phone || "Chưa cập nhật"}</p>
+      `;
+      profileForm.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      // Nếu chưa đăng nhập
+      profileInfo.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
+      profileForm.style.display = "none";
+      logoutBtn.style.display = "none";
+    }
   }
 });
+
