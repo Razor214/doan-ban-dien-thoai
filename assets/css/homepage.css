@@ -7,21 +7,30 @@
 .hero h2 {
   font-size: 2em;
   margin-bottom: 10px;
+  color: #333;
+}
+
+.hero p {
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .hero .btn {
   display: inline-block;
   margin-top: 15px;
-  padding: 10px 20px;
+  padding: 12px 30px;
   background-color: #0055ff;
   color: white;
   text-decoration: none;
   border-radius: 8px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
+  font-weight: 500;
 }
 
 .hero .btn:hover {
   background-color: #0040cc;
+  transform: translateY(-2px);
 }
 
 .featured {
@@ -32,13 +41,15 @@
 .featured h3 {
   margin-bottom: 25px;
   font-size: 1.6em;
+  color: #333;
 }
-/* Bộ lọc sản phẩm */
+
+/* Bộ lọc */
 .filter-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   margin-bottom: 30px;
   flex-wrap: wrap;
 }
@@ -49,7 +60,7 @@
   border-radius: 8px;
   background: white;
   font-size: 14px;
-  min-width: 180px;
+  min-width: 150px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -57,13 +68,14 @@
 .filter-container select:focus {
   border-color: #0040cc;
   box-shadow: 0 0 5px rgba(0, 85, 255, 0.3);
+  outline: none;
 }
 
 .filter-container select:hover {
   border-color: #0040cc;
 }
 
-/* Nút Thiết lập lại */
+/* Thiết lặp lại */
 .reset-btn {
   display: flex;
   align-items: center;
@@ -91,13 +103,13 @@
   transform: translateY(0);
 }
 
-/* Product Grid - MỖI HÀNG 3 SẢN PHẨM */
+/* Hiển thị sản phẩm */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 sản phẩm mỗi hàng */
-  gap: 30px; /* Tăng khoảng cách giữa sản phẩm */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
   margin-bottom: 40px;
-  justify-items: center; /* Căn giữa các sản phẩm */
+  justify-items: center;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
@@ -106,14 +118,14 @@
 .product-card {
   background-color: white;
   width: 100%;
-  max-width: 300px; /* Giới hạn chiều rộng tối đa */
+  max-width: 300px;
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  text-align: center; /* Căn giữa nội dung */
+  text-align: center;
 }
 
 .product-card:hover {
@@ -140,18 +152,13 @@
   justify-content: center;
   text-align: center;
   line-height: 1.4;
+  color: #333;
 }
 
 .product-card .price {
   color: #0055ff;
   font-weight: bold;
   font-size: 1.1em;
-  margin: 5px 0;
-}
-
-.product-card .stock {
-  color: #666;
-  font-size: 0.9em;
   margin: 5px 0;
 }
 
@@ -163,18 +170,20 @@
   padding: 12px 20px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
   font-weight: 500;
   width: 100%;
 }
 
 .product-card .add-to-cart:hover:not(:disabled) {
   background-color: #0040cc;
+  transform: translateY(-2px);
 }
 
 .product-card .add-to-cart:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* Phân trang */
@@ -219,6 +228,7 @@
   font-size: 16px;
 }
 
+/* thông báo khi không có sp */
 .no-products {
   grid-column: 1 / -1;
   text-align: center;
@@ -230,7 +240,7 @@
   margin: 20px 0;
 }
 
-/* Thông báo kết quả lọc */
+/* kết quả lọc */
 .filter-results {
   text-align: center;
   margin-bottom: 20px;
@@ -238,18 +248,61 @@
   font-style: italic;
 }
 
-/* Responsive */
+/* thông báo */
+.filter-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  font-weight: 500;
+  transform: translateX(400px);
+  transition: transform 0.4s ease;
+  max-width: 350px;
+  border-left: 4px solid #388e3c;
+}
+
+.filter-notification .notification-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-notification.success {
+  background: #4caf50;
+  border-left-color: #388e3c;
+}
+
+.filter-notification.info {
+  background: #2196f3;
+  border-left-color: #1976d2;
+}
+
+/* cho các màn hình nhỏ hơn */
 @media (max-width: 1024px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 sản phẩm trên tablet */
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     max-width: 800px;
+  }
+
+  .filter-container {
+    gap: 10px;
+  }
+
+  .filter-container select {
+    min-width: 140px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 sản phẩm trên mobile lớn */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     max-width: 600px;
   }
@@ -265,7 +318,7 @@
   .filter-container {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .filter-container select {
@@ -279,11 +332,23 @@
     max-width: 280px;
     justify-content: center;
   }
+
+  .hero {
+    padding: 60px 20px;
+  }
+
+  .hero h2 {
+    font-size: 1.8em;
+  }
+
+  .featured {
+    padding: 30px 20px;
+  }
 }
 
 @media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: 1fr; /* 1 sản phẩm trên mobile nhỏ */
+    grid-template-columns: 1fr;
     gap: 15px;
     max-width: 400px;
   }
@@ -306,5 +371,13 @@
   .reset-btn {
     font-size: 13px;
     padding: 8px 16px;
+  }
+
+  .hero h2 {
+    font-size: 1.5em;
+  }
+
+  .hero p {
+    font-size: 1em;
   }
 }
