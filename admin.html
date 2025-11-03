@@ -55,7 +55,7 @@
                             <tr>
                                 <th>Mã phiếu</th>
                                 <th>Ngày nhập</th>
-                                <th>Tổng giá trị (VNĐ)</th>
+                                <th>Giá nhập (VNĐ)</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -114,7 +114,7 @@
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody id="ProductBody"></tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -133,9 +133,8 @@
                         <input type="text" id="prodName" required>
 
                         <label>Hình ảnh:</label>
-                        <input type="file" id="prodImgFile" accept="image/*">
-                        <img id="previewImg" src="assets/img/logo.png"
-                            style="width:100px;margin-top:5px;border-radius:8px;">
+                        <input type="file" id="prodImg" accept="image/*">
+                        <img id="previewImg" src="assets/img/logo.png" style="width:100px;margin-top:5px;border-radius:8px;">
 
                         <label>Mô tả:</label>
                         <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>

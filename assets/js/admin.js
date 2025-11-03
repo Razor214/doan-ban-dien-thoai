@@ -867,101 +867,135 @@ function saveAndRender2() {
 
 renderCustomers();
 /* ======================================================
-   🔹 QUẢN LÝ SẢN PHẨM
+   QUẢN LÝ DANH MỤC SẢN PHẨM
 ====================================================== */
-const productModal = document.getElementById('ProductPopup');
-const productForm = document.getElementById('ProductForm');
-const productTable = document.querySelector('#ProductTable tbody');
-const cancelProduct = document.getElementById('cancelProduct');
+const productModal       = document.getElementById('ProductPopup');
+const productForm        = document.getElementById('ProductForm');
+const productTbody       = document.querySelector('#ProductTable tbody');
+const productSearchInput = document.getElementById('searchProductCategory');
+const productCancelBtn   = document.getElementById('cancelProduct');
+const prodImgInput       = document.getElementById('prodImg');
+const previewImg         = document.getElementById('previewImg');
 
-productTable.innerHTML = productList.map(p => `
-    <tr>
-      <td>${p.type}</td>
-      <td>${p.code}</td>
-      <td>${p.name}</td>
-      <td><img src="${p.img || 'assets/img/logo.png'}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"></td>
-      <td>${p.desc}</td>
-      <td class="action">
-        <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
-        <button class="delete" onclick="deleteProduct(this)">Xóa</button>
-      </td>
-    </tr>
-`).join("");
+let products = (typeof productList !== 'undefined') ? [...productList] : [];
+let editingProductRow = null;
+
+function renderProductTable(data = products) {
+    productTbody.innerHTML = data.map(p => `
+        <tr>
+            <td>${p.type}</td>
+            <td>${p.code}</td>
+            <td>${p.name}</td>
+            <td>
+                <img src="${p.img || 'assets/img/logo.png'}" 
+                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+            </td>
+            <td>${p.desc}</td>
+            <td class="action">
+                <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
+                <button class="delete" onclick="deleteProduct(this)">Xóa</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+     renderProductTable();
+});
 
 function openProductModal(mode, btn) {
     productForm.reset();
+    previewImg.src = "assets/img/logo.png";
     productModal.style.display = 'flex';
-    editingRow = null;
+    editingProductRow = null;
 
     if (mode === 'edit' && btn) {
         const row = btn.closest('tr');
-        document.getElementById('prodType').value = row.cells[0].innerText;
-        document.getElementById('prodCode').value = row.cells[1].innerText;
-        document.getElementById('prodName').value = row.cells[2].innerText;
-        document.getElementById('prodImg').value = row.cells[3].querySelector('img').src;
-        document.getElementById('prodDesc').value = row.cells[4].innerText;
-        editingRow = row;
+        document.getElementById('prodType').value = row.cells[0].innerText.trim();
+        document.getElementById('prodCode').value = row.cells[1].innerText.trim();
+        document.getElementById('prodName').value = row.cells[2].innerText.trim();
+        previewImg.src = row.cells[3].querySelector('img').src;
+        document.getElementById('prodDesc').value = row.cells[4].innerText.trim();
+        editingProductRow = row;
     }
 }
 
-productForm.onsubmit = e => {
+productCancelBtn?.addEventListener('click', (e) => {
     e.preventDefault();
+    productModal.style.display = 'none';
+});
+
+prodImgInput?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            previewImg.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+productForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
     const newProd = {
-        type: document.getElementById('prodType').value.trim(),
-        code: document.getElementById('prodCode').value.trim(),
-        name: document.getElementById('prodName').value.trim(),
-        image: document.getElementById('prodImg').value.trim() || 'assets/img/logo.png',
-        desc: document.getElementById('prodDesc').value.trim()
+        type:  document.getElementById('prodType').value.trim(),
+        code:  document.getElementById('prodCode').value.trim(),
+        name:  document.getElementById('prodName').value.trim(),
+        img:   previewImg.src || "assets/img/logo.png",
+        desc:  document.getElementById('prodDesc').value.trim()
     };
 
     if (!newProd.type || !newProd.code || !newProd.name) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
+        alert('⚠️ Vui lòng nhập đầy đủ thông tin sản phẩm!');
         return;
     }
 
-    if (editingRow) {
-        const index = editingRow.rowIndex - 1;
-        products[index] = newProd;
+    if (editingProductRow) {
+        const oldCode = editingProductRow.cells[1].innerText.trim();
+        const idx = products.findIndex(p => String(p.code) === oldCode);
+        if (idx > -1) products[idx] = newProd;
     } else {
+        if (products.some(p => String(p.code) === newProd.code)) {
+            alert('⚠️ Mã sản phẩm đã tồn tại!');
+            return;
+        }
         products.push(newProd);
     }
 
-    localStorage.setItem('products', JSON.stringify(products));
     renderProductTable();
     productModal.style.display = 'none';
-};
-
-cancelProduct.onclick = () => productModal.style.display = 'none';
+});
 
 function deleteProduct(btn) {
-    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-        const row = btn.closest('tr');
-        const code = row.cells[1].innerText;
-        products = products.filter(p => p.code !== code);
-        localStorage.setItem('products', JSON.stringify(products));
-        renderProductTable();
-    }
+    if (!confirm('Xóa sản phẩm này?')) return;
+    const row = btn.closest('tr');
+    const code = row.cells[1].innerText.trim();
+    products = products.filter(p => String(p.code) !== code);
+    renderProductTable();
 }
 
 function searchProductCategory() {
-    const keyword = document.getElementById('searchProductCategory').value.trim().toLowerCase();
+    const keyword = productSearchInput.value.trim().toLowerCase();
     const filtered = products.filter(p =>
-        p.name.toLowerCase().includes(keyword) ||
-        p.code.toLowerCase().includes(keyword) ||
-        p.type.toLowerCase().includes(keyword)
+        p.type.toLowerCase().includes(keyword) ||
+        String(p.code).toLowerCase().includes(keyword) ||
+        p.name.toLowerCase().includes(keyword)
     );
     renderProductTable(filtered);
 }
 
+
+
 /* ======================================================
-   🔹 QUẢN LÝ NHẬP SẢN PHẨM
+               QUẢN LÝ NHẬP SẢN PHẨM
 ====================================================== */
 const importModal = document.getElementById('ImportPopup');
 const importForm  = document.getElementById('ImportForm');
 const importTbody = document.querySelector('#ImportTable tbody');
 const importSearchInput = document.getElementById('searchImport');
 const importCancelBtn   = document.getElementById('cancelImport');
-
 
 let imports = (typeof importList !== 'undefined') ? [...importList] : [];
 let editingImportRow = null;
@@ -982,62 +1016,56 @@ function renderImportTable(data = imports) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderImportTable();
-  renderProductTable();
+     renderImportTable();
 });
 function openImportModal(mode, btn) {
-  importForm.reset();
-  importModal.style.display = 'flex';
-  editingImportRow = null;
+    importForm.reset();
+    importModal.style.display = 'flex';
+    editingImportRow = null;
 
-  if (mode === 'edit' && btn) {
-    const row = btn.closest('tr');
-    document.getElementById('importCode').value  = row.cells[0].innerText.trim();
-    document.getElementById('importDate').value  = row.cells[1].innerText.trim();
-    document.getElementById('importTotal').value = row.cells[2].innerText.replace(/[^\d]/g,'');
-    document.getElementById('importStatus').value= row.cells[3].innerText.trim();
-    editingImportRow = row;
-  }
+    if (mode === 'edit' && btn) {
+        const row = btn.closest('tr');
+        document.getElementById('importCode').value  = row.cells[0].innerText.trim();
+        document.getElementById('importDate').value  = row.cells[1].innerText.trim();
+        document.getElementById('importTotal').value = row.cells[2].innerText.replace(/[^\d]/g,'');
+        document.getElementById('importStatus').value= row.cells[3].innerText.trim();
+        editingImportRow = row;
+    }
 }
 
 importCancelBtn?.addEventListener('click', (e) => {
-  e.preventDefault();                 // tránh reload
-  importModal.style.display = 'none'; // đóng popup
+    e.preventDefault();
+    importModal.style.display = 'none';
 });
-importForm?.addEventListener('submit', (e) => {
-  e.preventDefault(); // KHÔNG reload trang
+    importForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-  const newPN = {
-    id:    document.getElementById('importCode').value.trim(),
-    date:  document.getElementById('importDate').value,
-    total: Number(document.getElementById('importTotal').value) || 0,
-    status:document.getElementById('importStatus').value
-  };
+    const newPN = {
+        id:    document.getElementById('importCode').value.trim(),
+        date:  document.getElementById('importDate').value,
+        total: Number(document.getElementById('importTotal').value) || 0,
+        status:document.getElementById('importStatus').value
+    };
 
-  if (!newPN.id || !newPN.date) {
-    alert('Vui lòng nhập mã phiếu và ngày nhập!');
-    return;
-  }
-    if (editingImportRow) {
-    // update trong mảng theo id
-    const idOld = editingImportRow.cells[0].innerText.trim();
-    const idx = imports.findIndex(i => i.id === idOld);
-    if (idx > -1) imports[idx] = newPN;
-  } else {
-    // id không trùng
-    if (imports.some(i => i.id === newPN.id)) {
-      alert('Mã phiếu đã tồn tại!');
-      return;
+    if (!newPN.id || !newPN.date) {
+        alert('Vui lòng nhập mã phiếu và ngày nhập!');
+        return;
     }
-    imports.push(newPN);
-  }
-
-  renderImportTable();
-  importModal.style.display = 'none';
+    if (editingImportRow) {
+        const idOld = editingImportRow.cells[0].innerText.trim();
+        const idx = imports.findIndex(i => i.id === idOld);
+        if (idx > -1) imports[idx] = newPN;
+    } else {  
+        if (imports.some(i => i.id === newPN.id)) {
+            alert('Mã phiếu đã tồn tại!');
+            return;
+        }
+        imports.push(newPN);
+    }
+    renderImportTable();
+    importModal.style.display = 'none';
 });
   
-
-// --- Xóa ---
 function deleteImport(btn) {
     if (!confirm('Xóa phiếu nhập này?')) return;
     const row = btn.closest('tr');
@@ -1045,12 +1073,12 @@ function deleteImport(btn) {
     imports = imports.filter(i => i.id !== id);
     renderImportTable();
 }
-// --- Tìm kiếm phiếu nhập ---
+
 function searchImport() {
-    const kw = importSearchInput.value.trim().toLowerCase();
+    const keyword = importSearchInput.value.trim().toLowerCase();
     const filtered = imports.filter(i =>
-        i.id.toLowerCase().includes(kw)
-        || i.status.toLowerCase().includes(kw)
+        i.id.toLowerCase().includes(keyword) || 
+        i.status.toLowerCase().includes(keyword)
     );
     renderImportTable(filtered);
 }
