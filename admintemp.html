@@ -10,7 +10,7 @@
 
 <body>
     <!-- HEADER -->
-    <header class ="headerbar">
+    <header class="headerbar">
         <nav class="navbar">
             <a href="admin/dashboard.html">Admin</a>
         </nav>
@@ -18,17 +18,17 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-        <h2 class="sidebar-title">SaiGonPhone</h2>
+            <h2 class="sidebar-title">SaiGonPhone</h2>
         </div>
         <nav class="sidebar-menu">
-        <a href="#" data-section="home" class="menu-item">🏠 Trang chủ</a>
-        <a href="#" data-section="product" class="menu-item">📱 Sản phẩm</a>
-        <a href="#" data-section="category" class="menu-item">🗂️ Loại sản phẩm</a>
-        <a href="#" data-section="price" class="menu-item">💰 Giá bán</a>
-        <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
-        <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
-        <a href="#" data-section="stock" class="stock">📦 Tồn kho</a>
-        <a href="#" data-section="info" class="menu-item">⚙️   Quản lý thông tin</a>
+            <a href="#" data-section="home" class="menu-item">🏠 Trang chủ</a>
+            <a href="#" data-section="product" class="menu-item">📱 Sản phẩm</a>
+            <a href="#" data-section="category" class="menu-item">🗂️ Loại sản phẩm</a>
+            <a href="#" data-section="price" class="menu-item">💰 Giá bán</a>
+            <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
+            <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
+            <a href="#" data-section="stock" class="stock">📦 Tồn kho</a>
+            <a href="#" data-section="info" class="menu-item">⚙️ Quản lý thông tin</a>
         </nav>
     </aside>
     <div class="admin-container">
@@ -40,58 +40,59 @@
         </section>
         <!-- === QUẢN LÝ DANH MỤC SẢN PHẨM === -->
         <section id="product-section" class="admin-section" style="display:none">
-        <div class="admin6">
-            <h2>Quản lý danh mục sản phẩm <span class="close" onclick="confirmExit()">X</span></h2>
-            <div class="top-bar">
-            <input type="text" id="searchProductCategory" placeholder="Tìm kiếm sản phẩm...">
-            <button onclick="searchProductCategory()">Tìm kiếm</button>
-            <button onclick="openProductModal('add')">Thêm sản phẩm</button>
-            </div>
-
-            <div class="wraptable">
-            <table class="price-table" id="ProductTable">
-                <thead>
-                <tr>
-                    <th>Loại</th>
-                    <th>Mã</th>
-                    <th>Tên</th>
-                    <th>Hình ảnh</th>
-                    <th>Mô tả</th>
-                    <th>Thao tác</th>
-                </tr>
-                </thead>
-                <tbody id="ProductBody"></tbody>
-            </table>
-            </div>
-        </div>
-
-        <!-- Popup thêm/sửa -->
-        <div class="popup" id="ProductPopup">
-            <div class="popup-content">
-            <form id="ProductForm">
-                <label>Loại:</label>
-                <input type="text" id="prodType" required>
-
-                <label>Mã:</label>
-                <input type="text" id="prodCode" required>
-
-                <label>Tên:</label>
-                <input type="text" id="prodName" required>
-
-                <label>Hình ảnh:</label>
-                <input type="file" id="prodImgFile" accept="image/*">
-                <img id="previewImg" src="assets/img/logo.png" style="width:100px;margin-top:5px;border-radius:8px;">
-
-                <label>Mô tả:</label>
-                <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>
-
-                <div class="popup-foot">
-                <button type="submit">Lưu</button>
-                <button type="button" id="cancelProduct">Hủy</button>
+            <div class="admin6">
+                <h2>Quản lý danh mục sản phẩm <span class="close" onclick="confirmExit()">X</span></h2>
+                <div class="top-bar">
+                    <input type="text" id="searchProductCategory" placeholder="Tìm kiếm sản phẩm...">
+                    <button onclick="searchProductCategory()">Tìm kiếm</button>
+                    <button onclick="openProductModal('add')">Thêm sản phẩm</button>
                 </div>
-            </form>
+
+                <div class="wraptable">
+                    <table class="price-table" id="ProductTable">
+                        <thead>
+                            <tr>
+                                <th>Loại</th>
+                                <th>Mã</th>
+                                <th>Tên</th>
+                                <th>Hình ảnh</th>
+                                <th>Mô tả</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ProductBody"></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+
+            <!-- Popup thêm/sửa -->
+            <div class="popup" id="ProductPopup">
+                <div class="popup-content">
+                    <form id="ProductForm">
+                        <label>Loại:</label>
+                        <input type="text" id="prodType" required>
+
+                        <label>Mã:</label>
+                        <input type="text" id="prodCode" required>
+
+                        <label>Tên:</label>
+                        <input type="text" id="prodName" required>
+
+                        <label>Hình ảnh:</label>
+                        <input type="file" id="prodImgFile" accept="image/*">
+                        <img id="previewImg" src="assets/img/logo.png"
+                            style="width:100px;margin-top:5px;border-radius:8px;">
+
+                        <label>Mô tả:</label>
+                        <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>
+
+                        <div class="popup-foot">
+                            <button type="submit">Lưu</button>
+                            <button type="button" id="cancelProduct">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </section>
 
         <section id="price-section" class="admin-section" style="display:none;">
@@ -117,7 +118,7 @@
                         <tbody id="khungbang"></tbody>
                     </table>
                 </div>
-            </div>    
+            </div>
             <div class="popup" id="popup">
                 <div class="popup-content">
                     <form id="productadd">
@@ -138,7 +139,7 @@
 
                         <label for="profit">% Lợi nhuận: </label>
                         <div style="display: flex; align-items: center;gap: 5px; ">
-                            <input type="number" id="profit" step="any" style="flex: 1" required><span>%</span> 
+                            <input type="number" id="profit" step="any" style="flex: 1" required><span>%</span>
                         </div>
 
                         <label for="sell">Giá bán: </label>
@@ -165,7 +166,7 @@
                     <p>Bạn có chắc chắn muốn thoát không ?</p>
                     <div class="popup-foot">
                         <button id="confirmco">Thoát</button>
-                        <button id="confirmno" >Hủy</button>
+                        <button id="confirmno">Hủy</button>
                     </div>
                 </div>
             </div>
@@ -175,13 +176,13 @@
                     <p>Bạn có muốn xuất danh sách sản phẩm ?</p>
                     <div class="popup-foot">
                         <button id="confirm">Xuất</button>
-                        <button id="confirm-no" >Hủy</button>
+                        <button id="confirm-no">Hủy</button>
                     </div>
                 </div>
             </div>
         </section>
         <section class="admin-section" id="order-section" style="display: none;">
-            <div  class="all" id="all">
+            <div class="all" id="all">
                 <div class="topheader">
                     <h2> Quản lý đơn đặt hàng</h2>
                     <span class="close-main" onclick="closeMain()">x</span>
@@ -209,8 +210,8 @@
                                 <th>Khách hàng</th>
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
-                                <th>Trạng thái</th>  
-                                <th>Chi tiết</th>              
+                                <th>Trạng thái</th>
+                                <th>Chi tiết</th>
                             </tr>
                         </thead>
                         <tbody id="orderTable"></tbody>
@@ -357,11 +358,106 @@
                     </div>
                 </div>
             </div>
-            </section>
-        </div>
+        </section>
+
+        <!--Quan ly loai san pham-->
+        <section id="category-section" class="admin-section" style="display:none;">
+            <div class="cover">
+                <h2>Quản lý loại sản phẩm<span class="close" onclick="closeData1()">X</span></h2>
+                <button id="add" style="width: 100%; margin-bottom: 15px;">Thêm</button>
+                <div class="wrapper">
+                    <table class="table1">
+                        <thead>
+                            <tr>
+                                <th>Mã thương hiệu</th>
+                                <th>Thương hiệu</th>
+                                <th>Mã quốc gia xuất xứ</th>
+                                <th>Mô tả</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data1"></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="popup" id="category-popup">
+                <div class="popup-content">
+                    <form id="category-form">
+                        <label>Mã thương hiệu</label>
+                        <input type="text" required>
+
+                        <label>Thương hiệu</label>
+                        <input type="text" required>
+
+                        <label>Mã quốc gia xuất xứ</label>
+                        <input type="text" required>
+
+                        <label>Mô tả</label>
+                        <textarea autofocus rows="3" style="width: 100%" required></textarea>
+
+                        <label>Trạng thái</label>
+                        <select required>
+                            <option value="active">active</option>
+                            <option value="inactive">inactive</option>
+                        </select>
+
+                        <div class="popup-foot">
+                            <button type="submit">Lưu</button>
+                            <button type="button" id="category-cancel">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!--Quan ly khach hang-->
+        <section id="customers-section" class="admin-section" style="display: none">
+            <div class="cover">
+                <h2>Quản lý khách hàng
+                    <span class="close" onclick="closeData2()">X</span>
+                </h2>
+                <div class="wrapper">
+                    <table class="table1">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ và tên</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Email</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data2"></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="popup" id="customers-popup">
+                <div class="popup-content">
+                    <form id="customers-form">
+                        <label>Nhập mật khẩu mới</label>
+                        <input type="text" required>
+                        <div class="popup-foot">
+                            <button type="submit">Lưu</button>
+                            <button type="button" id="customers-cancel">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </div>
     <script src="data/manageproduct.js"></script>
+    <script src="data/categorys.js"></script>
     <script src="data/orders.js"></script>
     <script src="data/products.js"></script>
+    <script src="data/customers.js"></script>
     <script src="data/tonkho.js"></script>
     <script src="data/users.js"></script>
     <script src="assets/js/admin.js"></script>
