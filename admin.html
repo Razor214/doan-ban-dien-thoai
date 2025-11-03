@@ -23,6 +23,7 @@
         <nav class="sidebar-menu">
             <a href="#" data-section="home" class="menu-item">🏠 Trang chủ</a>
             <a href="#" data-section="product" class="menu-item">📱 Sản phẩm</a>
+            <a href="#" data-section="import" class="menu-item">📦 Nhập hàng</a>
             <a href="#" data-section="category" class="menu-item">🗂️ Loại sản phẩm</a>
             <a href="#" data-section="price" class="menu-item">💰 Giá bán</a>
             <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
@@ -38,17 +39,59 @@
             <h2>Trang chủ quản trị</h2>
             <p>Chào mừng bạn đến hệ thống SaiGonPhone Admin!</p>
         </section>
-        <section>
+        <!-- === QUẢN LÝ NHẬP SẢN PHẨM === -->
+        <section id="import-section" class="admin-section" style="display:none;">
             <div class="admin6">
-                <h2>Quản lý danh mục sản phẩm</h2>
-                <div class="topbar">
+                <h2>Quản lý phiếu nhập hàng<span class="close" onclick="confirmExit()">X</span></h2>
+                <div class="top-bar">
                     <input type="text" id="searchImport" placeholder="Tìm theo mã phiếu...">
                     <button onclick="searchImport()">Tìm kiếm</button>
                     <button onclick="openImportModal('add')">Thêm phiếu nhập</button>
                 </div>
 
+                <div class="wraptable">
+                    <table id="ImportTable">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Ngày nhập</th>
+                                <th>Tổng giá trị (VNĐ)</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                    <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </section>
+
+        <div class="popup" id="ImportPopup">
+            <div class="popup-content">
+                <form id="ImportForm">
+                    <label>Mã phiếu:</label>
+                    <input type="text" id="importCode" required>
+
+                    <label>Ngày nhập:</label>
+                    <input type="date" id="importDate" required>
+
+                    <label>Tổng giá trị:</label>
+                    <input type="number" id="importTotal" required>
+
+                    <label>Trạng thái:</label>
+                    <select id="importStatus">
+                        <option value="Đang xử lý">Đang xử lý</option>
+                        <option value="Hoàn thành">Hoàn thành</option>
+                    </select>
+
+                    <div class="popup-foot">
+                        <button type="submit">Lưu</button>
+                        <button type="button" id="cancelImport">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- === QUẢN LÝ DANH MỤC SẢN PHẨM === -->
         <section id="product-section" class="admin-section" style="display:none">
             <div class="admin6">
@@ -464,14 +507,13 @@
         </section>
 
     </div>
-    <script src="data/manageproduct.js"></script>
     <script src="data/categorys.js"></script>
-    <script src="data/orders.js"></script>
     <script src="data/products.js"></script>
+    <script src="data/imports.js"></script>
     <script src="data/customers.js"></script>
-    <script src="data/tonkho.js"></script>
-    <script src="data/users.js"></script>
     <script src="assets/js/admin.js"></script>
+
+
 
     <!-- FOOTER -->
     <footer>
