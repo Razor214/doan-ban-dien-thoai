@@ -79,6 +79,7 @@ function handleRegister() {
   const password = document.getElementById("password").value.trim();
   const confirm = document.getElementById("confirmPassword").value.trim();
   const fullName = document.getElementById("fullName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
 
   if (!username || !email || !password || !confirm) {
     alert("Vui lòng điền đầy đủ thông tin!");
@@ -105,7 +106,8 @@ function handleRegister() {
     email,
     password,
     fullName,
-    role: "user"
+    role: "user",
+    phone
   };
 
   usersData.push(newUser);
@@ -209,6 +211,7 @@ function toggleEditProfile() {
     document.getElementById("profileFullName").value = currentUser.fullName || "";
     document.getElementById("profileEmail").value = currentUser.email || "";
     document.getElementById("profilePhone").value = currentUser.phone || "";
+    localStorage.setItem("users", JSON.stringify(usersData));
   } else {
     // Ẩn form chỉnh sửa
     profileInfo.style.display = "block";
