@@ -172,15 +172,6 @@ function confirmExit() {
     document.getElementById('home-section').style.display = 'block';
     document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
 }
-
-function exportData() {
-    document.getElementById('Xuatfile').style.display = 'flex';
-    document.getElementById('confirm').onclick = () => {
-        alert('Xuất dữ liệu thành công!');
-        document.getElementById('Xuatfile').style.display = 'none';
-    };
-    document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
-}
 //Quản lý đơn đặt hàng 
 const orderData = [
     {
