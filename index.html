@@ -37,12 +37,11 @@
         </button>
       </div>
 
-        <nav class="navbar">
+        <nav class="navbar" id="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
             <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
             <a href="user.html?tab=register">Đăng ký</a>
             <a href="user.html?tab=profile">Hồ sơ</a>
-            <a href="user/cart.html">Giỏ Hàng</a>
             <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
 
         </nav>
@@ -257,6 +256,30 @@
         </div>
       </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      const navbar = document.getElementById('navbar');
+
+      if (currentUser) {
+        // Nếu đã đăng nhập
+        navbar.innerHTML = `
+      <a href="index.html" class="bar_right">Trang Chủ</a>
+      <a href="user/cart.html">Giỏ Hàng</a>
+      <a href="user.html?tab=profile" class="bar_right user-profile-link">
+        Xin chào, ${currentUser.fullName || currentUser.username}
+      </a>
+      <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+    `;
+      }
+    });
+
+    function logoutFromHome() {
+      localStorage.removeItem('currentUser');
+      window.location.reload();
+    }
+    </script>
 
     <!-- FOOTER -->
     <footer>
