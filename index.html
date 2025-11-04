@@ -264,12 +264,14 @@
 
       if (currentUser) {
         // Nếu đã đăng nhập
+        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
         navbar.innerHTML = `
       <a href="index.html" class="bar_right">Trang Chủ</a>
       <a href="user/cart.html">Giỏ Hàng</a>
       <a href="user.html?tab=profile" class="bar_right user-profile-link">
         Xin chào, ${currentUser.fullName || currentUser.username}
       </a>
+      ${isAdmin ? '<a href="admin.html" class="admin-link" style="display:block;">Quản Trị Viên</a>' : ''}
       <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
     `;
       }

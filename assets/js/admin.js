@@ -574,14 +574,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     menuItems.forEach(item => {
         item.addEventListener("click", (e) => {
-            e.preventDefault();
             const target = item.dataset.section;
             openSection(`${target}-section`);
         });
     });
 
     // Hiển thị mặc định
-    openSection("home-section");
+    openSection("product-section");
 });
 function openSection(id) {
     // Ẩn tất cả section
