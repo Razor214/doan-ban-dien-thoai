@@ -911,7 +911,7 @@ productForm?.addEventListener('submit', (e) => {
             alert('⚠️ Mã sản phẩm đã tồn tại!');
             return;
         }
-        products.push(newProd);
+        products.unshift(newProd);
     }
 
     renderProductTable();
@@ -973,12 +973,35 @@ function openImportModal(mode, btn) {
     importModal.style.display = 'flex';
     editingImportRow = null;
 
+    if (mode === 'add') {
+        document.getElementById('importCode').value = 'PN';
+        loadProductItems([]);
+        document.getElementById('importStatus').value = 'Đang xử lý'; 
+        document.getElementById('importCode').readOnly = false; 
+        document.getElementById('importTotal').value = 0;
+        return;
+    }
+
     if (mode === 'edit' && btn) {
         const row = btn.closest('tr');
-        document.getElementById('importCode').value  = row.cells[0].innerText.trim();
-        document.getElementById('importDate').value  = row.cells[1].innerText.trim();
-        document.getElementById('importTotal').value = row.cells[2].innerText.replace(/[^\d]/g,'');
-        document.getElementById('importStatus').value= row.cells[3].innerText.trim();
+        const idToEdit = row.cells[0].innerText.trim();
+        const status = row.cells[3].innerText.trim();
+        const record = imports.find(i => i.id === idToEdit);
+
+        if (status === "Hoàn thành") {
+            alert("❌ Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
+            importModal.style.display = 'none'; 
+            return;
+        }
+
+        if (record) {
+            document.getElementById('importCode').value = record.id;
+            document.getElementById('importDate').value = record.date;
+            document.getElementById('importTotal').value = record.total; 
+            document.getElementById('importStatus').value = record.status;
+            loadProductItems(record.items || []);
+            document.getElementById('importCode').readOnly = true; 
+        }
         editingImportRow = row;
     }
 }
@@ -987,31 +1010,50 @@ importCancelBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     importModal.style.display = 'none';
 });
-    importForm?.addEventListener('submit', (e) => {
+importForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    const items = [];
+    const itemRows = document.querySelectorAll('#productItems .item-row');
+    itemRows.forEach(row => {
+        const name  = row.querySelector('.item-name')?.value?.trim();
+        const qty   = Number(row.querySelector('.item-qty')?.value);
+        const price = Number(row.querySelector('.item-price')?.value);
+        if (name && qty > 0) items.push({ name, qty, price });
+    });
+
+    const total = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+
     const newPN = {
-        id:    document.getElementById('importCode').value.trim(),
-        date:  document.getElementById('importDate').value,
-        total: Number(document.getElementById('importTotal').value) || 0,
-        status:document.getElementById('importStatus').value
+        id:     document.getElementById('importCode').value.trim(),
+        date:   document.getElementById('importDate').value,
+        total:  total,
+        status: document.getElementById('importStatus').value,
+        items:  items
     };
 
     if (!newPN.id || !newPN.date) {
-        alert('Vui lòng nhập mã phiếu và ngày nhập!');
+        alert('⚠️ Vui lòng nhập mã phiếu và ngày nhập!');
         return;
     }
+    
+    if (newPN.items.length === 0) {
+        alert('⚠️ Phiếu nhập phải có ít nhất một sản phẩm!');
+        return;
+    }
+
     if (editingImportRow) {
         const idOld = editingImportRow.cells[0].innerText.trim();
         const idx = imports.findIndex(i => i.id === idOld);
         if (idx > -1) imports[idx] = newPN;
     } else {  
         if (imports.some(i => i.id === newPN.id)) {
-            alert('Mã phiếu đã tồn tại!');
+            alert('⚠️ Mã phiếu đã tồn tại!');
             return;
         }
-        imports.push(newPN);
+        imports.unshift(newPN);
     }
+
     renderImportTable();
     importModal.style.display = 'none';
 });
@@ -1033,3 +1075,47 @@ function searchImport() {
     renderImportTable(filtered);
 }
 
+function loadProductItems(items) {
+    const container = document.getElementById('productItems');
+    if (!container) return;
+
+    container.innerHTML = items.map((item, index) => `
+        <div class="item-row" data-index="${index}">
+            <input type="text" class="item-name" placeholder="Tên sản phẩm" value="${item.name || ''}" required>
+            <input type="number" class="item-qty" min="1" value="${item.qty || 1}" required oninput="calculateTotal()">
+            <input type="number" class="item-price" min="0" value="${item.price || 0}" placeholder="Giá nhập" required oninput="calculateTotal()">
+            <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
+        </div>
+    `).join("");
+    calculateTotal();
+}
+
+function addProductItem() {
+    const container = document.getElementById('productItems');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.classList.add('item-row');
+    div.innerHTML = `
+        <input type="text" class="item-name" placeholder="Tên sản phẩm" required>
+        <input type="number" class="item-qty" min="1" value="1" required oninput="calculateTotal()">
+        <input type="number" class="item-price" min="0" placeholder="Giá nhập" required oninput="calculateTotal()">
+        <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
+    `;
+    container.prepend(div); 
+    calculateTotal();
+}
+
+function removeProductItem(btn) {
+    btn.parentElement.remove();
+    calculateTotal();
+}
+function calculateTotal() {
+    let total = 0;
+    const itemRows = document.querySelectorAll('#productItems .item-row');
+    itemRows.forEach(row => {
+        const qty = Number(row.querySelector('.item-qty')?.value) || 0;
+        const price = Number(row.querySelector('.item-price')?.value) || 0;
+        total += qty * price;
+    });
+    document.getElementById('importTotal').value = total;
+}

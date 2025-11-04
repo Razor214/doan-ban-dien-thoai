@@ -29,7 +29,6 @@
             <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
             <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
             <a href="#" data-section="stock" class="stock">📦 Tồn kho</a>
-            <a href="#" data-section="info" class="menu-item">⚙️ Quản lý thông tin</a>
         </nav>
     </aside>
     <div class="admin-container">
@@ -83,6 +82,10 @@
                         <option value="Đang xử lý">Đang xử lý</option>
                         <option value="Hoàn thành">Hoàn thành</option>
                     </select>
+
+                    <label>Chi tiết sản phẩm:</label>
+                    <div id="productItems"></div>
+                    <button type="button" onclick="addProductItem()">+ Thêm sản phẩm</button>
 
                     <div class="popup-foot">
                         <button type="submit">Lưu</button>

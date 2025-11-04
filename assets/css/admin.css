@@ -155,7 +155,10 @@ header .logo img {
 .admin-section.active {
     display: block;
 }
-
+#home-section p{
+    display: flex;
+    justify-content: center;
+}
 /* ========================== BẢNG DỮ LIỆU ========================== */
 table {
     width: 100%;
@@ -696,7 +699,6 @@ button:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     animation: zoomIn 0.25s ease;
     position: relative;
-    max-width: 1400px;
     width: 100%;
 }
 
@@ -1052,11 +1054,13 @@ button:hover {
 
 /* ========================== FOOTER ========================== */
 footer {
+    display: block;
     text-align: center;
     padding: 10px;
     background: #1447b6;
     color: white;
     font-size: 14px;
+    margin-top: 100px;
 }
 
 /* ========================== ANIMATION ========================== */
