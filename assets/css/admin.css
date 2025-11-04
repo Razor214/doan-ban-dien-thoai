@@ -1083,10 +1083,7 @@ footer {
         transform: scale(1);
     }
 }
-
-
-
-/* Quan ly khach hang */
+/* Quan ly loai san pham va khach hang */
 .cover {
     background: white;
     border-radius: 20px;

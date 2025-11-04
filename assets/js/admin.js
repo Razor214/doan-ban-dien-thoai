@@ -619,17 +619,15 @@ const addBtn = document.getElementById("add");
 let categorys_data_local = [];
 let editingIndex = null;
 
-// Đóng giao diện quản lý
 function closeData1() {
     document.getElementById("category-section").style.display = "none";
     document.getElementById("home-section").style.display = "block";
 }
 
-// Lấy dữ liệu từ localStorage nếu có
+
 const savedCategorys = localStorage.getItem("categorys_data");
 categorys_data_local = savedCategorys ? JSON.parse(savedCategorys) : categorys_data;
 
-// Hiển thị bảng thương hiệu
 function renderCategorys() {
     categoryTable.innerHTML = categorys_data_local.map((ct, index) => {
         const isHidden = ct.status === "inactive";
@@ -653,7 +651,6 @@ function renderCategorys() {
     attachEventHandlers();
 }
 
-// Gắn sự kiện cho các nút
 function attachEventHandlers() {
     const rows = categoryTable.querySelectorAll("tr");
 
@@ -663,12 +660,8 @@ function attachEventHandlers() {
         const deleteBtn = row.querySelector(".delete");
         const editBtn = row.querySelector(".edit");
 
-        // Ẩn / Hiện
         toggleBtn.addEventListener("click", () => {
             const isActive = categorys_data_local[index].status === "active";
-            /*  categorys_data_local[index].status = isActive ? "inactive" : "active";
-              saveAndRender(); */
-
             if (isActive)
                 if (confirm("Bạn có muốn ẩn loại sản phẩm này không?")) {
                     categorys_data_local[index].status = "inactive";
@@ -681,7 +674,6 @@ function attachEventHandlers() {
                 }
         });
 
-        // Xóa
         deleteBtn.addEventListener("click", () => {
             if (confirm("Bạn có chắc muốn xóa loại sản phẩm này không?")) {
                 categorys_data_local.splice(index, 1);
@@ -689,14 +681,12 @@ function attachEventHandlers() {
             }
         });
 
-        // Sửa
         editBtn.addEventListener("click", () => {
             openPopup("edit", index);
         });
     });
 }
 
-// Mở popup thêm hoặc sửa
 function openPopup(mode, index = null) {
     categoryForm.reset();
     categoryPopup.style.display = "flex";
@@ -713,7 +703,6 @@ function openPopup(mode, index = null) {
     }
 }
 
-// Lưu dữ liệu từ form
 categoryForm.onsubmit = e => {
     e.preventDefault();
 
@@ -732,48 +721,39 @@ categoryForm.onsubmit = e => {
     }
 
     saveAndRender();
-    alert("Đã cập nhật thành công!");
     categoryPopup.style.display = "none";
+    alert("Đã cập nhật thành công!");
+
 };
 
-// Hủy popup
 categoryCancel.onclick = () => {
     categoryPopup.style.display = "none";
 };
 
-// Nút thêm
 addBtn.onclick = () => {
     openPopup("add");
 };
 
-// Lưu và hiển thị lại
 function saveAndRender() {
     localStorage.setItem("categorys_data", JSON.stringify(categorys_data_local));
     renderCategorys();
 }
 
-// Khởi tạo
 renderCategorys();
 
-
 // Quan ly khach hangg
-
 function closeData2() {
     document.getElementById("customers-section").style.display = "none";
     document.getElementById("home-section").style.display = "block";
 }
 
 const customersTable = document.getElementById("data2");
-const customersPopup = document.getElementById("customers-popup");
-const customersForm = document.getElementById("customers-form");
-const customersCancel = document.getElementById("customers-cancel");
 
 let customers_data_local = [];
 let editingIndex2 = null;
 
 const savedCustomers = localStorage.getItem("customers_data");
 customers_data_local = savedCustomers ? JSON.parse(savedCustomers) : customers_data;
-
 
 function renderCustomers() {
     customersTable.innerHTML = customers_data_local.map((cm, index2) => {
@@ -788,7 +768,7 @@ function renderCustomers() {
                 <td>${cm.status}</td>
                 <td class = "action1">
                     <div class = "wrapper-button"><button class="unlock">${cm.status === "active" ? "Khóa" : "Mở khóa"}</button></div>
-                    <button class="reset" ${isBlocked ? "disabled" : ""}>Reset mật khẩu</button>
+                    <button class="reset" ${isBlocked ? "disabled" : ""}>Đặt lại mật khẩu</button>
                 </td>
             </tr>
         `;
@@ -796,7 +776,6 @@ function renderCustomers() {
 
     attachEventHandlers2();
 }
-
 
 function attachEventHandlers2() {
     const rows2 = customersTable.querySelectorAll("tr");
@@ -809,56 +788,27 @@ function attachEventHandlers2() {
         unlockBtn.addEventListener("click", () => {
             const isActive = customers_data_local[index2].status === "active";
             if (isActive)
-                if (confirm("Bạn có muốn khóa tài khoản người dùng này hay không?")) {
+                if (confirm("Bạn có muốn khóa tài khoản người dùng này không?")) {
                     customers_data_local[index2].status = "blocked";
                     saveAndRender2();
                 }
             if (!isActive)
-                if (confirm("Bạn có muốn mở khóa tài khoản người dùng này hay không?")) {
+                if (confirm("Bạn có muốn mở khóa tài khoản người dùng này không?")) {
                     customers_data_local[index2].status = "active";
                     saveAndRender2();
                 }
         });
 
         resetBtn.addEventListener("click", () => {
-            if (confirm("Bạn có muốn đặt lại mật khẩu?"))
-                openPopup2("reset", index2);
+            if (confirm("Bạn có muốn đặt lại mật khẩu?")) {
+                customers_data_local[index2].password = "12345";
+                saveAndRender2();
+                alert("Đã đặt lại mật khẩu mặc định: '12345'");
+            }
         });
 
     });
 }
-
-function openPopup2(mode2, index2 = null) {
-    customersForm.reset();
-    customersPopup.style.display = "flex";
-    editingIndex2 = null;
-
-    if (mode2 === "reset" && index2 !== null) {
-        const data = customers_data_local[index2];
-        customersForm.elements[0].value = data.password;
-        editingIndex2 = index2;
-    }
-}
-
-customersForm.onsubmit = e => {
-    e.preventDefault();
-
-    const newData = {
-        password: customersForm.elements[0].value.trim()
-    };
-
-    if (editingIndex2 !== null)
-        customers_data_local[editingIndex2].password = newData.password;
-
-    saveAndRender2();
-    alert("Đã cập nhật mật khẩu thành công!");
-    customersPopup.style.display = "none";
-}
-
-customersCancel.addEventListener("click", () => {
-    customersPopup.style.display = "none";
-});
-
 
 function saveAndRender2() {
     localStorage.setItem("customers_data", JSON.stringify(customers_data_local));
