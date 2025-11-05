@@ -3,31 +3,39 @@ const categorys_data = [
         id: "001",
         brand: "Apple",
         country: "US",
-        desc: "Thuong hieu My",
+        desc: "Thương hiệu Mỹ",
         status: "active"
     },
 
     {
         id: "002",
-        brand: "Samsung",
-        country: "KR",
-        desc: "Thuong hieu Han",
+        brand: "Google",
+        country: "US",
+        desc: "Thương hiệu Mỹ",
         status: "active"
     },
 
     {
         id: "003",
-        brand: "xiaomi",
-        country: "CN",
-        desc: "Thuong hieu Trung Quoc",
+        brand: "Samsung",
+        country: "KR",
+        desc: "Thương hiệu Hàn Quốc",
         status: "active"
     },
 
     {
         id: "004",
+        brand: "Xiaomi",
+        country: "CN",
+        desc: "Thương hiệu Trung Quốc",
+        status: "active"
+    },
+
+    {
+        id: "005",
         brand: "Huawei",
         country: "CN",
-        desc: "Thuong hieu Trung Quoc",
+        desc: "Thương hiệu Trung Quốc",
         status: "active"
     }
 ]

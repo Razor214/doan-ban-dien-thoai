@@ -529,7 +529,7 @@ if (btnSearch) {
 }
 if (exportBtn) {
     exportBtn.addEventListener('click', () => {
-        alert('Đã xuất báo cáo thành công! (Dữ liệu dựa trên kết quả lọc hiện tại)');
+        alert('Đã xuất báo cáo thành công!');
     });
 }
 
@@ -817,7 +817,8 @@ const productCancelBtn   = document.getElementById('cancelProduct');
 const prodImgInput       = document.getElementById('prodImg');
 const previewImg         = document.getElementById('previewImg');
 
-let products = (typeof productList !== 'undefined') ? [...productList] : [];
+const { savedProducts } = loadFromLocalStorage();
+let products = savedProducts.length ? savedProducts : (typeof productList !== 'undefined') ? [...productList] : [];
 let editingProductRow = null;
 
 function renderProductTable(data = products) {
@@ -905,6 +906,7 @@ productForm?.addEventListener('submit', (e) => {
     }
 
     renderProductTable();
+    saveToLocalStorage();
     productModal.style.display = 'none';
 });
 
@@ -914,6 +916,7 @@ function deleteProduct(btn) {
     const code = row.cells[1].innerText.trim();
     products = products.filter(p => String(p.code) !== code);
     renderProductTable();
+    saveToLocalStorage();
 }
 
 function searchProductCategory() {
@@ -937,7 +940,8 @@ const importTbody = document.querySelector('#ImportTable tbody');
 const importSearchInput = document.getElementById('searchImport');
 const importCancelBtn   = document.getElementById('cancelImport');
 
-let imports = (typeof importList !== 'undefined') ? [...importList] : [];
+const { savedImports } = loadFromLocalStorage();
+let imports = savedImports.length ? savedImports : (typeof importList !== 'undefined' ? [...importList] : []);
 let editingImportRow = null;
 
 function renderImportTable(data = imports) {
@@ -1045,6 +1049,7 @@ importForm?.addEventListener('submit', (e) => {
     }
 
     renderImportTable();
+    saveToLocalStorage();
     importModal.style.display = 'none';
 });
   
@@ -1054,6 +1059,7 @@ function deleteImport(btn) {
     const id = row.cells[0].innerText.trim();
     imports = imports.filter(i => i.id !== id);
     renderImportTable();
+    saveToLocalStorage();
 }
 
 function searchImport() {
@@ -1108,4 +1114,14 @@ function calculateTotal() {
         total += qty * price;
     });
     document.getElementById('importTotal').value = total;
+}
+function saveToLocalStorage() {
+  localStorage.setItem("products", JSON.stringify(products));
+  localStorage.setItem("imports", JSON.stringify(imports));
+}
+
+function loadFromLocalStorage() {
+  const savedProducts = JSON.parse(localStorage.getItem("products")) || [];
+  const savedImports = JSON.parse(localStorage.getItem("imports")) || [];
+  return { savedProducts, savedImports };
 }

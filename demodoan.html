@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giỏ hàng - SaiGonPhone</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f9ff;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(90deg, #0078d7, #00a3ff);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    main {
+      width: 90%;
+      margin: 30px auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .product-list {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      width: 200px;
+      text-align: center;
+      background: #fdfdfd;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .product h3 {
+      font-size: 1rem;
+    }
+
+    .product button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .product button:hover {
+      background: #005fa3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #0078d7;
+      color: white;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .btn-plus, .btn-minus {
+      background: #3498db;
+    }
+
+    .btn-remove {
+      background: #e74c3c;
+    }
+
+    .btn-update {
+      background: #0078d7;
+    }
+
+    .btn-checkout {
+      background: #27ae60;
+    }
+
+    .btn-back {
+      background: #5dade2;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-top: 20px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .btn-back:hover {
+      background: #3498db;
+    }
+
+    .cart-summary {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+
+    input.qty-input {
+      width: 50px;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #0078d7;
+      color: white;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>🛒 Giỏ hàng của bạn</header>
+
+  <main>
+    <!-- SẢN PHẨM HOT -->
+    <section class="product-list">
+      <div class="product" data-id="1" data-name="iPhone 15 Pro" data-price="32000000">
+        <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro" />
+        <h3>iPhone 15 Pro</h3>
+        <p>Giá: 32.000.000đ</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+
+      <div class="product" data-id="2" data-name="Samsung Galaxy S24" data-price="25000000">
+        <img src="assets/img/samsung.jpg" alt="Samsung Galaxy S24" />
+        <h3>Samsung Galaxy S24</h3>
+        <p>Giá: 25.000.000đ</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+
+      <div class="product" data-id="3" data-name="Xiaomi 14 Ultra" data-price="20000000">
+        <img src="assets/img/xiaomi.jpg" alt="Xiaomi 14 Ultra" />
+        <h3>Xiaomi 14 Ultra</h3>
+        <p>Giá: 20.000.000đ</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+    </section>
+
+    <!-- BẢNG GIỎ HÀNG -->
+    <section>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>-</th>
+            <th>Số lượng</th>
+            <th>+</th>
+            <th>Tổng</th>
+            <th>Xóa</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="cart-summary">
+        <p><strong>Tổng cộng:</strong> <span id="totalPrice">0đ</span></p>
+        <button class="btn btn-update">Cập nhật giỏ hàng</button>
+        <button class="btn btn-checkout">Đặt hàng</button>
+        <a href="index.html" class="btn-back">⬅ Tiếp tục đặt hàng</a>
+      </div>
+    </section>
+  </main>
+  <script>
+    const cart = {};
+    const cartTableBody = document.querySelector("#cartTable tbody");
+    const totalPriceEl = document.getElementById("totalPrice");
+
+    // ======= THÊM VÀO GIỎ =======
+    document.querySelectorAll(".btn-add").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const product = btn.closest(".product");
+        const id = product.dataset.id;
+        const name = product.dataset.name;
+        const price = parseInt(product.dataset.price);
+
+        if (!cart[id]) {
+          cart[id] = { name, price, qty: 1 };
+        } else {
+          cart[id].qty++;
+        }
+
+        renderCart();
+      });
+    });
+
+    // ======= HIỂN THỊ GIỎ HÀNG =======
+    function renderCart() {
+      cartTableBody.innerHTML = "";
+      let total = 0;
+
+      for (const id in cart) {
+        const item = cart[id];
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.price.toLocaleString()}đ</td>
+          <td><button class="btn btn-minus" data-id="${id}">-</button></td>
+          <td><input type="number" class="qty-input" min="1" value="${item.qty}" data-id="${id}"></td>
+          <td><button class="btn btn-plus" data-id="${id}">+</button></td>
+          <td>${subtotal.toLocaleString()}đ</td>
+          <td><button class="btn btn-remove" data-id="${id}">Xóa</button></td>
+        `;
+        cartTableBody.appendChild(row);
+      }
+
+      totalPriceEl.textContent = total.toLocaleString() + "đ";
+    }
+
+    // ======= XỬ LÝ NÚT TRONG GIỎ =======
+    cartTableBody.addEventListener("click", e => {
+      const id = e.target.dataset.id;
+
+      if (e.target.classList.contains("btn-plus")) {
+        cart[id].qty++;
+        renderCart();
+      }
+
+      if (e.target.classList.contains("btn-minus")) {
+        if (cart[id].qty > 1) {
+          cart[id].qty--;
+        } else {
+          delete cart[id];
+        }
+        renderCart();
+      }
+
+      if (e.target.classList.contains("btn-remove")) {
+        if (confirm("Bạn có chắc muốn xóa sản phẩm này không?")) {
+          delete cart[id];
+          renderCart();
+        }
+      }
+    });
+
+    // ======= NHẬP SỐ LƯỢNG TRỰC TIẾP =======
+    cartTableBody.addEventListener("change", e => {
+      if (e.target.classList.contains("qty-input")) {
+        const id = e.target.dataset.id;
+        const qty = parseInt(e.target.value);
+        if (qty <= 0) delete cart[id];
+        else cart[id].qty = qty;
+        renderCart();
+      }
+    });
+
+    // ======= CẬP NHẬT =======
+    document.querySelector(".btn-update").addEventListener("click", () => {
+      renderCart();
+      alert("Giỏ hàng đã được cập nhật!");
+    });
+
+    // ======= ĐẶT HÀNG =======
+    document.querySelector(".btn-checkout").addEventListener("click", () => {
+      if (Object.keys(cart).length === 0) {
+        alert("Giỏ hàng trống! Không thể đặt hàng.");
+        return;
+      }
+      alert("Đặt hàng thành công! Hãy chú ý theo dõi thông báo về đơn hàng");
+      for (const id in cart) delete cart[id];
+      renderCart();
+    });
+  </script>
+</body>
+<footer>
+    © 2025 SaiGonPhone | Thiết kế bởi Nhóm 6 – Khoa CNTT, Đại học Sài Gòn
+  </footer>
+</html>
+
+

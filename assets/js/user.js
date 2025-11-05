@@ -200,18 +200,46 @@ function handleUrlParams() {
 function toggleEditProfile() {
   const profileInfo = document.getElementById("profile-info");
   const profileForm = document.getElementById("profileForm");
-  
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) return;
+
   if (profileForm.style.display === "none") {
     // Hiện form chỉnh sửa
     profileInfo.style.display = "none";
     profileForm.style.display = "block";
-    
+
     // Điền thông tin hiện tại vào form
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     document.getElementById("profileFullName").value = currentUser.fullName || "";
     document.getElementById("profileEmail").value = currentUser.email || "";
     document.getElementById("profilePhone").value = currentUser.phone || "";
-    localStorage.setItem("users", JSON.stringify(usersData));
+
+    // Gắn sự kiện submit cho form (chỉ gắn 1 lần)
+    profileForm.onsubmit = function (e) {
+      e.preventDefault();
+
+      // Lấy dữ liệu mới từ form
+      const updatedUser = {
+        ...currentUser, // giữ lại username, password, role
+        fullName: document.getElementById("profileFullName").value.trim(),
+        email: document.getElementById("profileEmail").value.trim(),
+        phone: document.getElementById("profilePhone").value.trim()
+      };
+
+      // Cập nhật currentUser
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+      // Cập nhật trong usersData
+      const index = usersData.findIndex(u => u.username === currentUser.username);
+      if (index !== -1) {
+        usersData[index] = updatedUser;
+        localStorage.setItem("users", JSON.stringify(usersData));
+      }
+
+      // Hiển thị lại thông tin
+      loadProfileInfo();
+      profileInfo.style.display = "block";
+    };
   } else {
     // Ẩn form chỉnh sửa
     profileInfo.style.display = "block";
