@@ -155,7 +155,10 @@ header .logo img {
 .admin-section.active {
     display: block;
 }
-
+#home-section p{
+    display: flex;
+    justify-content: center;
+}
 /* ========================== BẢNG DỮ LIỆU ========================== */
 table {
     width: 100%;
@@ -295,7 +298,32 @@ th {
     table-layout: fixed;
 }
 
-/* ========================== QUẢN LÝ LOẠI SẢN PHẨM ========================== */
+/* ========================== QUẢN LÝ PHIẾU NHẬP HÀNG ========================== */
+#import-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#import-section th, #import-section td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+#import-section .top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  margin-bottom: 10px;
+}
+
+.popup-content input, .popup-content select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
 
 /* ========================== QUẢN LÝ GIÁ BÁN ========================== */
 .admin6 {
@@ -671,7 +699,6 @@ button:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     animation: zoomIn 0.25s ease;
     position: relative;
-    max-width: 1400px;
     width: 100%;
 }
 
@@ -1027,11 +1054,13 @@ button:hover {
 
 /* ========================== FOOTER ========================== */
 footer {
+    display: block;
     text-align: center;
     padding: 10px;
     background: #1447b6;
     color: white;
     font-size: 14px;
+    margin-top: 100px;
 }
 
 /* ========================== ANIMATION ========================== */
@@ -1058,7 +1087,10 @@ footer {
         transform: scale(1);
     }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4a3d0515b30c08c27f361e9d9dc2e1a9eb3fe8e9
 /* Quan ly loai san pham va khach hang */
 .cover {
     background: white;

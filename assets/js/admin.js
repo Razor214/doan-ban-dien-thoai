@@ -1,94 +1,3 @@
-/* ======================================================
-   🔹 QUẢN LÝ SẢN PHẨM
-====================================================== */
-const productModal = document.getElementById('ProductPopup');
-const productForm = document.getElementById('ProductForm');
-const productTable = document.querySelector('#ProductTable tbody');
-const cancelProduct = document.getElementById('cancelProduct');
-
-if (typeof productList !== "undefined") {
-    productTable.innerHTML = productList.map(p => `
-    <tr>
-      <td>${p.type}</td>
-      <td>${p.code}</td>
-      <td>${p.name}</td>
-      <td><img src="${p.img || 'assets/img/logo.png'}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"></td>
-      <td>${p.desc}</td>
-      <td class="action">
-        <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
-        <button class="delete" onclick="deleteProduct(this)">Xóa</button>
-      </td>
-    </tr>
-  `).join("");
-} else {
-    console.warn("⚠️ products.js chưa được nạp.");
-}
-
-function openProductModal(mode, btn) {
-    productForm.reset();
-    productModal.style.display = 'flex';
-    editingRow = null;
-
-    if (mode === 'edit' && btn) {
-        const row = btn.closest('tr');
-        document.getElementById('prodType').value = row.cells[0].innerText;
-        document.getElementById('prodCode').value = row.cells[1].innerText;
-        document.getElementById('prodName').value = row.cells[2].innerText;
-        document.getElementById('prodImg').value = row.cells[3].querySelector('img').src;
-        document.getElementById('prodDesc').value = row.cells[4].innerText;
-        editingRow = row;
-    }
-}
-
-productForm.onsubmit = e => {
-    e.preventDefault();
-    const newProd = {
-        type: document.getElementById('prodType').value.trim(),
-        code: document.getElementById('prodCode').value.trim(),
-        name: document.getElementById('prodName').value.trim(),
-        image: document.getElementById('prodImg').value.trim() || 'assets/img/logo.png',
-        desc: document.getElementById('prodDesc').value.trim()
-    };
-
-    if (!newProd.type || !newProd.code || !newProd.name) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
-        return;
-    }
-
-    if (editingRow) {
-        const index = editingRow.rowIndex - 1;
-        products[index] = newProd;
-    } else {
-        products.push(newProd);
-    }
-
-    localStorage.setItem('products', JSON.stringify(products));
-    renderProductTable();
-    productModal.style.display = 'none';
-};
-
-cancelProduct.onclick = () => productModal.style.display = 'none';
-
-function deleteProduct(btn) {
-    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-        const row = btn.closest('tr');
-        const code = row.cells[1].innerText;
-        products = products.filter(p => p.code !== code);
-        localStorage.setItem('products', JSON.stringify(products));
-        renderProductTable();
-    }
-}
-
-function searchProductCategory() {
-    const keyword = document.getElementById('searchProductCategory').value.trim().toLowerCase();
-    const filtered = products.filter(p =>
-        p.name.toLowerCase().includes(keyword) ||
-        p.code.toLowerCase().includes(keyword) ||
-        p.type.toLowerCase().includes(keyword)
-    );
-    renderProductTable(filtered);
-}
-
 //Quản lý giá bán
 const priceModal = document.getElementById('popup');
 const form = document.getElementById('productadd');
@@ -262,15 +171,6 @@ function confirmExit() {
     document.getElementById('price-section').style.display = 'none';
     document.getElementById('home-section').style.display = 'block';
     document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
-}
-
-function exportData() {
-    document.getElementById('Xuatfile').style.display = 'flex';
-    document.getElementById('confirm').onclick = () => {
-        alert('Xuất dữ liệu thành công!');
-        document.getElementById('Xuatfile').style.display = 'none';
-    };
-    document.getElementById('confirm-no').onclick = () => document.getElementById('Xuatfile').style.display = 'none';
 }
 //Quản lý đơn đặt hàng 
 const orderData = [
@@ -674,14 +574,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     menuItems.forEach(item => {
         item.addEventListener("click", (e) => {
-            e.preventDefault();
             const target = item.dataset.section;
             openSection(`${target}-section`);
         });
     });
 
     // Hiển thị mặc định
-    openSection("home-section");
+    openSection("product-section");
 });
 function openSection(id) {
     // Ẩn tất cả section
@@ -907,3 +806,306 @@ function saveAndRender2() {
 }
 
 renderCustomers();
+/* ======================================================
+   QUẢN LÝ DANH MỤC SẢN PHẨM
+====================================================== */
+const productModal       = document.getElementById('ProductPopup');
+const productForm        = document.getElementById('ProductForm');
+const productTbody       = document.querySelector('#ProductTable tbody');
+const productSearchInput = document.getElementById('searchProductCategory');
+const productCancelBtn   = document.getElementById('cancelProduct');
+const prodImgInput       = document.getElementById('prodImg');
+const previewImg         = document.getElementById('previewImg');
+
+let products = (typeof productList !== 'undefined') ? [...productList] : [];
+let editingProductRow = null;
+
+function renderProductTable(data = products) {
+    productTbody.innerHTML = data.map(p => `
+        <tr>
+            <td>${p.type}</td>
+            <td>${p.code}</td>
+            <td>${p.name}</td>
+            <td>
+                <img src="${p.img || 'assets/img/logo.png'}" 
+                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+            </td>
+            <td>${p.desc}</td>
+            <td class="action">
+                <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
+                <button class="delete" onclick="deleteProduct(this)">Xóa</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+     renderProductTable();
+});
+
+function openProductModal(mode, btn) {
+    productForm.reset();
+    previewImg.src = "assets/img/logo.png";
+    productModal.style.display = 'flex';
+    editingProductRow = null;
+
+    if (mode === 'edit' && btn) {
+        const row = btn.closest('tr');
+        document.getElementById('prodType').value = row.cells[0].innerText.trim();
+        document.getElementById('prodCode').value = row.cells[1].innerText.trim();
+        document.getElementById('prodName').value = row.cells[2].innerText.trim();
+        previewImg.src = row.cells[3].querySelector('img').src;
+        document.getElementById('prodDesc').value = row.cells[4].innerText.trim();
+        editingProductRow = row;
+    }
+}
+
+productCancelBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    productModal.style.display = 'none';
+});
+
+prodImgInput?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            previewImg.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+productForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const newProd = {
+        type:  document.getElementById('prodType').value.trim(),
+        code:  document.getElementById('prodCode').value.trim(),
+        name:  document.getElementById('prodName').value.trim(),
+        img:   previewImg.src || "assets/img/logo.png",
+        desc:  document.getElementById('prodDesc').value.trim()
+    };
+
+    if (!newProd.type || !newProd.code || !newProd.name) {
+        alert('⚠️ Vui lòng nhập đầy đủ thông tin sản phẩm!');
+        return;
+    }
+
+    if (editingProductRow) {
+        const oldCode = editingProductRow.cells[1].innerText.trim();
+        const idx = products.findIndex(p => String(p.code) === oldCode);
+        if (idx > -1) products[idx] = newProd;
+    } else {
+        if (products.some(p => String(p.code) === newProd.code)) {
+            alert('⚠️ Mã sản phẩm đã tồn tại!');
+            return;
+        }
+        products.unshift(newProd);
+    }
+
+    renderProductTable();
+    productModal.style.display = 'none';
+});
+
+function deleteProduct(btn) {
+    if (!confirm('Xóa sản phẩm này?')) return;
+    const row = btn.closest('tr');
+    const code = row.cells[1].innerText.trim();
+    products = products.filter(p => String(p.code) !== code);
+    renderProductTable();
+}
+
+function searchProductCategory() {
+    const keyword = productSearchInput.value.trim().toLowerCase();
+    const filtered = products.filter(p =>
+        p.type.toLowerCase().includes(keyword) ||
+        String(p.code).toLowerCase().includes(keyword) ||
+        p.name.toLowerCase().includes(keyword)
+    );
+    renderProductTable(filtered);
+}
+
+
+
+/* ======================================================
+               QUẢN LÝ NHẬP SẢN PHẨM
+====================================================== */
+const importModal = document.getElementById('ImportPopup');
+const importForm  = document.getElementById('ImportForm');
+const importTbody = document.querySelector('#ImportTable tbody');
+const importSearchInput = document.getElementById('searchImport');
+const importCancelBtn   = document.getElementById('cancelImport');
+
+let imports = (typeof importList !== 'undefined') ? [...importList] : [];
+let editingImportRow = null;
+
+function renderImportTable(data = imports) {
+    importTbody.innerHTML = data.map(i => `
+    <tr>
+        <td>${i.id}</td>
+        <td>${i.date}</td>
+        <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
+        <td>${i.status}</td>
+        <td class="action">
+            <button class="edit" onclick="openImportModal('edit', this)">Sửa</button>
+            <button class="delete" onclick="deleteImport(this)">Xóa</button>
+        </td>
+    </tr>
+`).join("")
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+     renderImportTable();
+});
+function openImportModal(mode, btn) {
+    importForm.reset();
+    importModal.style.display = 'flex';
+    editingImportRow = null;
+
+    if (mode === 'add') {
+        document.getElementById('importCode').value = 'PN';
+        loadProductItems([]);
+        document.getElementById('importStatus').value = 'Đang xử lý'; 
+        document.getElementById('importCode').readOnly = false; 
+        document.getElementById('importTotal').value = 0;
+        return;
+    }
+
+    if (mode === 'edit' && btn) {
+        const row = btn.closest('tr');
+        const idToEdit = row.cells[0].innerText.trim();
+        const status = row.cells[3].innerText.trim();
+        const record = imports.find(i => i.id === idToEdit);
+
+        if (status === "Hoàn thành") {
+            alert("❌ Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
+            importModal.style.display = 'none'; 
+            return;
+        }
+
+        if (record) {
+            document.getElementById('importCode').value = record.id;
+            document.getElementById('importDate').value = record.date;
+            document.getElementById('importTotal').value = record.total; 
+            document.getElementById('importStatus').value = record.status;
+            loadProductItems(record.items || []);
+            document.getElementById('importCode').readOnly = true; 
+        }
+        editingImportRow = row;
+    }
+}
+
+importCancelBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    importModal.style.display = 'none';
+});
+importForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const items = [];
+    const itemRows = document.querySelectorAll('#productItems .item-row');
+    itemRows.forEach(row => {
+        const name  = row.querySelector('.item-name')?.value?.trim();
+        const qty   = Number(row.querySelector('.item-qty')?.value);
+        const price = Number(row.querySelector('.item-price')?.value);
+        if (name && qty > 0) items.push({ name, qty, price });
+    });
+
+    const total = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+
+    const newPN = {
+        id:     document.getElementById('importCode').value.trim(),
+        date:   document.getElementById('importDate').value,
+        total:  total,
+        status: document.getElementById('importStatus').value,
+        items:  items
+    };
+
+    if (!newPN.id || !newPN.date) {
+        alert('⚠️ Vui lòng nhập mã phiếu và ngày nhập!');
+        return;
+    }
+    
+    if (newPN.items.length === 0) {
+        alert('⚠️ Phiếu nhập phải có ít nhất một sản phẩm!');
+        return;
+    }
+
+    if (editingImportRow) {
+        const idOld = editingImportRow.cells[0].innerText.trim();
+        const idx = imports.findIndex(i => i.id === idOld);
+        if (idx > -1) imports[idx] = newPN;
+    } else {  
+        if (imports.some(i => i.id === newPN.id)) {
+            alert('⚠️ Mã phiếu đã tồn tại!');
+            return;
+        }
+        imports.unshift(newPN);
+    }
+
+    renderImportTable();
+    importModal.style.display = 'none';
+});
+  
+function deleteImport(btn) {
+    if (!confirm('Xóa phiếu nhập này?')) return;
+    const row = btn.closest('tr');
+    const id = row.cells[0].innerText.trim();
+    imports = imports.filter(i => i.id !== id);
+    renderImportTable();
+}
+
+function searchImport() {
+    const keyword = importSearchInput.value.trim().toLowerCase();
+    const filtered = imports.filter(i =>
+        i.id.toLowerCase().includes(keyword) || 
+        i.status.toLowerCase().includes(keyword)
+    );
+    renderImportTable(filtered);
+}
+
+function loadProductItems(items) {
+    const container = document.getElementById('productItems');
+    if (!container) return;
+
+    container.innerHTML = items.map((item, index) => `
+        <div class="item-row" data-index="${index}">
+            <input type="text" class="item-name" placeholder="Tên sản phẩm" value="${item.name || ''}" required>
+            <input type="number" class="item-qty" min="1" value="${item.qty || 1}" required oninput="calculateTotal()">
+            <input type="number" class="item-price" min="0" value="${item.price || 0}" placeholder="Giá nhập" required oninput="calculateTotal()">
+            <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
+        </div>
+    `).join("");
+    calculateTotal();
+}
+
+function addProductItem() {
+    const container = document.getElementById('productItems');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.classList.add('item-row');
+    div.innerHTML = `
+        <input type="text" class="item-name" placeholder="Tên sản phẩm" required>
+        <input type="number" class="item-qty" min="1" value="1" required oninput="calculateTotal()">
+        <input type="number" class="item-price" min="0" placeholder="Giá nhập" required oninput="calculateTotal()">
+        <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
+    `;
+    container.prepend(div); 
+    calculateTotal();
+}
+
+function removeProductItem(btn) {
+    btn.parentElement.remove();
+    calculateTotal();
+}
+function calculateTotal() {
+    let total = 0;
+    const itemRows = document.querySelectorAll('#productItems .item-row');
+    itemRows.forEach(row => {
+        const qty = Number(row.querySelector('.item-qty')?.value) || 0;
+        const price = Number(row.querySelector('.item-price')?.value) || 0;
+        total += qty * price;
+    });
+    document.getElementById('importTotal').value = total;
+}
