@@ -9,7 +9,6 @@
 </head>
 
 <body>
-    <!-- HEADER -->
     <header class="headerbar">
         <nav class="navbar">
             <a href="user.html?tab=profile">Quản Trị Viên</a>
@@ -161,8 +160,10 @@
                     <table class="price-table" id="Bangsp">
                         <thead>
                             <tr>
-                                <th>Nhãn hiệu</th>
-                                <th>Tên sản phẩm</th>
+                                <th>Mã</th>
+                                <th>Mã danh mục</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Mã nhập</th>
                                 <th>Giá vốn</th>
                                 <th>% Lợi nhuận</th>
                                 <th>Giá bán</th>
@@ -176,17 +177,17 @@
             <div class="popup" id="popup">
                 <div class="popup-content">
                     <form id="productadd">
-                        <label for="category">Nhãn hiệu: </label>
-                        <select id="category" required>
-                            <option value="">-- Chọn nhãn hiệu --</option>
-                            <option value="Apple">Apple</option>
-                            <option value="Samsung">Samsung</option>
-                            <option value="Xiaomi">Xiaomi</option>
-                            <option value="Huawei">Huawei</option>
-                        </select>
+                        <label for="id">Mã:</label>
+                        <input type="text" id="id" placeholder="Nhập mã..." required>
 
-                        <label for="name">Tên sản phẩm:</label>
-                        <input type="text" id="name" placeholder="Nhập tên sản phẩm..." required>
+                        <label for="categoryId">Mã danh mục:</label>
+                        <input type="text" id="categoryId" placeholder="Nhập mã danh mục..." required>
+
+                        <label for="productId">Mã sản phẩm:</label>
+                        <input type="text" id="productId" placeholder="Nhập mã sản phẩm..." required>
+
+                        <label for="importId">Mã nhập:</label>
+                        <input type="text" id="importId" placeholder="Nhập mã nhập..." required>
 
                         <label for="cost">Giá vốn (VND)</label>
                         <input type="text" id="cost" required>
@@ -228,23 +229,22 @@
                     <input type="date" id="toDate">
                     <label>Tình trạng đơn hàng:</label>
                     <select id="status">
-                        <option value="">--Tất cả--</option>
-                        <option value="Đã giao">Đã giao</option>
-                        <option value="Đang vận chuyển">Đang vận chuyển</option>
-                        <option value="Đang xử lý">Đang xử lý</option>
-                        <option value="Đang xác nhận">Đang xác nhận</option>
-                        <option value="Đã hủy">Đã hủy</option>
+                        <option value="">--ALL--</option>
+                        <option value="newly ordered">newly ordered</option>
+                        <option value="processed">processed</option>
+                        <option value="delivered">delivered</option>
+                        <option value="cancelled">cancelled</option>
                     </select>
                     <button onclick="Orders()">Lọc</button>
+                    <button onclick="ResetDate()">Đặt lại</button>
                 </div>
                 <div class="wraporders-table">
                     <table class="orders-table">
                         <thead>
                             <tr>
-                                <th>Mã đơn</th>
-                                <th>Khách hàng</th>
+                                <th>Mã đơn</th> 
+                                <th>Mã khách hàng</th>
                                 <th>Ngày đặt</th>
-                                <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Chi tiết</th>
                             </tr>
@@ -258,24 +258,30 @@
                     <h3> Chi tiết đơn hàng </h3>
                     <div class="infoorder">
                         <p><strong>Mã đơn: </strong><span id="detail-id"></span></p>
-                        <p><strong>Khách hàng: </strong><span id="detail-cus"></span></p>
+                        <p><strong>Mã khách hàng: </strong><span id="detail-cus"></span></p>
                         <P><strong>Ngày đặt: </strong><span id="detail-date"></span></P>
-                        <p><strong>Tổng tiền: </strong><span id="detail-total"></span></p>
+                        <p><strong>Địa chỉ: </strong><span id="detail-product"></span></p>
                         <label><strong>Tình trạng: </strong></label>
                         <select id="detailsstatus">
-                            <option value="Đang xác nhận">Đang xác nhận</option>
-                            <option value="Đang xử lý">Đang xử lý</option>
-                            <option value="Đang vận chuyển">Đang vận chuyển</option>
-                            <option value="Đã giao">Đã giao</option>
-                            <option value="Đã hủy">Đã hủy</option>
+                            <option value="newly ordered">newly ordered</option>
+                            <option value="processed">processed</option>
+                            <option value="delivered">delivered</option>
+                            <option value="cancelled">cancelled</option>
                         </select>
                     </div>
+                    <h4>Phương thức thanh toán</h4>
+                    <table class="method-table" id="methodtable">
+                            <thead>
+                                <th>Phương thức</th>
+                                <th>Tình trạng</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     <h4>Danh sách sản phẩm</h4>
                     <table class="mini-table" id="list">
                         <thead>
                             <th>Sản phẩm</th>
                             <th>Số lượng</th>
-                            <th>Giá bán</th>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -293,22 +299,16 @@
                     <span class="closeinventory" onclick="closeInventory()"> x </span>
                 </div>
                 <div class="filter">
-                    <input type="text" id="Namesearch" placeholder="Mã sản phẩm / Tên sản phẩm">
-                    <select id="danhsach">
-                        <option value="">Nhãn hiệu</option>
-                        <option value="Apple">Apple</option>
-                        <option value="Samsung">Samsung</option>
-                        <option value="Xiaomi">Xiaomi</option>
-                        <option value="Vivo">Vivo</option>
-                        <option value="Huawei">Huawei</option>
-                    </select>
+                    <input type="text" id="Namesearch" placeholder="Mã...">
+                    <input type="text" id="Prosearch" placeholder="Mã sản phẩm...">
+                    <input type="text" id="Catesearch" placeholder="Mã danh mục...">
                     <div class="date-filter">
                         <label for="time">Thời gian: </label>
                         <input type="date" id="startDate">
                         <input type="date" id="endDate">
                     </div>
-
                     <button id="Btnsearch">Tìm kiếm</button>
+                     <button onclick="openStockModal('add')">Thêm sản phẩm</button>
                 </div>
                 <div class="sum">
                     <div class="sum-status">
@@ -322,18 +322,68 @@
                     <table class="tablestock" id="Table">
                         <thead>
                             <tr>
-                                <th>Mã SP</th>
-                                <th>Nhãn hiệu</th>
-                                <th>Tên sản phẩm</th>
+                                <th>Mã</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Mã danh mục</th>
                                 <th>Số lượng nhập</th>
-                                <th>Số lượng xuất</th>
+                                <th>Số lượng bán</th>
                                 <th>Số lượng tồn</th>
                                 <th>Ngày cập nhật</th>
                                 <th>Trạng thái</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
+            </div>
+            <div class="popup" id="StockPopup">
+                <div class="popup-content">
+                    <form id="StockFormADD">
+                        <label>Mã:</label>
+                        <input type="text" id="stockMa" required>
+                        <label>Mã sản phẩm</label>
+                        <input type="text" id="stockPro" required>
+                        <label>Mã danh mục:</label>
+                        <input type="text" id="stockCate" required>
+                        <label>Số lượng nhập:</label>
+                        <input type="number" id="stockIn" required>
+                        <label>Số lượng xuất:</label>
+                        <input type="number" id="stockOut" required>
+                        <label>Số lượng tồn:</label>
+                        <input type="number" id="stockStill" required>
+                        <label>Ngày cập nhật:</label>
+                        <input type="date" id="stockUpdate" required>
+                        <div class="popup-foot">
+                            <button type="submit" id="saveStock">Lưu</button>
+                            <button type="button" id="cancelStock">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="popup" id="FormStockPopup">
+                <div class="popup-content">
+                    <form id="IntOut">
+                        <label>Ngày:</label>
+                        <input type="date" id="inoutdate" required>
+                        <label>Hành động:</label>
+                        <select id="inorout">
+                            <option value="Nhập">Nhập</option>
+                            <option value="Xuất">Xuất</option>
+                        </select>
+                        <div id="input-section">
+                            <label>Số lượng nhập:</label>
+                            <input type="number" id="stockFormIn">
+                        </div>
+                        <div id="out-section">
+                            <label>Số lượng xuất:</label>
+                            <input type="number" id="stockFormOut">
+                        </div>
+                       <div class="popup-foot">
+                            <button type="submit" id="creatForm">Lưu</button>
+                            <button type="button" id="cancelForm">Hủy</button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <div id="detailModal" class="modal">
@@ -342,20 +392,20 @@
                     <h3>Chi tiết sản phẩm</h3>
                     <div class="detail-grid">
                         <div class="detail-item">
-                            <label>Mã SP:</label>
+                            <label>Mã:</label>
                             <span id="modalMaSP"></span>
                         </div>
                         <div class="detail-item">
-                            <label>Tên SP:</label>
+                            <label>Mã SP:</label>
                             <span id="modalTenSP"></span>
                         </div>
                         <div class="detail-item">
-                            <label>Nhãn hiệu:</label>
+                            <label>Mã danh mục:</label>
                             <span id="modalNhanhieuSP"></span>
                         </div>
-                        <div class="detail-item">
-                            <label>Ghi chú:</label>
-                            <span id="modalGhichuSP"></span>
+                        <div class="minTon">
+                            <label>*Số lượng tồn tối thiểu: </label>
+                            <span id="minTonLimit">10</span>
                         </div>
                     </div>
                     <h4>Lịch sử Nhập/Xuất gần nhất: </h4>
@@ -365,7 +415,6 @@
                                 <th>Ngày</th>
                                 <th>Hành động</th>
                                 <th>Số lượng</th>
-                                <th>Người thực hiện</th>
                             </tr>
                         </thead>
                         <tbody id="modalHistoryBody"></tbody>
@@ -390,6 +439,15 @@
                     <div class="sum-section">
                         <h4>🟢 Còn hàng <span id="sum-okcount">0</span></h4>
                         <ul id="sum-oklist"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="popup" id="xacnhanStock">
+                <div class="popup-content small">
+                    <p> Bạn có chắc chắn muốn xóa sản phẩm ?</p>
+                    <div class="popup-foot">
+                        <button id="xacnhanxoaStock"> Có </button>
+                        <button id="xacnhankhongStock">Không</button>
                     </div>
                 </div>
             </div>
@@ -479,7 +537,7 @@
     <script src="data/product.js"></script>
     <script src="data/import.js"></script>
     <script src="data/user.js"></script>
-    <script src="assets/js/admin.js"></script>
+    <script src="assets/js/admin.js" type="module"></script>
 
 
 

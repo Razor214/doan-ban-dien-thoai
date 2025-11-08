@@ -1,48 +1,63 @@
 //Quản lý giá bán
+import { priceList } from '../../data/price.js';
+import {orders} from '../../data/order.js';
+import {inventoryList} from '../../data/inventory.js';
 const priceModal = document.getElementById('popup');
 const form = document.getElementById('productadd');
 const cancelBtn = document.getElementById('cancelBtn');
 const table = document.querySelector('#Bangsp tbody');
 const searchInput = document.getElementById('Timkiem')
-const categoryInput = document.getElementById('category');
-const nameInput = document.getElementById('name');
+
+const idPrice = document.getElementById('id');
+const idCatePrice = document.getElementById('categoryId');
+const idProPrice = document.getElementById('productId');
+const idImPrice = document.getElementById('importId');
 const costInput = document.getElementById('cost');
 const profitInput = document.getElementById('profit');
 const priceInput = document.getElementById('sell');
 
 let editingRow = null;
-const data = [
-    { "brand": "Apple", "name": "iPhone 15", "cost": 20000000, "profit": 15, "price": 23000000 },
-    { "brand": "Samsung", "name": "Samsung Galaxy A17 5G", "cost": 4000000, "profit": 15, "price": 6590000 },
-    { "brand": "Oppo", "name": "Oppo A6 Pro", "cost": 5900000, "profit": 15, "price": 7490000 },
-    { "brand": "Xiaomi", "name": "Xiaomi 15T Pro 5G", "cost": 15000000, "profit": 10, "price": 18490000 },
-    { "brand": "Apple", "name": "iPhone Air 256G", "cost": 28300000, "profit": 15, "price": 31490000 },
-    { "brand": "Samsung", "name": "Samsung Galaxy S25 FE 5G", "cost": 12200000, "profit": 10, "price": 14390000 },
-    { "brand": "Vivo", "name": "Vivo V60 5G", "cost": 12300000, "profit": 12, "price": 15990000 },
-    { "brand": "Samsung", "name": "Samsung Galaxy S25 Ultra 5G", "cost": 24500000, "profit": 14, "price": 27280000 },
-    { "brand": "Apple", "name": "iPhone 16", "cost": 18000000, "profit": 15, "price": 21590000 }
-];
-table.innerHTML = data.map(sp => `
-    <tr>
-        <td>${sp.brand}</td>
-        <td>${sp.name}</td>
-        <td>${sp.cost.toLocaleString("vi-VN")}</td>
-        <td>${sp.profit}%</td>
-        <td>${sp.price.toLocaleString("vi-VN")}</td>
-        <td class="action">
-            <button class="edit">Sửa</button> 
-            <button class="delete">Xóa</button>
-        </td>
-    </tr>
+//LocalStorage
+function getLocalPrices(){return JSON.parse(localStorage.getItem('priceList'))||[];}
+function setLocalPrices(list){localStorage.setItem('priceList', JSON.stringify(list));}
+function syncAndRender(){const list = getLocalPrices()
+    renderTable(list);
+}
+function renderTable(list){
+    table.innerHTML = list.map(sp => `
+        <tr>
+            <td>${sp.id}</td>
+            <td>${sp.categoryId}</td>
+            <td>${sp.productId}</td>
+            <td>${sp.importId}</td>
+            <td>${Number(sp.cost).toLocaleString("vi-VN")}</td>
+            <td>${sp.profit}%</td>
+            <td>${Number(sp.price).toLocaleString("vi-VN")}</td>
+            <td class="action">
+                <button class="edit">Sửa</button> 
+                <button class="delete">Xóa</button>
+            </td>
+        </tr>
     `).join("");
+}
+if(!localStorage.getItem('priceList')){
+    setLocalPrices(priceList);
+}
+let list = getLocalPrices();
+syncAndRender();
 table.addEventListener("click", (e) => {
-    if (e.target.classList.contains("edit")) {
-        openPriceModal("edit", e.target);
-    } else if (e.target.classList.contains("delete")) {
-        confirmDelete(e.target);
-    }
+    if (e.target.classList.contains("edit")) {openPriceModal("edit", e.target);} 
+    else if (e.target.classList.contains("delete")) {confirmDelete(e.target);}
 });
+//CHECK LỖI
+function validateID(code, prefix) {
+    return new RegExp(`^${prefix}\\d{3}$`).test(code);
+}
 
+// Kiểm tra số dương > 0
+function validatePositiveNumber(value) {
+    return parseFloat(value) > 0;
+}
 function openPriceModal(mode, btn) {
     form.reset();
     priceInput.value = '';
@@ -51,20 +66,29 @@ function openPriceModal(mode, btn) {
 
     if (mode === 'edit' && btn) {
         const row = btn.closest('tr');
-        categoryInput.value = row.cells[0].innerText;
-        nameInput.value = row.cells[1].innerText;
-        costInput.value = row.cells[2].innerText.replace(/,/g, '');
-        profitInput.value = parseFloat(row.cells[3].innerText);
-        priceInput.value = row.cells[4].innerText.replace(/,/g, '');
+        idPrice.value = row.cells[0].innerText;
+        idCatePrice.value = row.cells[1].innerText;
+        idProPrice.value = row.cells[2].innerText;
+        idImPrice.value = row.cells[3].innerText;
+        costInput.value = row.cells[4].innerText.replace(/,/g, '');
+        profitInput.value = parseFloat(row.cells[5].innerText);
+        priceInput.value = row.cells[6].innerText.replace(/,/g, '');
         editingRow = row;
+        costInput.setAttribute('readonly', true);
+    }else{
+        costInput.removeAttribute('readonly');
     }
 }
-
-cancelBtn.onclick = () => priceModal.style.display = 'none';
-
-costInput.addEventListener('input', updatePrice);
-profitInput.addEventListener('input', updatePrice);
-priceInput.addEventListener('input', updateProfit);
+window.openPriceModal = openPriceModal;
+cancelBtn.onclick = () => {
+    form.reset();
+    priceInput.value = '';
+    [idPrice, idCatePrice, idProPrice, idImPrice, costInput, profitInput, priceInput].forEach(input => {
+        input.style.border = '';
+    });
+    editingRow = null;
+    priceModal.style.display = 'none';
+};
 
 function cleanNumber(value) {
     return parseFloat(value.replace(/[.,\s]/g, '')) || 0;
@@ -91,44 +115,102 @@ function updateProfit() {
         profitInput.value = profit.toFixed(2);
     }
 }
-function formatOnInput(input) {
-    let val = cleanNumber(input.value);
-    input.value = val ? formatNumber(val) : '';
-}
+
+costInput.addEventListener('input', updatePrice);
+profitInput.addEventListener('input', updatePrice);
+priceInput.addEventListener('input', updateProfit);
+
+costInput.addEventListener('blur', () => {
+    let val = cleanNumber(costInput.value);
+    costInput.value = val ? formatNumber(val) : '';
+});
+priceInput.addEventListener('blur', () => {
+    let val = cleanNumber(priceInput.value);
+    priceInput.value = val ? formatNumber(val) : '';
+});
 
 form.onsubmit = (e) => {
     e.preventDefault();
-    const category = categoryInput.value;
-    const name = nameInput.value;
-    const cost = costInput.value;
-    const profit = profitInput.value;
-    const price = priceInput.value;
+    const ID = idPrice.value;
+    const categoryPrice = idCatePrice.value;
+    const productPrice = idProPrice.value;
+    const importPrice = idImPrice.value;
+    const cost = cleanNumber(costInput.value);
+    const profit = parseFloat(profitInput.value);
+    const price = cleanNumber(priceInput.value);
 
-    if (!category || !name || !cost || !profit) {
+    if (!validateID(idPrice.value, 'GN')) {
+        idPrice.style.border = '2px solid red';
+        alert('Mã sản phẩm phải bắt đầu GN và 3 số!');
+        idPrice.focus();
+        return;
+    }
+    if (!validateID(idCatePrice.value, 'TH')) {
+        idCatePrice.style.border = '2px solid red';
+        alert('Mã danh mục phải bắt đầu TH và 3 số!');
+        idCatePrice.focus();
+        return;
+    }
+    if (!validateID(idProPrice.value, 'SP')) {
+        idProPrice.style.border = '2px solid red';
+        alert('Mã sản phẩm phải bắt đầu SP và 3 số!');
+        idProPrice.focus();
+        return;
+    }
+    if (!validateID(idImPrice.value, 'PN')) {
+        idImPrice.style.border = '2px solid red';
+        alert('Mã nhập phải bắt đầu PN và 3 số!');
+        idImPrice.focus();
+        return;
+    }
+    if (!validatePositiveNumber(costInput)) {
+        costInput.style.border = '2px solid red'; 
+        alert('Giá nhập phải lớn hơn 0!'); 
+        return; }
+    if (!validatePositiveNumber(profitInput)) {
+        profitInput.style.border = '2px solid red'; 
+        alert('Lợi nhuận phải lớn hơn 0!'); 
+        return; }
+    if (!validatePositiveNumber(priceInput)) { 
+        priceInput.style.border = '2px solid red';
+        alert('Giá bán phải lớn hơn 0!'); 
+        return; }
+    if (!ID || !categoryPrice || !productPrice || !importPrice || !cost || !profit) {
         alert('Vui lòng nhập đầy đủ thông tin!');
         return;
     }
 
     if (editingRow) {
-        editingRow.cells[0].innerText = category;
-        editingRow.cells[1].innerText = name;
-        editingRow.cells[2].innerText = cost;
-        editingRow.cells[3].innerText = profit + '%';
-        editingRow.cells[4].innerText = price;
+        editingRow.cells[0].innerText = ID;
+        editingRow.cells[1].innerText = categoryPrice;
+        editingRow.cells[2].innerText = productPrice;
+        editingRow.cells[3].innerText = importPrice;
+        editingRow.cells[4].innerText = cost;
+        editingRow.cells[5].innerText = profit + '%';
+        editingRow.cells[6].innerText = price;
+        const index = list.findIndex(item => item.id === ID);
+        if(index !== -1){
+            list[index] = {id: ID, categoryId: categoryPrice, productId: productPrice, importId: importPrice, cost, profit, price };
+        }
     } else {
         const row = table.insertRow();
         row.innerHTML = `
-                <td>${category}</td>
-                <td>${name}</td>
+                <td>${idPrice.value}</td>
+                <td>${idCatePrice.value}</td>
+                <td>${idProPrice.value}</td>
+                <td>${idImPrice.value}</td>
                 <td>${cost}</td>
                 <td>${profit}%</td>
                 <td>${price}</td>
                 <td class="action">
-                    <button class="edit" onclick="openModal('edit', this)">Sửa</button>
-                    <button class="delete" onclick="confirmDelete(this)">Xóa</button>
+                    <button class="edit">Sửa</button>
+                    <button class="delete">Xóa</button>
                 </td>
             `;
+        list.push({ id: ID, categoryId: categoryPrice, productId: productPrice, importId: importPrice, cost, profit, price });
     }
+    setLocalPrices(list);
+    syncAndRender();
     priceModal.style.display = 'none';
 };
 
@@ -143,28 +225,19 @@ function searchProduct() {
     }
 }
 searchInput.addEventListener('input', searchProduct);
-costInput.addEventListener('blur', () => {
-    let val = cleanNumber(costInput.value);
-    costInput.value = val ? formatNumber(val) : '';
-});
-priceInput.addEventListener('blur', () => {
-    let val = cleanNumber(priceInput.value);
-    priceInput.value = val ? formatNumber(val) : '';
-});
-updatePrice();
-
-
 function confirmDelete(btn) {
     const popup = document.getElementById('xacnhan');
     popup.style.display = 'flex';
     const row = btn.closest('tr');
+    const ID = row.cells[0].innerText;
     document.getElementById('xacnhanxoa').onclick = () => {
-        row.remove();
+        list = list.filter(sp => sp.id !==ID);
+        setLocalPrices(list);
+        syncAndRender();
         popup.style.display = 'none';
     };
     document.getElementById('xacnhankhong').onclick = () => popup.style.display = 'none';
 }
-
 function confirmExit() {
     openSection("home-section");
     document.getElementById('xacnhanthoat').style.display = 'none';
@@ -172,65 +245,27 @@ function confirmExit() {
     document.getElementById('home-section').style.display = 'block';
     document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
 }
+window.confirmExit = confirmExit;
 //Quản lý đơn đặt hàng 
-const orderData = [
-    {
-        "id": "AB100",
-        "customer": "Nguyễn Văn A",
-        "date": "2025-10-20",
-        "total": 34000000,
-        "status": "Đã giao",
-        "details": [
-            { "product": "iPhone 17", "quantity": 1, "price": 34000000 }
-        ]
+function getLocalOrders() {
+    return JSON.parse(localStorage.getItem('orderList')) || [];
+}
 
-    },
-    {
-        "id": "AB101",
-        "customer": "Lê Thị C",
-        "date": "2025-10-28",
-        "total": 29990000,
-        "status": "Đang xác nhận",
-        "details": [
-            { "product": "Samsung Galaxy Z Fold5", "quantity": 1, "price": 29990000 }
-        ]
+function setLocalOrders(list) {
+    localStorage.setItem('orderList', JSON.stringify(list));
+}
+function syncAndRenderOrders() {
+    const list = getLocalOrders(); // lấy từ LocalStorage
+    displayOrder(list);             // vẽ lại bảng
+}
+// Khởi tạo dữ liệu nếu chưa có
+if (!localStorage.getItem('orderList')) {
+    setLocalOrders(orders); // dùng orderData mặc định
+}
 
-    },
-    {
-        "id": "AB102",
-        "customer": "Ngô Văn B",
-        "date": "2025-9-25",
-        "total": 35090000,
-        "status": "Đã hủy",
-        "details": [
-            { "product": "iPhone 13", "quantity": 1, "price": 8090000 },
-            { "product": "iPhone 17", "quantity": 1, "price": 35000000 }
-        ]
+let orderList = getLocalOrders();
+syncAndRenderOrders();
 
-
-    },
-    {
-        "id": "AB103",
-        "customer": "Ly Thanh V",
-        "date": "2025-10-25",
-        "total": 14000000,
-        "status": "Đang vận chuyển",
-        "details": [
-            { "product": "iPhone 14", "quantity": 1, "price": 14000000 }
-        ]
-    },
-    {
-        "id": "AB100",
-        "customer": "Nguyễn Lê Thị D",
-        "date": "2025-8-10",
-        "total": 25000000,
-        "status": "Đã giao",
-        "details": [
-            { "product": "iPhone 17", "quantity": 1, "price": 25000000 }
-        ]
-    }
-];
-displayOrder(orderData);
 function displayOrder(orders) {
     const tableBody = document.getElementById("orderTable");
     tableBody.innerHTML = "";
@@ -239,21 +274,27 @@ function displayOrder(orders) {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${order.id}</td>
-            <td>${order.customer}</td>
+            <td>${order.userId}</td>
             <td>${order.date}</td>
-            <td>${order.total.toLocaleString()}đ</td>
             <td>${order.status}</td>
-            <td><button onclick ="showDetails('${order.id}')">Xem chi tiết</button></td>
+            <td><button class="detail-btn" data-id="${order.id}">Xem chi tiết</button></td>
         `;
         tableBody.appendChild(row);
     });
+    tableBody.querySelectorAll(".detail-btn").forEach(btn => {
+        btn.addEventListener("click", e => {
+            const id = e.target.dataset.id;
+            showDetails(id);
+        });
+    });
+
 }
 function Orders() {
     const fromDate = document.getElementById("fromDate").value;
     const toDate = document.getElementById("toDate").value;
     const status = document.getElementById("status").value;
 
-    const filtered = orderData.filter(order => {
+    const filtered = orderList.filter(order => {
         const orderDate = new Date(order.date);
         const from = fromDate ? new Date(fromDate) : null;
         const to = toDate ? new Date(toDate) : null;
@@ -265,41 +306,51 @@ function Orders() {
     displayOrder(filtered);
 }
 function showDetails(orderId) {
-    const order = orderData.find(o => o.id === orderId);
+    const order = orderList.find(o => o.id === orderId);
+    if(!order) return;
     const popup = document.getElementById("details");
 
     document.getElementById("detail-id").textContent = order.id;
-    document.getElementById("detail-cus").textContent = order.customer;
+    document.getElementById("detail-cus").textContent = order.userId;
     document.getElementById("detail-date").textContent = order.date;
-    document.getElementById("detail-total").textContent = order.total.toLocaleString() + " đ";
+    document.getElementById("detail-product").textContent = order.address.value || "";
+    const methodTableBody = document.querySelector("#methodtable tbody");
+    methodTableBody.innerHTML = `
+    <tr>
+        <td>${order.payment.method}</td>
+        <td>${order.payment.confirmed}</td>
+    </tr>
+    `;
     const select = document.getElementById("detailsstatus");
     select.value = order.status;
     const statusFlow = [
-        "Đang xác nhận",
-        "Đang xử lý",
-        "Đang vận chuyển",
-        "Đã hủy",
-        "Đã giao"
+        "newly ordered",
+        "processed",
+        "delivered",
+        "cancelled",
     ];
     const current = statusFlow.indexOf(order.status);
     for (let option of select.options) {
         const optionIndex = statusFlow.indexOf(option.value);
-        if (order.status == "Đã giao" || order.status == "Đã hủy") {
+        if (order.status == "delivered" || order.status == "cancelled") {
             option.disabled = option.value !== order.status;
         } else {
             option.disabled = optionIndex < current;
         }
     }
     const listBody = document.querySelector("#list tbody");
-    listBody.innerHTML = order.details.map(d => `
+    listBody.innerHTML = order.items.map(d => `
         <tr>
-            <td>${d.product}</td>
+            <td>${d.productId}</td>
             <td>${d.quantity}</td>
-            <td>${d.price.toLocaleString()} đ</td>
         </tr>
     `).join("");
     popup.style.display = "flex";
 }
+window.update = update;
+window.showDetails = showDetails;
+window.closeDetails = closeDetails;
+window.closeMain = closeMain;
 function closeDetails() {
     document.getElementById("details").style.display = "none";
 }
@@ -310,109 +361,53 @@ function update() {
     const id = document.getElementById("detail-id").textContent;
     const newStatus = document.getElementById("detailsstatus").value;
 
-    const order = orderData.find(o => o.id === id);
+    const order = orderList.find(o => o.id === id);
     if (order) {
         order.status = newStatus;
-        displayOrder(orderData); // Cập nhật lại bảng
+        setLocalOrders(orderList);
+        syncAndRenderOrders();// Cập nhật lại bảng
         alert("Đã cập nhật trạng thái đơn hàng!");
         closeDetails();
     } else {
         alert("Không tìm thấy đơn hàng để cập nhật!");
     }
 }
+function ResetDate() {
+    document.getElementById("fromDate").value = "";
+    document.getElementById("toDate").value = "";
+    document.getElementById("status").value = "";
+    displayOrder(orderList); // load lại tất cả đơn hàng
+}
+window.Orders = Orders;
+window.ResetDate = ResetDate; 
 //Quản lý tồn kho
+function getInventory() {
+    return JSON.parse(localStorage.getItem('inventoryList')) || [];
+}
 
+function setInventory(list) {
+    localStorage.setItem('inventoryList', JSON.stringify(list));
+}
+if (!localStorage.getItem('inventoryList')) { 
+    setInventory(inventoryList); 
+}
 const tableBody = document.querySelector('#Table tbody');
+const cancelStock = document.getElementById('cancelStock');
 const tonkhoModal = document.getElementById('detailModal');
+const StockModal = document.getElementById('StockPopup');
 const summaryModal = document.getElementById('popup-modal');
 const btnSearch = document.getElementById('Btnsearch');
 const exportBtn = document.getElementById('exportBtn');
 const viewDetails = document.querySelector('.view-details');
 const closeBtns = document.querySelectorAll('.close-modal, .close-popup');
 const nameSearch = document.getElementById('Namesearch');
-const nhanhieuSelect = document.getElementById('danhsach');
-let inventory = [];
-let filterData = [];
-const TonData = [
-    {
-        "maSP": "SP001",
-        "tenSP": "iPhone 15 Pro Max 256GB",
-        "nhanHieu": "Apple",
-        "khoHang": "Cửa hàng Quận 8",
-        "ghiChu": "Hàng mới về, nguyên seal",
-        "slNhap": 50,
-        "slXuat": 35,
-        "slTon": 15,
-        "ngayCapNhat": "2025-10-27",
-        "trangThai": "ok",
-        "minTon": 10,
-        "maxTon": 50,
-        "history": [
-            { "ngay": "2025-10-27", "hanhDong": "Nhập", "soLuong": 20, "nguoiThucHien": "Nguyễn Thị T" },
-            { "ngay": "2025-10-25", "hanhDong": "Xuất", "soLuong": 5, "nguoiThucHien": "Trần Thị V" },
-            { "ngay": "2025-10-20", "hanhDong": "Nhập", "soLuong": 30, "nguoiThucHien": "Lê Văn C" },
-            { "ngay": "2025-10-18", "hanhDong": "Xuất", "soLuong": 30, "nguoiThucHien": "Phạm Minh T" }
-        ]
-    },
-    {
-        "maSP": "SP002",
-        "tenSP": "Samsung Galaxy A80",
-        "nhanHieu": "Samsung",
-        "khoHang": "Cửa hàng Quận 5",
-        "ghiChu": "Hàng mới về, nguyên seal",
-        "slNhap": 80,
-        "slXuat": 78,
-        "slTon": 2,
-        "ngayCapNhat": "2025-10-31",
-        "trangThai": "low",
-        "minTon": 5,
-        "maxTon": 80,
-        "history": [
-            { "ngay": "2025-10-31", "hanhDong": "Xuất", "soLuong": 16, "nguoiThucHien": "Nguyễn Thị T" },
-            { "ngay": "2025-10-25", "hanhDong": "Nhập", "soLuong": 16, "nguoiThucHien": "Trần Thị V" }
-        ]
-    },
-    {
-        "maSP": "SP003",
-        "tenSP": "iPhone 17 Pro Max TB",
-        "nhanHieu": "Apple",
-        "khoHang": "Cửa hàng Quận 10",
-        "ghiChu": "Hàng mới về, nguyên seal",
-        "slNhap": 20,
-        "slXuat": 20,
-        "slTon": 0,
-        "ngayCapNhat": "2025-10-29",
-        "trangThai": "out",
-        "minTon": 3,
-        "maxTon": 25,
-        "history": [
-            { "ngay": "2025-10-29", "hanhDong": "Xuất", "soLuong": 20, "nguoiThucHien": "Nguyễn Thị T" },
-            { "ngay": "2025-10-25", "hanhDong": "Nhập", "soLuong": 16, "nguoiThucHien": "Nguyễn Xuân A" }
-        ]
-    },
-    {
-        "maSP": "SP004",
-        "tenSP": "Redmi Note 2",
-        "nhanHieu": "Xiaomi",
-        "khoHang": "Cửa hàng Quận 8",
-        "ghiChu": "Hàng mới về, nguyên seal",
-        "slNhap": 45,
-        "slXuat": 5,
-        "slTon": 40,
-        "ngayCapNhat": "2025-10-22",
-        "trangThai": "ok",
-        "minTon": 10,
-        "maxTon": 50,
-        "history": [
-            { "ngay": "2025-10-22", "hanhDong": "Nhập", "soLuong": 20, "nguoiThucHien": "Nguyễn Thị T" }
-        ]
-    }
-];
-inventory = TonData;
-displayTon(TonData);
-renderSummary(TonData);
+const searchSP = document.getElementById('Prosearch');
+const searchCate = document.getElementById('Catesearch');
+const startDateInput = document.getElementById('startDate');
+const endDateInput = document.getElementById('endDate');
+const formStock = document.getElementById('StockFormADD');
+const MIN_TON = 10;
 function displayTon(data) {
-    if (!tableBody) return;
     tableBody.innerHTML = '';
     if (data.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">Không tìm thấy sản phẩm.</td></tr>';
@@ -424,18 +419,33 @@ function displayTon(data) {
         if (item.slTon === 0) { statusText = 'Hết hàng'; statusClass = 'out'; }
         else if (item.slTon <= item.minTon) { statusText = 'Sắp hết'; statusClass = 'low'; }
         row.innerHTML = `
-            <td>${item.maSP}</td>
-            <td>${item.nhanHieu}</td>
-            <td>${item.tenSP}</td>
-            <td>${item.slNhap.toLocaleString()}</td>
-            <td>${item.slXuat.toLocaleString()}</td>
-            <td>${item.slTon.toLocaleString()}</td>
+            <td>${item.id}</td>
+            <td>${item.productId}</td>
+            <td>${item.categoryId}</td>
+            <td>${item.slNhap !== undefined ? item.slNhap.toLocaleString() : 0}</td> 
+            <td>${item.slXuat !== undefined ? item.slXuat.toLocaleString() : 0}</td>
+            <td>${item.slTon !== undefined ? item.slTon.toLocaleString() : 0}</td>
             <td>${item.ngayCapNhat}</td>
             <td><span class="${statusClass}">${statusText}</span></td>
+            <td class="action">
+                <button class="inout">Tạo phiếu</button>
+                <button class="delete">Xóa</button>
+            </td>
         `;
-        row.addEventListener('click', () => openModal(item));
+        row.addEventListener('click', (e) => {
+            if(!e.target.classList.contains('inout') && !e.target.classList.contains('delete')){
+                openModal(item);
+            }
+        });
         tableBody.appendChild(row);
-    });
+    }); // lưu LocalStorage
+    renderSummary(data);
+}
+let inventory=getInventory();
+function syncAndRenderInventory() {
+    inventory = getInventory();  // đồng bộ biến inventory với LocalStorage
+    displayTon(inventory);       // vẽ lại bảng
+    renderSummary(inventory);    // cập nhật thống kê
 }
 function renderSummary(data) {
     document.getElementById('outcount').textContent = data.filter(i => i.slTon === 0).length;
@@ -444,11 +454,10 @@ function renderSummary(data) {
 }
 function openModal(item) {
     if (!tonkhoModal) return;
-    document.getElementById('modalMaSP').textContent = item.maSP;
-    document.getElementById('modalTenSP').textContent = item.tenSP;
-    document.getElementById('modalNhanhieuSP').textContent = item.nhanHieu;
-    document.getElementById('modalGhichuSP').textContent = item.ghiChu || 'Không có ghi chú';
-
+    document.getElementById('modalMaSP').textContent = item.id;
+    document.getElementById('modalTenSP').textContent = item.productId;
+    document.getElementById('modalNhanhieuSP').textContent = item.categoryId;
+    document.getElementById('minTonLimit').textContent = item.minTon;
     const historyBody = document.getElementById('modalHistoryBody');
     historyBody.innerHTML = '';
     if (item.history && item.history.length > 0) {
@@ -461,7 +470,6 @@ function openModal(item) {
                     <td>${hist.ngay}</td>
                     <td class="${hist.hanhDong === 'Xuất' ? 'action-xuat' : 'action-nhap'}">${hist.hanhDong}</td>
                     <td>${hist.soLuong.toLocaleString()}</td>
-                    <td>${hist.nguoiThucHien}</td>
                 `;
                 historyBody.appendChild(row);
             });
@@ -472,29 +480,25 @@ function openModal(item) {
 }
 function openSummaryModal() {
     if (!summaryModal) return;
+     const inventory = getInventory();
     const outOfStock = inventory.filter(item => item.slTon === 0);
     const lowStock = inventory.filter(item => item.slTon > 0 && item.slTon <= item.minTon);
     const inStock = inventory.filter(item => item.slTon > item.minTon);
     document.getElementById('sum-outcount').textContent = `(${outOfStock.length})`;
     document.getElementById('sum-lowcount').textContent = `(${lowStock.length})`;
     document.getElementById('sum-okcount').textContent = `(${inStock.length})`;
-    const outList = document.getElementById('sum-outList');
-    const lowList = document.getElementById('sum-lowlist');
-    const okList = document.getElementById('sum-oklist');
-    const createListItems = (list) => list.map(item =>
-        `<li><span class="summary-code">[${item.maSP}]</span> ${item.tenSP}</li>`
-    ).join('');
-
-    outList.innerHTML = outOfStock.length ? createListItems(outOfStock) : '<li>Không có sản phẩm nào.</li>';
-    lowList.innerHTML = lowStock.length ? createListItems(lowStock) : '<li>Không có sản phẩm nào.</li>';
-    okList.innerHTML = inStock.length ? createListItems(inStock) : '<li>Không có sản phẩm nào.</li>';
+    const renderList = (list) => list.map(i => `<li><span class="summary-code">[${i.productId}]</span> Mã DM: ${i.categoryId}</li>`).join('');
+    document.getElementById('sum-outList').innerHTML = outOfStock.length? renderList(outOfStock):'<li>Không có sản phẩm nào.</li>';
+    document.getElementById('sum-lowlist').innerHTML = lowStock.length? renderList(lowStock):'<li>Không có sản phẩm nào.</li>';
+    document.getElementById('sum-oklist').innerHTML = inStock.length? renderList(inStock):'<li>Không có sản phẩm nào.</li>';
 
     summaryModal.classList.add('show');
 }
 if (btnSearch) {
     btnSearch.addEventListener('click', () => {
         const keyword = nameSearch.value.trim().toLowerCase();
-        const nhanHieu = nhanhieuSelect.value;
+        const Pro = searchSP.value.trim().toLowerCase();
+        const Cate = searchCate.value.trim().toLowerCase();
         const start = document.getElementById("startDate").value;
         const end = document.getElementById("endDate").value;
         // Hàm chuẩn hóa ngày (dd/mm/yyyy -> yyyy-mm-dd)
@@ -517,11 +521,12 @@ if (btnSearch) {
         filterData = inventory.filter(item => {
             const itemDate = new Date(item.ngayCapNhat);
             const keywordMatch = !keyword || item.maSP.toLowerCase().includes(keyword) || item.tenSP.toLowerCase().includes(keyword);
-            const brandMatch = !nhanHieu || item.nhanHieu === nhanHieu;
+            const ProMatch = !Pro || item.stockPro.toLowerCase().includes(Pro); 
+            const CateMatch = !Cate || item.stockCate.toLowerCase().includes(Cate); 
             const dateStartMatch = !startDate || itemDate >= startDate;
             const dateEndMatch = !endDate || itemDate <= endDate;
 
-            return keywordMatch && brandMatch && dateStartMatch && dateEndMatch;
+            return keywordMatch && ProMatch && CateMatch && dateStartMatch && dateEndMatch;
         });
         displayTon(filterData);
         renderSummary(filterData);
@@ -541,19 +546,154 @@ if (viewDetails) {
 }
 closeBtns.forEach(btn => {
     btn.onclick = function () {
-        if (tonkhoModal) tonkhoModal.classList.remove('show');
-        if (summaryModal) summaryModal.classList.remove('show');
+        tonkhoModal.classList.remove('show');
+        summaryModal.classList.remove('show');
+        document.getElementById('xacnhanStock').style.display='none';
+        StockModal.style.display='none';
+        phieuStock.style.display='none';
     }
 });
 function closeInventory() {
-    const stockSection = document.getElementById("stock-section");
-    if (stockSection) stockSection.style.display = "none";
-    const modal = document.getElementById("detailModal");
-    const popup = document.getElementById("popup-modal");
-    if (modal) modal.classList.remove("show");
-    if (popup) popup.classList.remove("show");
-    openSection("home-section");
+    document.getElementById('stock-section').style.display='none';
+    tonkhoModal.classList.remove('show');
+    summaryModal.classList.remove('show');
+}
+window.closeInventory=closeInventory;
 
+function openStockModal() {
+    StockModal.style.display = 'flex';
+}
+cancelStock.onclick = () => {
+    StockModal.style.display = 'none';
+    formStock.reset();
+};
+//Tạo phiếu nhập/xuất
+const phieuStock = document.getElementById("FormStockPopup");
+const phieuForm = document.getElementById("IntOut");
+const actionSelect = document.getElementById("inorout");
+const nhapSection = document.getElementById("input-section");
+const xuatSection = document.getElementById("out-section");
+const cancelPhieu = document.getElementById("cancelForm");
+const stockInInput = document.getElementById("stockFormIn");
+const stockOutInput = document.getElementById("stockFormOut");
+tableBody.addEventListener('click', (e) => {
+    if(e.target.classList.contains('inout')){
+        e.stopPropagation();
+        const MA = e.target.closest('tr').children[0].textContent;
+        const SP = inventory.find(sp=>sp.id === MA);
+        if(SP) {
+            openphieuStock(SP);
+        }
+    }else if(e.target.classList.contains('delete')) {
+        e.stopPropagation();
+        confirmDeleteStock(e.target);
+    }
+});
+function updateStockFormVisibility() {
+    const selectedValue = actionSelect.value;
+
+    if (selectedValue === "Nhập") {
+        nhapSection.classList.remove("disabled-section");
+        xuatSection.classList.add("disabled-section");
+        stockOutInput.value = ""; 
+
+    } else if (selectedValue === "Xuất") {
+        nhapSection.classList.add("disabled-section");
+        xuatSection.classList.remove("disabled-section");
+        stockInInput.value = ""; 
+
+        stockOutInput.required = true;
+    } else {
+        nhapSection.classList.add("disabled-section");
+        xuatSection.classList.add("disabled-section");
+        stockInInput.value = "";
+        stockOutInput.value = "";
+    }
+    stockInInput.disabled = nhapSection.classList.contains("disabled-section");
+    stockOutInput.disabled = xuatSection.classList.contains("disabled-section");
+}
+actionSelect.addEventListener("change", updateStockFormVisibility);
+function openphieuStock(sp){
+    phieuStock.style.display ="flex";
+    phieuForm.dataset.maSP = sp.id;
+    phieuForm.reset();
+    actionSelect.value="";
+    updateStockFormVisibility();
+}
+cancelPhieu.addEventListener("click", () => {
+    phieuStock.style.display = "none";
+    phieuForm.reset();
+});
+phieuForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mãSP = phieuForm.dataset.maSP;
+    const hànhĐộng = actionSelect.value;
+    const ngày = document.getElementById("inoutdate").value;
+    const sốNhập = Number(document.getElementById("stockFormIn").value);
+    const sốXuất = Number(document.getElementById("stockFormOut").value);
+    const sp = inventory.find(i => i.id === mãSP);
+    if (!hànhĐộng || !ngày) {
+         alert("Vui lòng chọn Hành động, nhập Người thực hiện và Ngày!");
+         return; // Thoát nếu thiếu thông tin cơ bản
+    }
+    if (!sp) return alert("Không tìm thấy sản phẩm!");
+    if (hànhĐộng === "Nhập" && (isNaN(sốNhập) || sốNhập <= 0)) {
+        alert("Vui lòng nhập số lượng Nhập hợp lệ (lớn hơn 0)!");
+        return;
+    }
+    if (hànhĐộng === "Xuất" && (isNaN(sốXuất) || sốXuất <= 0)) {
+        alert("Vui lòng nhập số lượng Xuất hợp lệ (lớn hơn 0)!");
+        return;
+    }
+    const slHanhDong = hànhĐộng === "Nhập" ? sốNhập : sốXuất;
+    if (hànhĐộng === "Nhập") {
+        sp.slNhap += slHanhDong;
+        sp.slTon += slHanhDong;
+    } else {
+        if (slHanhDong > sp.slTon) {
+             alert(`Không đủ hàng tồn (${sp.slTon}) để xuất ${slHanhDong}!`);
+             return;
+        }
+        sp.slXuat += slHanhDong;
+        sp.slTon -= slHanhDong;
+    }
+    sp.ngayCapNhat = ngày;
+    if (sp.slTon === 0) sp.trangThai = "out";
+    else if (sp.slTon <= sp.minTon) sp.trangThai = "low";
+    else sp.trangThai = "ok";
+
+    sp.history.unshift({
+        ngay: ngày,
+        hanhDong: hànhĐộng,
+        soLuong: slHanhDong
+    });
+    if (sp.history.length > 5) {
+    sp.history = sp.history.slice(0, 5);
+    }
+    displayTon(inventory);
+    renderSummary(inventory); 
+    const currentMa = document.getElementById('modalMaSP')?.textContent;
+    if (tonkhoModal.classList.contains('show') && currentMa === sp.maSP) {
+        openModal(sp); // refresh lại modal với history mới
+    }
+    setInventory(inventory);
+    syncAndRenderInventory();
+    phieuStock.style.display = "none";
+    phieuForm.reset();
+    alert("Đã lưu phiếu và cập nhật tồn kho!");
+});
+function confirmDeleteStock(btn) {
+    const deleteStock = document.getElementById('xacnhanStock');
+    deleteStock.style.display = 'flex';
+    const rowStock = btn.closest('tr');
+    document.getElementById('xacnhanxoaStock').onclick = () => {
+        const maSP = rowStock.children[0].textContent;
+        inventory = inventory.filter(i => i.id !== maSP);
+        setInventory(inventory);
+        syncAndRenderInventory();
+        deleteStock.style.display = 'none';
+    };
+    document.getElementById('xacnhankhongStock').onclick = () => deleteStock.style.display = 'none';
 }
 function openDetailModal(item) {
     tonkhoModal.classList.add('show');
@@ -567,7 +707,105 @@ function openminiPU() {
 function closeMiniPU() {
     summaryModal.classList.remove('show');
 }
+if(formStock){
+    formStock.onsubmit = (e) => {
+        e.preventDefault();
+        const inputSLNhap = document.getElementById('stockIn');
+        const inputSLXuat = document.getElementById('stockOut');
+        const inputSLTon = document.getElementById('stockStill');
+        const MaSP = document.getElementById('stockMa').value.trim();
+        const TenSP = document.getElementById('stockPro').value.trim();
+        const MaCate = document.getElementById('stockCate').value.trim();
+        const SLNhapValue = inputSLNhap.value.trim(); // Dùng Value
+        const SLXuatValue = inputSLXuat.value.trim(); // Dùng Value
+        const SLTonValue = inputSLTon.value.trim();
+        const Ngay = document.getElementById('stockUpdate').value.trim();
+        if (!MaSP || !MaCate || !TenSP || !SLNhapValue || !SLXuatValue || !SLTonValue || !Ngay) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+        let hasNegative = false;
+        
+        // Reset border cho tất cả trước
+        inputSLNhap.style.border = '';
+        inputSLXuat.style.border = '';
+        inputSLTon.style.border = '';
+        
+        if (Number(SLNhapValue) < 0) {
+            inputSLNhap.style.border = '2px solid red'; // Dùng element
+            hasNegative = true;
+        }
+        if (Number(SLXuatValue) < 0) {
+            inputSLXuat.style.border = '2px solid red'; // Dùng element
+            hasNegative = true;
+        }
+        if (Number(SLTonValue) < 0) {
+            inputSLTon.style.border = '2px solid red'; // Dùng element
+            hasNegative = true;
+        }
+        
+        if (hasNegative) {
+            alert('Số lượng không được âm!');
+            return;
+        }
+        let statusText = 'Còn hàng';
+        let statusClass = 'ok';
+        const ton = Number(SLTonValue);
 
+        if (ton === 0) {
+            statusText = 'Hết hàng';
+            statusClass = 'out';
+        } else if (ton <= MIN_TON) {
+            statusText = 'Sắp hết';
+            statusClass = 'low';
+        }
+
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+            <td>${MaSP}</td>
+            <td>${TenSP}</td
+            <td>${MaCate}</td>>
+            <td>${SLNhapValue}</td>
+            <td>${SLXuatValue}</td>
+            <td>${SLTonValue}</td>
+            <td>${Ngay}</td>
+            <td><span class="${statusClass}">${statusText}</span></td>
+            <td class="action">
+                <button class="inout">Tạo phiếu</button>
+                <button class="delete" onclick="confirmDeleteStock(this)">Xóa</button>
+            </td>
+        `;
+        const newItem = {
+            id: MaSP,
+            productId: TenSP,
+            categoryId: MaCate,
+            slNhap: Number(SLNhapValue||0),
+            slXuat: Number(SLXuatValue||0),
+            slTon: Number(SLTonValue||0),
+            ngayCapNhat: Ngay,
+            trangThai: statusClass,
+            minTon: MIN_TON,
+            history: []
+        };
+        inventory.push(newItem);
+        setInventory(inventory);
+        syncAndRenderInventory();
+        StockModal.style.display = 'none'; // Đóng modal
+        formStock.reset();                 // Reset form
+        alert('Đã thêm sản phẩm thành công!');
+    };
+}
+window.syncAndRenderInventory = syncAndRenderInventory;
+window.openModal = openModal; 
+window.openDetailModal = openDetailModal;       
+window.openSummaryModal = openSummaryModal;
+window.closeModal = closeModal;            
+window.openminiPU = openminiPU;            
+window.closeMiniPU = closeMiniPU; 
+window.openStockModal = openStockModal; 
+window.openphieuStock = openphieuStock;  
+window.confirmDeleteStock = confirmDeleteStock;
+syncAndRenderInventory();
 // sidebar
 document.addEventListener("DOMContentLoaded", () => {
     const menuItems = document.querySelectorAll(".sidebar-menu a");

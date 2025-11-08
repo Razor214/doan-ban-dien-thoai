@@ -51,7 +51,7 @@
   return inventoryList;
 }
 */
-const inventoryList = [
+export const inventoryList = [
     {
         id: "TK01",
         productId: "SP01",
