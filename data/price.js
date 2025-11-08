@@ -1,5 +1,5 @@
 // giá vốn lấy từ phiếu nhập, và lúc hiện chỉnh sửa thì không chỉnh được giá vốn, chỉ có thể xem
-export const priceList = [
+const priceList = [
     {
         id: "GN01",
         categoryId: "TH01",

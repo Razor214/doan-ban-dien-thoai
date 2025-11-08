@@ -1,7 +1,4 @@
 //Quản lý giá bán
-import { priceList } from '../../data/price.js';
-import {orders} from '../../data/order.js';
-import {inventoryList} from '../../data/inventory.js';
 const priceModal = document.getElementById('popup');
 const form = document.getElementById('productadd');
 const cancelBtn = document.getElementById('cancelBtn');
@@ -518,9 +515,12 @@ if (btnSearch) {
         if (endDate) {
             endDate.setHours(23, 59, 59, 999);
         }
-        filterData = inventory.filter(item => {
+        let filterData = inventory.filter(item => {
             const itemDate = new Date(item.ngayCapNhat);
-            const keywordMatch = !keyword || item.maSP.toLowerCase().includes(keyword) || item.tenSP.toLowerCase().includes(keyword);
+            const keywordMatch = !keyword || 
+                item.id.toLowerCase().includes(keyword) || 
+                item.productId.toLowerCase().includes(keyword) ||
+                item.categoryId.toLowerCase().includes(keyword);
             const ProMatch = !Pro || item.stockPro.toLowerCase().includes(Pro); 
             const CateMatch = !Cate || item.stockCate.toLowerCase().includes(Cate); 
             const dateStartMatch = !startDate || itemDate >= startDate;
@@ -730,7 +730,21 @@ if(formStock){
         inputSLNhap.style.border = '';
         inputSLXuat.style.border = '';
         inputSLTon.style.border = '';
-        
+        if (!validateID(MaSP, 'TK')) {
+            alert('Mã phải bắt đầu bằng TK (VD: TK01)');
+            document.getElementById('stockMa').style.border = '2px solid red';
+            return;
+        }
+        if (!validateID(TenSP, 'SP')) {
+            alert('Mã sản phẩm phải bắt đầu bằng SP (VD: SP01)');
+            document.getElementById('stockPro').style.border = '2px solid red';
+            return;
+        }   
+        if (!validateID(MaCate, 'TH')) {
+            alert('Mã danh mục phải bắt đầu bằng TH (VD: TH001)');
+            document.getElementById('stockCate').style.border = '2px solid red';
+            return;
+        }   
         if (Number(SLNhapValue) < 0) {
             inputSLNhap.style.border = '2px solid red'; // Dùng element
             hasNegative = true;
@@ -763,8 +777,8 @@ if(formStock){
         const row = tableBody.insertRow();
         row.innerHTML = `
             <td>${MaSP}</td>
-            <td>${TenSP}</td
-            <td>${MaCate}</td>>
+            <td>${TenSP}</td>
+            <td>${MaCate}</td>
             <td>${SLNhapValue}</td>
             <td>${SLXuatValue}</td>
             <td>${SLTonValue}</td>

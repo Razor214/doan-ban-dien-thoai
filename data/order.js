@@ -44,7 +44,7 @@ const orders = [
 ];
 */
 
-export const orders = [
+const orders = [
     {
         id: "DH01",
         userId: "KH01",
