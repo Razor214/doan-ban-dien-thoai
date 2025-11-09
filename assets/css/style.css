@@ -674,12 +674,25 @@ footer a:hover {
 .icon-orders::before { content: "📦 "; font-size: 16px; }
 .icon-admin::before { content: "⚡ "; font-size: 16px; }
 .icon-logout::before { content: "🚪 "; font-size: 16px; }
-/* FIX URGENT - Đổi màu chữ dropdown admin */
-.user-dropdown .dropdown-content a {
-  color: #333 !important;
+/* THÊM VÀO CUỐI FILE assets/css/style.css */
+
+/* FIX: Đổi màu chữ dropdown admin */
+.headerbar .user-dropdown .dropdown-content a {
+  color: #1a1a1a !important;
+  font-weight: 500;
 }
 
-.user-dropdown .dropdown-content a:hover {
-  color: #fff !important;
+.headerbar .user-dropdown .dropdown-content a:hover {
   background-color: #0055ff !important;
+  color: #ffffff !important;
+}
+
+.admin-profile-link, 
+.headerbar .user-dropdown .admin-profile-link {
+  color: #ffffff !important;
+}
+
+.admin-profile-link:hover,
+.headerbar .user-dropdown .admin-profile-link:hover {
+  color: #ffd700 !important;
 }
