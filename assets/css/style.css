@@ -674,3 +674,52 @@ footer a:hover {
 .icon-orders::before { content: "📦 "; font-size: 16px; }
 .icon-admin::before { content: "⚡ "; font-size: 16px; }
 .icon-logout::before { content: "🚪 "; font-size: 16px; }
+/* === ADMIN CONTENT TEXT COLORS === */
+
+/* Đổi màu chữ trong các section admin */
+.admin-section h2,
+.admin-section h3,
+.admin-section h4 {
+  color: #2c3e50 !important;
+}
+
+.admin-section label {
+  color: #2c3e50 !important;
+  font-weight: 600;
+}
+
+.admin-section input,
+.admin-section select,
+.admin-section textarea {
+  color: #2c3e50 !important;
+}
+
+.admin-section button {
+  color: #2c3e50 !important;
+}
+
+.admin-section th {
+  color: #2c3e50 !important;
+}
+
+.admin-section td {
+  color: #2c3e50 !important;
+}
+
+/* Đổi màu placeholder trong admin */
+.admin-section input::placeholder {
+  color: #7f8c8d !important;
+}
+
+/* Đổi màu chữ trong top-bar admin */
+.top-bar input {
+  color: #2c3e50 !important;
+}
+
+.top-bar button {
+  color: #2c3e50 !important;
+}
+
+.top-bar input::placeholder {
+  color: #7f8c8d !important;
+}
