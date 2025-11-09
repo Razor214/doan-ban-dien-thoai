@@ -12,41 +12,42 @@
 <body>
     <!-- HEADER -->
     <!-- HEADER -->
-<header>
-    <div class="logo">
-        <img src="assets/img/logo.png" alt="SaiGonPhone Logo">
-        <h1>SaiGonPhone</h1>
-    </div>
-
-    <nav class="navbar" id="navbar">
-        <a href="index.html" class="bar_right">Trang Chủ</a>
-        
-        <!-- Hiển thị khi chưa đăng nhập -->
-        <div id="guest-links" class="navbar-links">
-            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-            <a href="user.html?tab=register">Đăng ký</a>
+    <header>
+        <div class="logo">
+            <img src="assets/img/logo.png" alt="SaiGonPhone Logo">
+            <h1>SaiGonPhone</h1>
         </div>
-        
-        <!-- Hiển thị khi đã đăng nhập -->
-        <div id="user-links" style="display: none;" class="navbar-links">
-            <div class="user-dropdown">
-                <a href="user.html?tab=profile" class="user-profile-link">
-                    Xin chào, <span id="user-name"></span>
-                    <span class="admin-badge" id="admin-badge" style="display: none;">Admin</span>
-                </a>
-                <div class="dropdown-content">
-                    <a href="index.html" class="icon-home">Về trang chủ</a>
-                    <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
-                    <a href="user.html?tab=orders" class="icon-orders">Đơn hàng của tôi</a>
-                    <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link" style="display: none;">
-                        Quản Trị Viên
+
+        <nav class="navbar" id="navbar">
+            <a href="index.html" class="bar_right">Trang Chủ</a>
+
+            <!-- Hiển thị khi chưa đăng nhập -->
+            <div id="guest-links" class="navbar-links">
+                <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+                <a href="user.html?tab=register">Đăng ký</a>
+            </div>
+
+            <!-- Hiển thị khi đã đăng nhập -->
+            <div id="user-links" style="display: none;" class="navbar-links">
+                <div class="user-dropdown">
+                    <a href="user.html?tab=profile" class="user-profile-link">
+                        Xin chào, <span id="user-name"></span>
+                        <span class="admin-badge" id="admin-badge" style="display: none;">Admin</span>
                     </a>
-                    <a href="#" onclick="logout(); return false;" class="icon-logout">Đăng xuất</a>
+                    <div class="dropdown-content">
+                        <a href="index.html" class="icon-home">Về trang chủ</a>
+                        <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
+                        <a href="user.html?tab=orders" class="icon-orders">Đơn hàng của tôi</a>
+                        <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link"
+                            style="display: none;">
+                            Quản Trị Viên
+                        </a>
+                        <a href="#" onclick="logout(); return false;" class="icon-logout">Đăng xuất</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
     <!------------------ PHẦN TÀI KHOẢN ------------------->
     <div class="auth-container">
         <div class="container">
@@ -261,6 +262,13 @@
             } else {
                 guestLinks.style.display = 'flex';
                 userLinks.style.display = 'none';
+            }
+            function logout() {
+                if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                    localStorage.removeItem('CurrentUser');
+                    window.location.href = 'index.html';
+                }
+                return false;
             }
         });
     </script>
