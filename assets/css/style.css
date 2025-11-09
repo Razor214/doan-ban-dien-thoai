@@ -538,7 +538,7 @@ footer a:hover {
 }
 
 .user-dropdown .dropdown-content a {
-  color: #2c3e50 !important;
+  color: #1a1a1a !important; /* ĐỔI THÀNH MÀU ĐEN ĐẬM */
   padding: 14px 16px;
   text-decoration: none;
   display: block;
@@ -550,7 +550,7 @@ footer a:hover {
 
 .user-dropdown .dropdown-content a:hover {
   background-color: #3498db;
-  color: #ffffff !important;
+  color: #ffffff !important; /* CHỮ TRẮNG KHI HOVER */
 }
 
 .user-dropdown .dropdown-content a:last-child {
