@@ -1191,12 +1191,22 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
-/* SIMPLE WHITE TEXT DROPDOWN */
+/* HORIZONTAL DROPDOWN - ONE ROW */
+.user-dropdown .dropdown-content {
+    display: flex !important;
+    flex-direction: row !important;
+    white-space: nowrap !important;
+    padding: 10px 15px !important;
+}
+
 .user-dropdown .dropdown-content a {
     color: #ffffff !important;
     text-decoration: none !important;
-    display: inline-block;
-    padding: 10px 15px;
+    display: inline-block !important;
+    padding: 8px 15px !important;
+    margin: 0 5px !important;
+    border: none !important;
+    background: none !important;
 }
 
 .user-dropdown .dropdown-content a:hover {
@@ -1207,4 +1217,8 @@ footer {
 /* Remove icons */
 .user-dropdown .dropdown-content a::before {
     content: none !important;
+}
+
+.admin-profile-link {
+    color: #ffffff !important;
 }
