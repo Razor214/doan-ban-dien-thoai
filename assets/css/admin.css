@@ -1191,3 +1191,25 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
+/* THÊM VÀO CUỐI FILE assets/css/admin.css */
+
+/* FIX: Đổi màu chữ dropdown admin */
+.headerbar .user-dropdown .dropdown-content a {
+    color: #1a1a1a !important;
+    font-weight: 500;
+}
+
+.headerbar .user-dropdown .dropdown-content a:hover {
+    background-color: #0055ff !important;
+    color: #ffffff !important;
+}
+
+.admin-profile-link, 
+.headerbar .user-dropdown .admin-profile-link {
+    color: #ffffff !important;
+}
+
+.admin-profile-link:hover,
+.headerbar .user-dropdown .admin-profile-link:hover {
+    color: #ffd700 !important;
+}
