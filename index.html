@@ -37,14 +37,12 @@
         </button>
       </div>
 
-        <nav class="navbar" id="navbar">
-            <a href="index.html" class="bar_right">Trang Chủ</a>
-            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-            <a href="user.html?tab=register">Đăng ký</a>
-            <a href="user.html?tab=profile">Hồ sơ</a>
-            <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
-
-        </nav>
+      <nav class="navbar" id="navbar">
+        <a href="index.html" class="bar_right">Trang Chủ</a>
+        <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+        <a href="user.html?tab=register">Đăng ký</a>
+        <a href="admin.html" class="admin-link" style="display: none">Admin</a>
+      </nav>
     </header>
 
     <!-- TOP MENU -->
@@ -52,17 +50,11 @@
       <div class="dropdown">
         <span>iPhone</span>
         <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="1"
-            >iPhone 15 Pro 512GB</a
-          >
-          <a href="#" class="product-modal-trigger" data-product-id="2"
-            >iPhone 16 Pro Max 256GB</a
-          >
-          <a href="#" class="product-modal-trigger" data-product-id="6"
-            >iPhone 14 Pro Max 128GB</a
-          >
-          <a href="#" class="product-modal-trigger" data-product-id="7"
-            >iPhone 13 Pro Max 128GB</a
+          <a href="#" class="product-modal-trigger" data-product-id="SP01"
+            >iPhone 15 Pro Max 256GB
+          </a>
+          <a href="#" class="product-modal-trigger" data-product-id="SP02"
+            >iPhone 16 Pro Max 512GB</a
           >
         </div>
       </div>
@@ -70,14 +62,8 @@
       <div class="dropdown">
         <span>Samsung</span>
         <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="3"
-            >Galaxy S24 Ultra 8G/256GB</a
-          >
-          <a href="#" class="product-modal-trigger" data-product-id="4"
-            >Galaxy A55 5G 8G/128GB</a
-          >
-          <a href="#" class="product-modal-trigger" data-product-id="8"
-            >Galaxy Z Fold 5 12G/256GB</a
+          <a href="#" class="product-modal-trigger" data-product-id="SP03"
+            >Samsung Galaxy S23 Ultra 12GB|512GB</a
           >
         </div>
       </div>
@@ -85,14 +71,62 @@
       <div class="dropdown">
         <span>Xiaomi</span>
         <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="5"
-            >Xiaomi 14 Ultra 16G/512GB</a
+          <a href="#" class="product-modal-trigger" data-product-id="SP04"
+            >Xiaomi 13 Pro 12GB|256GB</a
           >
-          <a href="#" class="product-modal-trigger" data-product-id="9"
-            >Xiaomi 15T 12G/256GB</a
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Huawei</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="SP05"
+            >Huawei P60 Pro 12GB|256GB</a
           >
-          <a href="#" class="product-modal-trigger" data-product-id="10"
-            >Xiaomi 15T Pro 12G/256GB</a
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Sony</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="SP06"
+            >Sony Xperia 1 V 12GB|256GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>LG</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="SP07"
+            >LG Velvet 2 6GB|128GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Nokia</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="SP08"
+            >Nokia X30 5G 8GB|128GB</a
+          >
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>OnePlus</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="SP09"
+            >OnePlus 11 16GB|256GB
+          </a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span>Google</span>
+        <div class="dropdown-content">
+          <a href="#" class="product-modal-trigger" data-product-id="SP10"
+            >Google Pixel 8 Pro 12GB|512GB</a
           >
         </div>
       </div>
@@ -116,6 +150,12 @@
             <option value="Apple">Apple</option>
             <option value="Samsung">Samsung</option>
             <option value="Xiaomi">Xiaomi</option>
+            <option value="Huawei">Huawei</option>
+            <option value="Sony">Sony</option>
+            <option value="LG">LG</option>
+            <option value="Nokia">Nokia</option>
+            <option value="OnePlus">OnePlus</option>
+            <option value="Google">Google</option>
           </select>
 
           <select id="ramFilter">
@@ -186,42 +226,12 @@
           <div class="product-image-section">
             <div class="main-image">
               <img id="modalProductMainImage" src="" alt="Product Image" />
-              <button class="nav-btn prev-btn" id="modalPrevBtn">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </button>
-              <button class="nav-btn next-btn" id="modalNextBtn">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </button>
             </div>
-            <div class="image-thumbnails" id="modalThumbnails"></div>
           </div>
 
           <div class="product-info-section">
             <div class="product-header">
               <h1 id="modalProductName">Tên sản phẩm</h1>
-            </div>
-
-            <div class="product-colors">
-              <h3>Màu sắc:</h3>
-              <div class="color-options" id="modalColorOptions"></div>
             </div>
 
             <div class="product-price">
@@ -258,39 +268,50 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const navbar = document.getElementById('navbar');
+      document.addEventListener("DOMContentLoaded", () => {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const navbar = document.getElementById("navbar");
 
-      if (currentUser) {
-        // Nếu đã đăng nhập
-        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
-        navbar.innerHTML = `
-      <a href="index.html" class="bar_right">Trang Chủ</a>
-      <a href="user/cart.html">Giỏ Hàng</a>
-      <a href="user.html?tab=profile" class="bar_right user-profile-link">
-        Xin chào, ${currentUser.fullName || currentUser.username}
-      </a>
-      ${isAdmin ? '<a href="admin.html" class="admin-link" style="display:block;">Quản Trị Viên</a>' : ''}
-      <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
-    `;
+        if (currentUser) {
+          // Nếu đã đăng nhập
+          const isAdmin =
+            currentUser.role && currentUser.role.toLowerCase() === "admin";
+          navbar.innerHTML = `
+          <a href="index.html" class="bar_right">Trang Chủ</a>
+          <a href="user/cart.html">Giỏ Hàng</a>
+          <a href="user.html?tab=profile" class="bar_right user-profile-link">
+            Xin chào, ${currentUser.fullName || currentUser.username}
+          </a>
+          ${
+            isAdmin
+              ? '<a href="admin.html" class="admin-link" style="display:block;">Quản Trị Viên</a>'
+              : ""
+          }
+          <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+        `;
+        }
+      });
+
+      function logoutFromHome() {
+        localStorage.removeItem("currentUser");
+        window.location.reload();
       }
-    });
-
-    function logoutFromHome() {
-      localStorage.removeItem('currentUser');
-      window.location.reload();
-    }
     </script>
 
     <!-- FOOTER -->
     <footer>
-        <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn</p>
-        <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
+      <p>
+        © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
+      </p>
+      <p>
+        Liên hệ:
+        <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
+      </p>
     </footer>
 
-    <script src="assets/js/product-data.js"></script>
+    <script src="data/product.js"></script>
+    <script src="data/price.js"></script>
     <script src="assets/js/products.js"></script>
     <script src="assets/js/modal-product.js"></script>
-    </body>
+  </body>
 </html>

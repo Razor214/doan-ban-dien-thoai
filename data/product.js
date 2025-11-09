@@ -3,7 +3,7 @@
 const productList = [
   {
     id: "SP01",
-    name: "iPhone 15 Pro",
+    name: "iPhone 15 Pro Max 256GB",
     categoryId: "TH01",
     img: "assets/img/iphone15promax.png",
     desc: "Quá đẹp",
@@ -15,11 +15,11 @@ const productList = [
     camera: "48MP + 12MP + 12MP",
     battery: "3274 mAh",
     chip: "Apple A17 Pro",
-    os: "iOS 17"
+    os: "iOS 17",
   },
   {
     id: "SP02",
-    name: "iPhone 16 Pro Max",
+    name: "iPhone 16 Pro Max 512GB",
     categoryId: "TH01",
     img: "assets/img/iphone16promax.jpg",
     desc: "Quá mạnh",
@@ -31,11 +31,11 @@ const productList = [
     camera: "48MP + 12MP + 12MP",
     battery: "4685 mAh",
     chip: "Apple A18 Pro",
-    os: "iOS 18"
+    os: "iOS 18",
   },
   {
     id: "SP03",
-    name: "Samsung Galaxy S23 Ultra",
+    name: "Samsung Galaxy S23 Ultra 12GB|512GB",
     categoryId: "TH02",
     img: "assets/img/galaxys23ultra.jpg",
     desc: "Hiệu năng vượt trội",
@@ -47,11 +47,11 @@ const productList = [
     camera: "200MP + 10MP + 10MP + 12MP",
     battery: "5000 mAh",
     chip: "Snapdragon 8 Gen 2",
-    os: "Android 13"
+    os: "Android 13",
   },
   {
     id: "SP04",
-    name: "Xiaomi 13 Pro",
+    name: "Xiaomi 13 Pro 12GB|256GB",
     categoryId: "TH03",
     img: "assets/img/xiaomi13pro.jpg",
     desc: "Giá tốt, cấu hình cao",
@@ -63,11 +63,11 @@ const productList = [
     camera: "50MP + 50MP + 50MP",
     battery: "4820 mAh",
     chip: "Snapdragon 8 Gen 2",
-    os: "Android 13"
+    os: "Android 13",
   },
   {
     id: "SP05",
-    name: "Huawei P60 Pro",
+    name: "Huawei P60 Pro 12GB|256GB",
     categoryId: "TH04",
     img: "assets/img/huaweip60pro.jpg",
     desc: "Camera xuất sắc",
@@ -79,11 +79,11 @@ const productList = [
     camera: "48MP + 48MP + 13MP",
     battery: "4815 mAh",
     chip: "Snapdragon 8+ Gen 1",
-    os: "HarmonyOS 3.1"
+    os: "HarmonyOS 3.1",
   },
   {
     id: "SP06",
-    name: "Sony Xperia 1 V",
+    name: "Sony Xperia 1 V 12GB|256GB",
     categoryId: "TH05",
     img: "assets/img/xperia1v.jpg",
     desc: "Thiết kế tinh tế",
@@ -95,11 +95,11 @@ const productList = [
     camera: "48MP + 12MP + 12MP",
     battery: "5000 mAh",
     chip: "Snapdragon 8 Gen 2",
-    os: "Android 13"
+    os: "Android 13",
   },
   {
     id: "SP07",
-    name: "LG Velvet 2",
+    name: "LG Velvet 2 6GB|128GB",
     categoryId: "TH06",
     img: "assets/img/lgvelvet2.jpg",
     desc: "Mỏng nhẹ, thời trang",
@@ -111,11 +111,11 @@ const productList = [
     camera: "48MP + 8MP + 5MP",
     battery: "4300 mAh",
     chip: "Snapdragon 765G",
-    os: "Android 11"
+    os: "Android 11",
   },
   {
     id: "SP08",
-    name: "Nokia X30 5G",
+    name: "Nokia X30 5G 8GB|128GB",
     categoryId: "TH07",
     img: "assets/img/nokiax305g.jpg",
     desc: "Bền bỉ, thân thiện môi trường",
@@ -127,11 +127,11 @@ const productList = [
     camera: "50MP + 13MP",
     battery: "4200 mAh",
     chip: "Snapdragon 695",
-    os: "Android 12"
+    os: "Android 12",
   },
   {
     id: "SP09",
-    name: "OnePlus 11",
+    name: "OnePlus 11 16GB|256GB",
     categoryId: "TH08",
     img: "assets/img/oneplus11.jpg",
     desc: "Hiệu năng mạnh mẽ",
@@ -143,11 +143,11 @@ const productList = [
     camera: "50MP + 32MP + 48MP",
     battery: "5000 mAh",
     chip: "Snapdragon 8 Gen 2",
-    os: "Android 13"
+    os: "Android 13",
   },
   {
     id: "SP10",
-    name: "Google Pixel 8 Pro",
+    name: "Google Pixel 8 Pro 12GB|512GB",
     categoryId: "TH09",
     img: "assets/img/pixel8pro.jpg",
     desc: "Trí tuệ nhân tạo thông minh",
@@ -159,6 +159,6 @@ const productList = [
     camera: "50MP + 48MP + 48MP",
     battery: "5050 mAh",
     chip: "Google Tensor G3",
-    os: "Android 14"
-  }
+    os: "Android 14",
+  },
 ];
