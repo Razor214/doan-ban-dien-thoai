@@ -538,21 +538,13 @@ footer a:hover {
 }
 
 .user-dropdown .dropdown-content a {
-  color: #1a1a1a !important; /* ĐỔI THÀNH MÀU ĐEN ĐẬM */
-  padding: 14px 16px;
-  text-decoration: none;
-  display: block;
-  border-bottom: 1px solid #ecf0f1;
-  transition: 0.3s;
-  font-weight: 500;
-  font-size: 14px;
+  color: #333 !important;
 }
 
 .user-dropdown .dropdown-content a:hover {
-  background-color: #3498db;
-  color: #ffffff !important; /* CHỮ TRẮNG KHI HOVER */
+  background-color: #0055ff;
+  color: #ffffff !important;
 }
-
 .user-dropdown .dropdown-content a:last-child {
   border-bottom: none;
 }
