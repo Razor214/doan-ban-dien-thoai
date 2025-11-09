@@ -213,11 +213,20 @@
   <script src="assets/js/modal-product.js"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const navbar = document.getElementById('navbar');
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('=== CHECKING USER STATUS ===');
 
-      if (currentUser) {
+      const userData = localStorage.getItem('CurrentUser');
+      console.log('Raw user data from localStorage:', userData);
+
+      const currentUser = userData ? JSON.parse(userData) : null;
+      console.log('Parsed user object:', currentUser);
+
+      const navbar = document.getElementById('navbar');
+      console.log('Navbar element:', navbar);
+
+      if (currentUser && currentUser.username) {
+        console.log('✅ USER LOGGED IN - Updating navbar');
         const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
         const userName = currentUser.fullName || currentUser.username;
 
@@ -233,20 +242,24 @@
                 <div class="dropdown-content">
                     <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
                     <a href="user.html?tab=orders">Đơn hàng của tôi</a>
-                    <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+                    <a href="#" onclick="logoutFromHome(); return false;">Đăng xuất</a>
                 </div>
             </div>
             
             ${isAdmin ? '<a href="admin.html" class="admin-link">Quản Trị Viên</a>' : ''}
         `;
+        console.log('✅ Navbar updated with user name');
+      } else {
+        console.log('❌ NO USER - Keeping default navbar');
       }
     });
 
     function logoutFromHome() {
       if (confirm('Bạn có chắc muốn đăng xuất?')) {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('CurrentUser');
         window.location.href = 'index.html';
       }
+      return false;
     }
   </script>
 </body>
