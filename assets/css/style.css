@@ -167,60 +167,6 @@ header .logo h1 {
   transition: 0.3s;
 }
 
-/* USER DROPDOWN - GỘP TẤT CẢ VÀO ĐÂY */
-.user-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.user-dropdown .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: white;
-  min-width: 200px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-  z-index: 1000;
-  border-radius: 8px;
-  top: 100%;
-  right: 0;
-  margin-top: 5px;
-}
-
-.user-dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.user-dropdown .dropdown-content a {
-  color: #333;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.3s;
-}
-
-.user-dropdown .dropdown-content a:hover {
-  background-color: #f8f9fa;
-  color: #004aad;
-}
-
-.user-dropdown .dropdown-content a:last-child {
-  border-bottom: none;
-}
-
-.user-profile-link {
-  font-weight: 600;
-  color: #2c3e50 !important;
-  background: rgba(255,255,255,0.1);
-  padding: 8px 15px;
-  border-radius: 20px;
-  transition: all 0.3s;
-}
-
-.user-profile-link:hover {
-  background: rgba(255,255,255,0.2);
-}
-
 /* ADMIN HEADER */
 .headerbar {
   background: #2c3e50;
@@ -664,3 +610,234 @@ footer a:hover {
     right: 10px;
   }
 }
+/* ENHANCED USER DROPDOWN STYLES */
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  min-width: 220px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  z-index: 1000;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  border: 1px solid #e1e5e9;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.3s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-dropdown .dropdown-content a {
+  color: #2d3748;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.user-dropdown .dropdown-content a:hover {
+  background: linear-gradient(135deg, #0055ff 0%, #004aad 100%);
+  color: white;
+  transform: translateX(5px);
+}
+
+.user-dropdown .dropdown-content a:last-child {
+  border-bottom: none;
+}
+
+.user-dropdown .dropdown-content a i {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.user-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.user-profile-link {
+  font-weight: 600;
+  color: white !important;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.user-profile-link:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-profile-link::after {
+  content: "▼";
+  font-size: 10px;
+  margin-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+.user-dropdown:hover .user-profile-link::after {
+  transform: rotate(180deg);
+}
+
+/* Admin Badge */
+.admin-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #2d3748 !important;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enhanced Admin Header */
+.headerbar {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.headerbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #0055ff 0%, #00c6ff 100%);
+}
+
+.admin-user-info {
+  display: flex;
+  align-items: center;
+}
+
+.admin-profile-link {
+  color: white !important;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.admin-profile-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Special Admin Menu Item */
+.admin-menu-item {
+  background: linear-gradient(135deg, #0055ff 0%, #004aad 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-left: 4px solid #ffd700 !important;
+}
+
+.admin-menu-item:hover {
+  background: linear-gradient(135deg, #0040cc 0%, #003d8f 100%) !important;
+  transform: translateX(8px) !important;
+}
+
+/* Notification Dot */
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #ff4757;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Enhanced Navbar Layout */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-profile-link {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .user-dropdown .dropdown-content {
+    min-width: 200px;
+    right: -10px;
+  }
+  
+  .admin-profile-link {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  
+  .admin-badge {
+    font-size: 9px;
+    padding: 1px 6px;
+  }
+}
+
+/* Icon Styles using Unicode */
+.icon-home::before { content: "🏠"; }
+.icon-profile::before { content: "👤"; }
+.icon-orders::before { content: "📦"; }
+.icon-admin::before { content: "⚡"; }
+.icon-logout::before { content: "🚪"; }

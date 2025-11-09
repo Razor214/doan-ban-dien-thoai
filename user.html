@@ -19,32 +19,35 @@
 
         <nav class="navbar" id="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
-            
+
             <!-- Hiển thị khi chưa đăng nhập -->
-            <div id="guest-links">
+            <div id="guest-links" class="navbar-links">
                 <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
                 <a href="user.html?tab=register">Đăng ký</a>
             </div>
-            
+
             <!-- Hiển thị khi đã đăng nhập -->
-            <div id="user-links" style="display: none;">
+            <div id="user-links" style="display: none;" class="navbar-links">
                 <div class="user-dropdown">
-                    <a href="user.html?tab=profile" class="bar_right user-profile-link">
-                        Xin chào, <span id="user-name"></span> ▼
+                    <a href="user.html?tab=profile" class="user-profile-link">
+                        👋 Xin chào, <span id="user-name"></span>
+                        <span class="admin-badge" id="admin-badge" style="display: none;">Admin</span>
                     </a>
                     <div class="dropdown-content">
-                        <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
-                        <a href="user.html?tab=orders">Đơn hàng của tôi</a>
-                        <a href="#" onclick="logout(); return false;">Đăng xuất</a>
+                        <a href="index.html" class="icon-home">← Về trang chủ</a>
+                        <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
+                        <a href="user.html?tab=orders" class="icon-orders">Đơn hàng của tôi</a>
+                        <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link"
+                            style="display: none;">
+                            ⚡ Quản Trị Viên
+                            <span class="notification-dot"></span>
+                        </a>
+                        <a href="#" onclick="logout(); return false;" class="icon-logout">Đăng xuất</a>
                     </div>
                 </div>
             </div>
-            
-            <!-- Link Admin (chỉ hiển thị cho admin) -->
-            <a href="admin.html" class="admin-link" style="display:none;" id="admin-main-link">Quản Trị Viên</a>
         </nav>
     </header>
-
     <!------------------ PHẦN TÀI KHOẢN ------------------->
     <div class="auth-container">
         <div class="container">
@@ -226,7 +229,7 @@
     </div>
 
     <script src="assets/js/user.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const userData = localStorage.getItem('CurrentUser');
@@ -234,29 +237,31 @@
 
             const guestLinks = document.getElementById('guest-links');
             const userLinks = document.getElementById('user-links');
-            const adminLink = document.getElementById('admin-main-link');
+            const adminBadge = document.getElementById('admin-badge');
+            const adminMenuLink = document.getElementById('admin-menu-link');
             const userNameSpan = document.getElementById('user-name');
 
             if (currentUser && currentUser.username) {
                 // Ẩn guest links, hiển thị user links
                 guestLinks.style.display = 'none';
-                userLinks.style.display = 'block';
-                
+                userLinks.style.display = 'flex';
+
                 // Hiển thị tên user
                 const userName = currentUser.fullName || currentUser.username;
                 userNameSpan.textContent = userName;
 
-                // Kiểm tra và hiển thị link admin nếu là admin
+                // Kiểm tra và hiển thị badge admin + menu item nếu là admin
                 const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
                 if (isAdmin) {
-                    adminLink.style.display = 'block';
+                    adminBadge.style.display = 'inline-block';
+                    adminMenuLink.style.display = 'flex';
                 } else {
-                    adminLink.style.display = 'none';
+                    adminBadge.style.display = 'none';
+                    adminMenuLink.style.display = 'none';
                 }
             } else {
-                guestLinks.style.display = 'block';
+                guestLinks.style.display = 'flex';
                 userLinks.style.display = 'none';
-                adminLink.style.display = 'none';
             }
         });
     </script>
