@@ -219,16 +219,25 @@
 
       if (currentUser) {
         const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+        const userName = currentUser.fullName || currentUser.username;
 
-        // Phiên bản đơn giản - chỉ hiển thị link đến profile
         navbar.innerHTML = `
             <a href="index.html" class="bar_right">Trang Chủ</a>
-            <a href="user/cart.html">Giỏ Hàng</a>
-            <a href="user.html?tab=profile" class="bar_right user-profile-link">
-                👤 ${currentUser.fullName || currentUser.username}
-            </a>
+            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+            <a href="user.html?tab=register">Đăng ký</a>
+            
+            <div class="user-dropdown">
+                <a href="user.html?tab=profile" class="bar_right user-profile-link">
+                    Xin chào, ${userName} ▼
+                </a>
+                <div class="dropdown-content">
+                    <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
+                    <a href="user.html?tab=orders">Đơn hàng của tôi</a>
+                    <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
+                </div>
+            </div>
+            
             ${isAdmin ? '<a href="admin.html" class="admin-link">Quản Trị Viên</a>' : ''}
-            <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
         `;
       }
     });
