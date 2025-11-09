@@ -1191,3 +1191,11 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
+/* CHỈ ĐỔI MÀU CHỮ DROPDOWN - GIỮ NGUYÊN HIỆN TẠI */
+.user-dropdown .dropdown-content a {
+    color: #333 !important;
+}
+
+.user-dropdown .dropdown-content a:hover {
+    color: #ffffff !important;
+}
