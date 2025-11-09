@@ -42,7 +42,7 @@ button {
     justify-content: flex-end;
     align-items: center;
     padding: 10px 20px;
-    background-color: #f8f9fa;
+    background-color: #1447b6; /* Nền xanh giống sidebar */
     border-bottom: 1px solid #dee2e6;
     height: 60px;
     box-sizing: border-box;
@@ -63,7 +63,7 @@ button {
     display: flex;
     align-items: center;
     padding: 8px 15px;
-    background-color: #007bff;
+    background-color: #1e59e0; /* Xanh đậm hơn một chút */
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -73,7 +73,7 @@ button {
 }
 
 .admin-profile-link:hover {
-    background-color: #0056b3;
+    background-color: #0d3db6;
 }
 
 .dropdown-content {
@@ -83,20 +83,19 @@ button {
 }
 
 .dropdown-content a {
-    color: #333 !important;
+    color: white !important; /* Chữ trắng */
     text-decoration: none;
     padding: 8px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Viền trắng mờ */
     border-radius: 4px;
-    background-color: white;
+    background-color: transparent; /* Nền trong suốt */
     transition: all 0.3s;
     white-space: nowrap;
 }
 
 .dropdown-content a:hover {
-    background-color: #f8f9fa;
-    border-color: #007bff;
-    color: #007bff !important;
+    background-color: rgba(255, 255, 255, 0.2); /* Nền trắng mờ khi hover */
+    border-color: white;
 }
 /* ========================== SIDEBAR ========================== */
 .sidebar {
