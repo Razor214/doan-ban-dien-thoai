@@ -263,13 +263,6 @@
                 guestLinks.style.display = 'flex';
                 userLinks.style.display = 'none';
             }
-            function logout() {
-                if (confirm('Bạn có chắc muốn đăng xuất?')) {
-                    localStorage.removeItem('CurrentUser');
-                    window.location.href = 'index.html';
-                }
-                return false;
-            }
         });
     </script>
 

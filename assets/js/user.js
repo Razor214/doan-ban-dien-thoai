@@ -316,9 +316,12 @@ function togglePassword(inputId, icon) {
 
 // ================== ĐĂNG XUẤT ==================
 function logout() {
-  localStorage.removeItem("CurrentUser");
-  document.getElementById("user-greeting").style.display = "none";
-  showTab("login");
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    localStorage.removeItem("CurrentUser");
+    // Chuyển hướng về trang chủ
+    window.location.href = "index.html";
+  }
+  return false;
 }
 
 // ================== ĐỒNG BỘ MỌI THỨ ==================
