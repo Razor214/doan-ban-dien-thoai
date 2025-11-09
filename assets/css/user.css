@@ -1,5 +1,17 @@
-/* USER AUTHENTICATION STYLES */
+/* USER AUTHENTICATION STYLES - MERGED & OPTIMIZED */
+#auth-section {
+    padding: 40px 20px;
+    background: white;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .auth-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,6 +26,7 @@
     overflow: hidden;
     width: 90%;
     max-width: 400px;
+    margin: 0 auto;
 }
 
 .tabs {
@@ -160,6 +173,21 @@
     text-align: center;
 }
 
+.info-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
 .logout-btn {
     background: #dc3545;
     margin-top: 10px;
@@ -177,8 +205,25 @@
     background: #c82333;
 }
 
+.password-box {
+    position: relative;
+}
+
+.password-box .toggle-pass {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+    #auth-section {
+        padding: 20px 10px;
+        min-height: 60vh;
+    }
+    
     .auth-container {
         padding: 20px 10px;
         min-height: 60vh;
@@ -196,14 +241,8 @@
         padding: 12px;
         font-size: 14px;
     }
-}
-.password-box {
-    position: relative;
-}
-.password-box .toggle-pass {
-    position: absolute;
-    right: 10px;
-    top: 12px;
-    cursor: pointer;
-    font-size: 18px;
+    
+    .container {
+        margin: 10px auto;
+    }
 }
