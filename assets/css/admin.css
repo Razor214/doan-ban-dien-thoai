@@ -1191,17 +1191,12 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
-/* URGENT FIX - FORCE BLACK TEXT */
-.headerbar .user-dropdown .dropdown-content a,
-body .headerbar .user-dropdown .dropdown-content a,
-html body .headerbar .user-dropdown .dropdown-content a {
-    color: #000000 !important;
-    background-color: white !important;
+/* MAKE ALL DROPDOWN TEXT WHITE */
+.user-dropdown .dropdown-content a {
+    color: #ffffff !important;
 }
 
-.headerbar .user-dropdown .dropdown-content a:hover,
-body .headerbar .user-dropdown .dropdown-content a:hover,
-html body .headerbar .user-dropdown .dropdown-content a:hover {
+.user-dropdown .dropdown-content a:hover {
     color: #ffffff !important;
     background-color: #0055ff !important;
 }
