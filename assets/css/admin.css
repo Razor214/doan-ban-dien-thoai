@@ -1191,6 +1191,23 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
+/* MAKE ADMIN LINK SAME AS DROPDOWN ITEMS */
+.admin-profile-link {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    padding: 10px 15px !important;
+    margin: 0 5px !important;
+    border: none !important;
+    background: none !important;
+    font-weight: 500 !important;
+}
+
+.admin-profile-link:hover {
+    color: #ffffff !important;
+    background-color: #0055ff !important;
+}
+
 /* HORIZONTAL DROPDOWN - ONE ROW */
 .user-dropdown .dropdown-content {
     display: flex !important;
@@ -1217,8 +1234,4 @@ footer {
 /* Remove icons */
 .user-dropdown .dropdown-content a::before {
     content: none !important;
-}
-
-.admin-profile-link {
-    color: #ffffff !important;
 }
