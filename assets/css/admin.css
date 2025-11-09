@@ -172,7 +172,7 @@ th,
 td {
     padding: 10px;
     text-align: center;
-    border-bottom: 1px solid #eee;
+    border: 1px solid #eee;
 }
 
 th {
@@ -180,7 +180,7 @@ th {
 }
 
 .action button {
-    margin: 0 3px;
+    margin:  3px;
     padding: 6px 10px;
     border-radius: 4px;
 }
@@ -197,7 +197,7 @@ th {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x: auto ;
     padding: 0 15px 15px 15px;
 }
 
@@ -375,16 +375,19 @@ h2 {
     padding: 0 15px;
 }
 
-input[type="text"],
-input[type="number"],
-select,
+input[type="text"],input[type="number"],select,
 textarea {
     flex: 1;
     padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
+.price-table th,
+.price-table td {
+    padding: 15px 15px;
+    border: 1px solid #eee;
+    text-align: center;
+}
 button {
     padding: 8px 14px;
     border: none;
@@ -504,7 +507,8 @@ button:hover {
 }
 
 .orders-table tbody {
-    display: block;
+    display: block; 
+    overflow-x:auto;
 }
 
 .orders-table tbody tr {
@@ -583,7 +587,7 @@ button:hover {
     margin: 6px 0;
 }
 
-.mini-table {
+.mini-table, .method-table {
     border: 1px solid #ddd;
     width: 100%;
     border-collapse: collapse;
@@ -591,12 +595,11 @@ button:hover {
     table-layout: auto;
 }
 
-.mini-table thead {
+.mini-table thead, .method-table thead {
     background-color: #e9ecef;
 }
 
-.mini-table th,
-.mini-table td {
+.mini-table th,.mini-table td, .method-table th, .method-table td{
     padding: 8px 10px;
     text-align: center;
 }
@@ -674,6 +677,7 @@ button:hover {
     display: block;
     height: 330px;
     overflow-y: auto;
+    overflow-x: auto;
     font-size: 14px;
 }
 
@@ -750,7 +754,9 @@ button:hover {
     cursor: pointer;
     font-size: 14px;
 }
-
+.action .inout {
+    background: rgb(13, 68, 196)
+}
 .hanhdong button:hover {
     transform: translateY(-1px);
 }
@@ -864,7 +870,7 @@ button:hover {
 .tablestock-wrap {
     box-sizing: border-box;
     width: 100%;
-    max-height: 310px;
+    height: auto;
     overflow-y: auto;
     border-radius: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -898,7 +904,20 @@ button:hover {
     background: #f9fafb;
     cursor: pointer;
 }
-
+.disabled-section {
+    opacity: 0.5;
+    pointer-events: none;
+}
+#StockFormADD textarea {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+#cancelStock, #cancelForm, #xacnhankhongStock{background: grey;}
+#cancelStock:hover, #cancelForm:hover, #xacnhankhongStock:hover{background-color: rgb(95, 91, 91);}
+#saveStock, #creatForm, #xacnhanxoaStock {background: #007bff;}
+#saveStock:hover, #creatForm:hover, #xacnhanxoaStock:hover {background: #0056b3;}
 .modal,
 .popup-modal {
     display: none;
