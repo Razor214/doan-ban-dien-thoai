@@ -36,7 +36,7 @@ header .logo h1 {
   font-size: 1.5em;
 }
 
-/* THANH TÌM KIẾM */
+/* thanh tìm kiếm */
 .search-bar {
   display: flex;
   align-items: center;
@@ -82,7 +82,7 @@ header .logo h1 {
   border-color: #003d8f;
 }
 
-/* NAVBAR */
+/* thanh điều hướng */
 .navbar {
   display: flex;
   align-items: center;
@@ -167,35 +167,6 @@ header .logo h1 {
   transition: 0.3s;
 }
 
-/* ADMIN HEADER */
-.headerbar {
-  background: #2c3e50;
-  padding: 15px 30px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.admin-user-info {
-  display: flex;
-  align-items: center;
-}
-
-.admin-profile-link {
-  color: white !important;
-  font-weight: 600;
-  background: rgba(255,255,255,0.1);
-  padding: 10px 20px;
-  border-radius: 25px;
-  transition: all 0.3s;
-  text-decoration: none;
-}
-
-.admin-profile-link:hover {
-  background: rgba(255,255,255,0.2);
-}
-
 /* FOOTER */
 footer {
   text-align: center;
@@ -256,22 +227,26 @@ footer a:hover {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { 
+  from {
     opacity: 0;
     transform: translateY(50px);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* PRODUCT DETAILS */
+/* chi tiết sp */
 .modal .product-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -279,6 +254,7 @@ footer a:hover {
   padding: 30px;
 }
 
+/* hình ảnh */
 .product-image-section {
   position: sticky;
   top: 20px;
@@ -313,6 +289,7 @@ footer a:hover {
   transform: scale(1);
 }
 
+/* Navigation Buttons */
 .nav-btn {
   position: absolute;
   top: 50%;
@@ -355,6 +332,7 @@ footer a:hover {
   color: #333;
 }
 
+/* Image Thumbnails */
 .image-thumbnails {
   display: flex;
   gap: 10px;
@@ -389,6 +367,7 @@ footer a:hover {
   object-fit: contain;
 }
 
+/* Product Info Section */
 .product-info-section {
   padding: 20px 0;
 }
@@ -457,6 +436,7 @@ footer a:hover {
   display: block;
 }
 
+/* thông số kỹ thuật */
 .product-specs {
   margin-bottom: 30px;
 }
@@ -522,7 +502,7 @@ footer a:hover {
   box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
 }
 
-/* RESPONSIVE */
+/* cho các kích thước khác */
 @media (max-width: 768px) {
   header {
     flex-direction: column;
@@ -610,7 +590,8 @@ footer a:hover {
     right: 10px;
   }
 }
-/* ENHANCED USER DROPDOWN STYLES */
+
+/* === SIMPLIFIED USER DROPDOWN STYLES === */
 .user-dropdown {
   position: relative;
   display: inline-block;
@@ -619,127 +600,82 @@ footer a:hover {
 .user-dropdown .dropdown-content {
   display: none;
   position: absolute;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  min-width: 220px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
+  background: white;
+  min-width: 200px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
   z-index: 1000;
   top: 100%;
   right: 0;
-  margin-top: 8px;
+  margin-top: 5px;
   border: 1px solid #e1e5e9;
-  overflow: hidden;
-  animation: dropdownFadeIn 0.3s ease;
-}
-
-@keyframes dropdownFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .user-dropdown .dropdown-content a {
-  color: #2d3748;
-  padding: 12px 16px;
+  color: #333;
+  padding: 14px 16px;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   border-bottom: 1px solid #f1f5f9;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .user-dropdown .dropdown-content a:hover {
-  background: linear-gradient(135deg, #0055ff 0%, #004aad 100%);
-  color: white;
-  transform: translateX(5px);
+  background: #f8f9fa;
+  color: #0055ff;
 }
 
 .user-dropdown .dropdown-content a:last-child {
   border-bottom: none;
 }
 
-.user-dropdown .dropdown-content a i {
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
-}
-
 .user-dropdown:hover .dropdown-content {
   display: block;
 }
 
+/* User Profile Link - SIMPLE VERSION */
 .user-profile-link {
   font-weight: 600;
   color: white !important;
-  background: rgba(255, 255, 255, 0.15);
-  padding: 10px 20px;
-  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 18px;
+  border-radius: 20px;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   gap: 8px;
-  position: relative;
-  backdrop-filter: blur(10px);
+  cursor: pointer;
+  min-height: 44px; /* Better touch target */
 }
 
 .user-profile-link:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.user-profile-link::after {
-  content: "▼";
-  font-size: 10px;
-  margin-left: 5px;
-  transition: transform 0.3s ease;
-}
-
-.user-dropdown:hover .user-profile-link::after {
-  transform: rotate(180deg);
-}
-
-/* Admin Badge */
+/* Admin Badge - SIMPLE */
 .admin-badge {
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  background: #ffd700;
   color: #2d3748 !important;
-  padding: 2px 8px;
-  border-radius: 12px;
+  padding: 3px 8px;
+  border-radius: 10px;
   font-size: 10px;
   font-weight: 700;
-  margin-left: 8px;
+  margin-left: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* Enhanced Admin Header */
+/* === ENHANCED ADMIN HEADER (Keep fancy for admin) === */
 .headerbar {
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  padding: 15px 30px;
+  padding: 15px 25px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.headerbar::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(135deg, #0055ff 0%, #00c6ff 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .admin-user-info {
@@ -750,94 +686,95 @@ footer a:hover {
 .admin-profile-link {
   color: white !important;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px 24px;
-  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 12px 20px;
+  border-radius: 20px;
   transition: all 0.3s ease;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
-  gap: 10px;
-  backdrop-filter: blur(10px);
+  gap: 8px;
+  min-height: 44px; /* Better touch target */
 }
 
 .admin-profile-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* Special Admin Menu Item */
 .admin-menu-item {
-  background: linear-gradient(135deg, #0055ff 0%, #004aad 100%) !important;
+  background: #0055ff !important;
   color: white !important;
   font-weight: 600 !important;
-  border-left: 4px solid #ffd700 !important;
 }
 
 .admin-menu-item:hover {
-  background: linear-gradient(135deg, #0040cc 0%, #003d8f 100%) !important;
-  transform: translateX(8px) !important;
-}
-
-/* Notification Dot */
-.notification-dot {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  background: #ff4757;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  background: #0040cc !important;
 }
 
 /* Enhanced Navbar Layout */
-.navbar {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
 .navbar-links {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-/* Responsive Design */
+/* === MOBILE FRIENDLY - LARGER TOUCH TARGETS === */
 @media (max-width: 768px) {
   .user-profile-link {
-    padding: 8px 16px;
+    padding: 12px 16px;
     font-size: 14px;
+    min-height: 48px; /* Even larger on mobile */
   }
   
   .user-dropdown .dropdown-content {
-    min-width: 200px;
-    right: -10px;
+    min-width: 180px;
+    right: -5px;
+  }
+  
+  .user-dropdown .dropdown-content a {
+    padding: 16px 20px; /* Larger touch targets */
+    min-height: 50px; /* Easy to tap */
+    font-size: 15px;
   }
   
   .admin-profile-link {
-    padding: 10px 18px;
+    padding: 14px 18px;
     font-size: 14px;
+    min-height: 48px;
   }
   
   .admin-badge {
     font-size: 9px;
-    padding: 1px 6px;
+    padding: 2px 6px;
+  }
+  
+  /* Make navbar links easier to tap on mobile */
+  .navbar a {
+    padding: 10px 12px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 }
 
-/* Icon Styles using Unicode */
-.icon-home::before { content: "🏠"; }
-.icon-profile::before { content: "👤"; }
-.icon-orders::before { content: "📦"; }
-.icon-admin::before { content: "⚡"; }
-.icon-logout::before { content: "🚪"; }
+/* === TOUCH-FRIENDLY DROPDOWN FOR MOBILE === */
+@media (max-width: 480px) {
+  .user-profile-link {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+  
+  .user-dropdown .dropdown-content a {
+    padding: 18px 20px;
+    min-height: 54px;
+    font-size: 16px;
+  }
+}
+
+/* Simple Icons */
+.icon-home::before { content: "🏠 "; font-size: 16px; }
+.icon-profile::before { content: "👤 "; font-size: 16px; }
+.icon-orders::before { content: "📦 "; font-size: 16px; }
+.icon-admin::before { content: "⚡ "; font-size: 16px; }
+.icon-logout::before { content: "🚪 "; font-size: 16px; }
