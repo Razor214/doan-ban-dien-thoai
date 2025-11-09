@@ -1191,44 +1191,20 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
-/* SIMPLE HORIZONTAL DROPDOWN - NO ICONS */
-.user-dropdown .dropdown-content {
-    display: none;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.9);
-    min-width: auto;
-    box-shadow: none;
-    border-radius: 8px;
-    z-index: 1000;
-    top: 100%;
-    right: 0;
-    margin-top: 5px;
-    border: 1px solid #555;
-    padding: 10px 15px;
-    white-space: nowrap;
-}
-
+/* SIMPLE WHITE TEXT DROPDOWN */
 .user-dropdown .dropdown-content a {
     color: #ffffff !important;
     text-decoration: none !important;
     display: inline-block;
-    padding: 8px 15px;
-    margin: 0 5px;
-    border: none;
-    background: none;
-    font-weight: 500;
+    padding: 10px 15px;
 }
 
 .user-dropdown .dropdown-content a:hover {
     color: #ffffff !important;
     background-color: #0055ff !important;
-    text-decoration: none !important;
 }
 
+/* Remove icons */
 .user-dropdown .dropdown-content a::before {
     content: none !important;
-}
-
-.user-dropdown:hover .dropdown-content {
-    display: block;
 }
