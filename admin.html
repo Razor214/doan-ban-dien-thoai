@@ -11,10 +11,20 @@
 <body>
     <!-- HEADER -->
     <header class="headerbar">
-        <nav class="navbar">
-            <a href="user.html?tab=profile">Quản Trị Viên</a>
-        </nav>
+        <div class="admin-user-info">
+            <div class="user-dropdown">
+                <a href="user.html?tab=profile" class="admin-profile-link">
+                    Xin chào, Quản Trị Viên ▼
+                </a>
+                <div class="dropdown-content">
+                    <a href="index.html">← Về trang chủ</a>
+                    <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
+                    <a href="#" onclick="logoutFromAdmin(); return false;">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
     </header>
+    
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
@@ -481,7 +491,15 @@
     <script src="data/user.js"></script>
     <script src="assets/js/admin.js"></script>
 
-
+    <script>
+        function logoutFromAdmin() {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                localStorage.removeItem('CurrentUser');
+                window.location.href = 'index.html';
+            }
+            return false;
+        }
+    </script>
 
     <!-- FOOTER -->
     <footer>

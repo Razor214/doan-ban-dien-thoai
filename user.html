@@ -17,18 +17,32 @@
             <h1>SaiGonPhone</h1>
         </div>
 
-        <nav class="navbar">
+        <nav class="navbar" id="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
-            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-            <a href="user.html?tab=register">Đăng ký</a>
-            <a href="user.html?tab=profile">Hồ sơ</a>
-            <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
-            <span id="user-greeting" style="font-weight:bold; margin-left:15px; display:none;">
-                Xin chào, <span id="greeting-name"></span>
-            </span>
-
+            
+            <!-- Hiển thị khi chưa đăng nhập -->
+            <div id="guest-links">
+                <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+                <a href="user.html?tab=register">Đăng ký</a>
+            </div>
+            
+            <!-- Hiển thị khi đã đăng nhập -->
+            <div id="user-links" style="display: none;">
+                <div class="user-dropdown">
+                    <a href="user.html?tab=profile" class="bar_right user-profile-link">
+                        Xin chào, <span id="user-name"></span> ▼
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
+                        <a href="user.html?tab=orders">Đơn hàng của tôi</a>
+                        <a href="#" onclick="logout(); return false;">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Link Admin (chỉ hiển thị cho admin) -->
+            <a href="admin.html" class="admin-link" style="display:none;" id="admin-main-link">Quản Trị Viên</a>
         </nav>
-
     </header>
 
     <!------------------ PHẦN TÀI KHOẢN ------------------->
@@ -207,8 +221,45 @@
                         <p>Quay lại <span class="form-link" onclick="showTab('login')">Đăng nhập</span></p>
                     </div>
                 </div>
-    
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/user.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userData = localStorage.getItem('CurrentUser');
+            const currentUser = userData ? JSON.parse(userData) : null;
+
+            const guestLinks = document.getElementById('guest-links');
+            const userLinks = document.getElementById('user-links');
+            const adminLink = document.getElementById('admin-main-link');
+            const userNameSpan = document.getElementById('user-name');
+
+            if (currentUser && currentUser.username) {
+                // Ẩn guest links, hiển thị user links
+                guestLinks.style.display = 'none';
+                userLinks.style.display = 'block';
+                
+                // Hiển thị tên user
+                const userName = currentUser.fullName || currentUser.username;
+                userNameSpan.textContent = userName;
+
+                // Kiểm tra và hiển thị link admin nếu là admin
+                const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+                if (isAdmin) {
+                    adminLink.style.display = 'block';
+                } else {
+                    adminLink.style.display = 'none';
+                }
+            } else {
+                guestLinks.style.display = 'block';
+                userLinks.style.display = 'none';
+                adminLink.style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 

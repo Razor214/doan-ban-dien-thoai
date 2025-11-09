@@ -125,9 +125,16 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   }
 
   setCurrentUser(found);
-  capNhatMoiThu();
-  window.location.href = "index.html";
+  console.log('✅ User logged in:', found);
 
+  // Kiểm tra nếu là admin
+  if (found.role === 'admin') {
+    console.log('👑 Admin logged in - redirecting to admin page');
+    window.location.href = "admin.html";
+  } else {
+    console.log('👤 User logged in - redirecting to home');
+    window.location.href = "index.html";
+  }
 });
 
 // ================== HIỂN THỊ PROFILE ==================
@@ -166,15 +173,15 @@ function toggleEditProfile() {
   // Ẩn thông tin và nút hành động
   document.getElementById("profile-info").style.display = "none";
   document.getElementById("profileActions").style.display = "none";
-  
+
   // Hiển thị form chỉnh sửa
   document.getElementById("profileForm").style.display = "block";
-  
+
   // Điền thông tin hiện tại
   document.getElementById("profileFullName").value = currentUser.fullName;
   document.getElementById("profileEmail").value = currentUser.email;
   document.getElementById("profilePhone").value = currentUser.phone;
-  
+
   // Reset các field mật khẩu
   document.getElementById("currentPassword").value = "";
   document.getElementById("newPassword").value = "";
@@ -185,11 +192,11 @@ function toggleEditProfile() {
 function cancelEdit() {
   // Ẩn form chỉnh sửa
   document.getElementById("profileForm").style.display = "none";
-  
+
   // Hiển thị lại thông tin và nút hành động
   document.getElementById("profile-info").style.display = "block";
   document.getElementById("profileActions").style.display = "flex";
-  
+
   // Load lại thông tin profile
   loadProfile();
 }
@@ -276,9 +283,9 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   if (passwordChanged) {
     successMsg = "Cập nhật thông tin và đổi mật khẩu thành công!";
   }
-  
+
   showProfileAlert(successMsg, "success");
-  
+
   // Đóng form và load lại
   setTimeout(() => {
     cancelEdit();
@@ -289,7 +296,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 function showProfileAlert(msg, type) {
   const alertDiv = document.getElementById("profile-alert");
   alertDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
-  
+
   setTimeout(() => {
     alertDiv.innerHTML = "";
   }, 3000);

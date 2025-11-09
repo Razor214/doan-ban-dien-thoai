@@ -36,10 +36,29 @@
 
     <nav class="navbar" id="navbar">
       <a href="index.html" class="bar_right">Trang Chủ</a>
-      <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-      <a href="user.html?tab=register">Đăng ký</a>
-      <a href="user.html?tab=profile">Hồ sơ</a>
-      <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
+      
+      <!-- Hiển thị khi chưa đăng nhập -->
+      <div id="guest-links">
+        <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+        <a href="user.html?tab=register">Đăng ký</a>
+      </div>
+      
+      <!-- Hiển thị khi đã đăng nhập -->
+      <div id="user-links" style="display: none;">
+        <div class="user-dropdown">
+          <a href="user.html?tab=profile" class="bar_right user-profile-link">
+            Xin chào, <span id="user-name"></span> ▼
+          </a>
+          <div class="dropdown-content">
+            <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
+            <a href="user.html?tab=orders">Đơn hàng của tôi</a>
+            <a href="#" onclick="logoutFromHome(); return false;">Đăng xuất</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Link Admin (chỉ hiển thị cho admin) -->
+      <a href="admin.html" class="admin-link" style="display:none;" id="admin-main-link">Quản Trị Viên</a>
     </nav>
   </header>
 
@@ -222,35 +241,37 @@
       const currentUser = userData ? JSON.parse(userData) : null;
       console.log('Parsed user object:', currentUser);
 
-      const navbar = document.getElementById('navbar');
-      console.log('Navbar element:', navbar);
+      const guestLinks = document.getElementById('guest-links');
+      const userLinks = document.getElementById('user-links');
+      const adminLink = document.getElementById('admin-main-link');
+      const userNameSpan = document.getElementById('user-name');
 
       if (currentUser && currentUser.username) {
         console.log('✅ USER LOGGED IN - Updating navbar');
-        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+        
+        // Ẩn guest links, hiển thị user links
+        guestLinks.style.display = 'none';
+        userLinks.style.display = 'block';
+        
+        // Hiển thị tên user
         const userName = currentUser.fullName || currentUser.username;
+        userNameSpan.textContent = userName;
 
-        navbar.innerHTML = `
-            <a href="index.html" class="bar_right">Trang Chủ</a>
-            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-            <a href="user.html?tab=register">Đăng ký</a>
-            
-            <div class="user-dropdown">
-                <a href="user.html?tab=profile" class="bar_right user-profile-link">
-                    Xin chào, ${userName} ▼
-                </a>
-                <div class="dropdown-content">
-                    <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
-                    <a href="user.html?tab=orders">Đơn hàng của tôi</a>
-                    <a href="#" onclick="logoutFromHome(); return false;">Đăng xuất</a>
-                </div>
-            </div>
-            
-            ${isAdmin ? '<a href="admin.html" class="admin-link">Quản Trị Viên</a>' : ''}
-        `;
+        // Kiểm tra và hiển thị link admin nếu là admin
+        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+        if (isAdmin) {
+          adminLink.style.display = 'block';
+          console.log('👑 Admin detected - showing admin link');
+        } else {
+          adminLink.style.display = 'none';
+        }
+        
         console.log('✅ Navbar updated with user name');
       } else {
-        console.log('❌ NO USER - Keeping default navbar');
+        console.log('❌ NO USER - Showing guest links');
+        guestLinks.style.display = 'block';
+        userLinks.style.display = 'none';
+        adminLink.style.display = 'none';
       }
     });
 
