@@ -577,7 +577,6 @@ footer a:hover {
   justify-content: flex-end;
   align-items: center;
 }
-
 /* cho các kích thước khác */
 @media (max-width: 768px) {
   header {
