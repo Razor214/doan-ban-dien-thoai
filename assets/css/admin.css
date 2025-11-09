@@ -229,6 +229,10 @@ th {
     border-radius: 6px;
     width: 400px;
     animation: fadeIn 0.25s ease;
+    max-height: 90vh; /* Giới hạn chiều cao theo màn hình */
+    overflow-y: auto; /* Cho phép cuộn */
+    overflow-x: hidden;
+    padding-right: 10px;
 }
 
 .popup-content input,
@@ -326,6 +330,23 @@ th {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
+}
+#ImportDetailPopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000 !important;
+}
+#ImportDetailPopup .popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 

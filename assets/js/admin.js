@@ -1060,305 +1060,508 @@ function saveAndRender2() {
 
 renderCustomers();
 /* ======================================================
-   QUẢN LÝ DANH MỤC SẢN PHẨM
+               QUẢN LÝ SẢN PHẨM
 ====================================================== */
-const productModal = document.getElementById('ProductPopup');
-const productForm = document.getElementById('ProductForm');
-const productTbody = document.querySelector('#ProductTable tbody');
-const productSearchInput = document.getElementById('searchProductCategory');
-const productCancelBtn = document.getElementById('cancelProduct');
-const prodImgInput = document.getElementById('prodImg');
-const previewImg = document.getElementById('previewImg');
 
-let products = (typeof productList !== 'undefined') ? [...productList] : [];
+// --- DOM ELEMENTS ---
+const productModal = document.getElementById("ProductPopup");
+const productForm = document.getElementById("ProductForm");
+const productTbody = document.querySelector("#ProductTable tbody");
+const productSearchInput = document.getElementById("searchProductCategory");
+const productCancelBtn = document.getElementById("cancelProduct");
+const prodImgInput = document.getElementById("prodImg");
+const previewImg = document.getElementById("previewImg");
+
+// Popup chi tiết
+const detailPopup = document.getElementById("ProductDetailPopup");
+const detailContent = document.getElementById("ProductDetailContent");
+const closeDetailBtn = document.getElementById("closeDetail");
+
 let editingProductRow = null;
 
-function renderProductTable(data = products) {
-    productTbody.innerHTML = data.map(p => `
-        <tr>
-            <td>${p.type}</td>
-            <td>${p.code}</td>
-            <td>${p.name}</td>
-            <td>
-                <img src="${p.img || 'assets/img/logo.png'}" 
-                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-            </td>
-            <td>${p.desc}</td>
-            <td class="action">
-                <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
-                <button class="delete" onclick="deleteProduct(this)">Xóa</button>
-            </td>
-        </tr>
-    `).join("");
+// --- LOCAL STORAGE WRAPPER ---
+function getLocal(key, def = []) {
+    return JSON.parse(localStorage.getItem(key)) || def;
+}
+function setLocal(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderProductTable();
-});
+// --- KHỞI TẠO DỮ LIỆU MẶC ĐỊNH ---
+if (!localStorage.getItem("productList"))
+    setLocal("productList", productList);
+if (!localStorage.getItem("categoryList"))
+    setLocal("categoryList", categoryList);
+if (!localStorage.getItem("priceList"))
+    setLocal("priceList", priceList);
 
+let products = getLocal("productList");
+const categories = getLocal("categoryList");
+const prices = getLocal("priceList");
+
+// --- LIÊN KẾT ---
+function getCategoryName(id) {
+    const cat = categories.find((c) => c.id === id);
+    return cat ? cat.brand : id;
+}
+
+function getPriceByProductId(productId) {
+    const price = prices.find((p) => p.productId === productId);
+    return price ? Number(price.price).toLocaleString("vi-VN") + " ₫" : "Chưa có giá";
+}
+
+// --- RENDER TABLE ---
+function renderProductTable(data = products) {
+    productTbody.innerHTML = data
+        .map(
+        (p) => `
+        <tr>
+        <td>${getCategoryName(p.categoryId)}</td>
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>
+            <img src="${p.img || "assets/img/logo.png"}"
+                style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+        </td>
+        <td>${p.desc}</td>
+        <td class="action">
+            <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
+            <button class="delete" onclick="deleteProduct(this)">Xóa</button>
+            <button class="view" onclick="viewProductDetail('${p.id}')">Chi tiết</button>
+        </td>
+        </tr>`
+        )
+        .join("");
+}
+
+// --- MỞ POPUP THÊM/SỬA ---
 function openProductModal(mode, btn) {
     productForm.reset();
     previewImg.src = "assets/img/logo.png";
-    productModal.style.display = 'flex';
+    productModal.style.display = "flex";
     editingProductRow = null;
 
-    if (mode === 'edit' && btn) {
-        const row = btn.closest('tr');
-        document.getElementById('prodType').value = row.cells[0].innerText.trim();
-        document.getElementById('prodCode').value = row.cells[1].innerText.trim();
-        document.getElementById('prodName').value = row.cells[2].innerText.trim();
-        previewImg.src = row.cells[3].querySelector('img').src;
-        document.getElementById('prodDesc').value = row.cells[4].innerText.trim();
-        editingProductRow = row;
+    if (mode === "edit" && btn) {
+        const row = btn.closest("tr");
+        const id = row.cells[1].innerText.trim();
+        const product = products.find((p) => p.id === id);
+        if (product) {
+        document.getElementById("prodType").value = product.categoryId;
+        document.getElementById("prodCode").value = product.id;
+        document.getElementById("prodName").value = product.name;
+        document.getElementById("prodDesc").value = product.desc;
+        document.getElementById("prodColor").value = product.color;
+        document.getElementById("prodStorage").value = product.storage;
+        document.getElementById("prodRam").value = product.ram;
+        document.getElementById("prodDisplay").value = product.display;
+        document.getElementById("prodCamera").value = product.camera;
+        document.getElementById("prodBattery").value = product.battery;
+        document.getElementById("prodChip").value = product.chip;
+        document.getElementById("prodOS").value = product.os;
+        previewImg.src = product.img;
+        editingProductRow = product;
+        }
     }
 }
 
-productCancelBtn?.addEventListener('click', (e) => {
+window.openProductModal = openProductModal;
+
+// --- POPUP CHI TIẾT SẢN PHẨM ---
+function viewProductDetail(id) {
+    const product = products.find((p) => p.id === id);
+    if (!product) return alert("Không tìm thấy sản phẩm!");
+
+    detailContent.innerHTML = `
+        <h3>${product.name}</h3>
+        <img src="${product.img}" style="width:200px;border-radius:10px;margin-bottom:10px">
+        <p><strong>Màu sắc:</strong> ${product.color}</p>
+        <p><strong>Dung lượng:</strong> ${product.storage}</p>
+        <p><strong>RAM:</strong> ${product.ram}</p>
+        <p><strong>Màn hình:</strong> ${product.display}</p>
+        <p><strong>Camera:</strong> ${product.camera}</p>
+        <p><strong>Pin:</strong> ${product.battery}</p>
+        <p><strong>Chip:</strong> ${product.chip}</p>
+        <p><strong>Hệ điều hành:</strong> ${product.os}</p>
+    `;
+    detailPopup.style.display = "flex";
+}
+
+window.viewProductDetail = viewProductDetail;
+closeDetailBtn.addEventListener("click", () => (detailPopup.style.display = "none"));
+
+// --- HỦY BỎ POPUP ---
+productCancelBtn?.addEventListener("click", (e) => {
     e.preventDefault();
-    productModal.style.display = 'none';
+    productModal.style.display = "none";
 });
 
-prodImgInput?.addEventListener('change', (e) => {
+// --- XỬ LÝ ẢNH XEM TRƯỚC ---
+prodImgInput?.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-            previewImg.src = reader.result;
+        previewImg.src = reader.result;
         };
         reader.readAsDataURL(file);
     }
 });
 
-productForm?.addEventListener('submit', (e) => {
+// --- THÊM / SỬA ---
+productForm?.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const newProd = {
-        type: document.getElementById('prodType').value.trim(),
-        code: document.getElementById('prodCode').value.trim(),
-        name: document.getElementById('prodName').value.trim(),
+        id: document.getElementById("prodCode").value.trim(),
+        categoryId: document.getElementById("prodType").value.trim(),
+        name: document.getElementById("prodName").value.trim(),
         img: previewImg.src || "assets/img/logo.png",
-        desc: document.getElementById('prodDesc').value.trim()
+        desc: document.getElementById("prodDesc").value.trim(),
+        color: document.getElementById("prodColor").value.trim(),
+        storage: document.getElementById("prodStorage").value.trim(),
+        ram: document.getElementById("prodRam").value.trim(),
+        display: document.getElementById("prodDisplay").value.trim(),
+        camera: document.getElementById("prodCamera").value.trim(),
+        battery: document.getElementById("prodBattery").value.trim(),
+        chip: document.getElementById("prodChip").value.trim(),
+        os: document.getElementById("prodOS").value.trim(),
+        status: "active",
     };
 
-    if (!newProd.type || !newProd.code || !newProd.name) {
-        alert('⚠️ Vui lòng nhập đầy đủ thông tin sản phẩm!');
+    // --- RÀNG BUỘC DỮ LIỆU ---
+    for (const [key, val] of Object.entries(newProd)) {
+        if (!val && key !== "img") {
+        alert("⚠️ Vui lòng nhập đầy đủ thông tin sản phẩm!");
         return;
+        }
     }
 
-    if (editingProductRow) {
-        const oldCode = editingProductRow.cells[1].innerText.trim();
-        const idx = products.findIndex(p => String(p.code) === oldCode);
-        if (idx > -1) products[idx] = newProd;
+    const existingIndex = products.findIndex((p) => p.id === newProd.id);
+    if (editingProductRow && existingIndex > -1) {
+        products[existingIndex] = newProd;
     } else {
-        if (products.some(p => String(p.code) === newProd.code)) {
-            alert('⚠️ Mã sản phẩm đã tồn tại!');
-            return;
+        if (existingIndex !== -1) {
+        alert("⚠️ Mã sản phẩm đã tồn tại!");
+        return;
         }
         products.unshift(newProd);
     }
 
+    setLocal("productList", products);
     renderProductTable();
-    productModal.style.display = 'none';
+    productModal.style.display = "none";
 });
 
+// --- XÓA ---
 function deleteProduct(btn) {
-    if (!confirm('Xóa sản phẩm này?')) return;
-    const row = btn.closest('tr');
-    const code = row.cells[1].innerText.trim();
-    products = products.filter(p => String(p.code) !== code);
+    if (!confirm("Xóa sản phẩm này?")) return;
+    const row = btn.closest("tr");
+    const id = row.cells[1].innerText.trim();
+    products = products.filter((p) => p.id !== id);
+    setLocal("productList", products);
     renderProductTable();
 }
+window.deleteProduct = deleteProduct;
 
+// --- TÌM KIẾM ---
 function searchProductCategory() {
     const keyword = productSearchInput.value.trim().toLowerCase();
-    const filtered = products.filter(p =>
-        p.type.toLowerCase().includes(keyword) ||
-        String(p.code).toLowerCase().includes(keyword) ||
-        p.name.toLowerCase().includes(keyword)
+    const filtered = products.filter(
+        (p) =>
+        p.name.toLowerCase().includes(keyword) ||
+        p.id.toLowerCase().includes(keyword) ||
+        getCategoryName(p.categoryId).toLowerCase().includes(keyword)
     );
     renderProductTable(filtered);
 }
+window.searchProductCategory = searchProductCategory;
 
-
+// --- KHỞI TẠO ---
+document.addEventListener("DOMContentLoaded", () => {
+    renderProductTable();
+});
 
 /* ======================================================
                QUẢN LÝ NHẬP SẢN PHẨM
 ====================================================== */
-const importModal = document.getElementById('ImportPopup');
-const importForm = document.getElementById('ImportForm');
-const importTbody = document.querySelector('#ImportTable tbody');
-const importSearchInput = document.getElementById('searchImport');
-const importCancelBtn = document.getElementById('cancelImport');
 
-let imports = (typeof importList !== 'undefined') ? [...importList] : [];
+const importModal = document.getElementById("ImportPopup");
+const importForm = document.getElementById("ImportForm");
+const importTbody = document.querySelector("#ImportTable tbody");
+const importSearchInput = document.getElementById("searchImport");
+const importCancelBtn = document.getElementById("cancelImport");
+const importDetailPopup = document.getElementById("ImportDetailPopup");
+const importDetailContent = document.getElementById("ImportDetailContent");
+const closeImportDetail = document.getElementById("closeImportDetail");
+
+// Dữ liệu gốc
+if (!localStorage.getItem("importList")) setLocal("importList", importList);
+if (!localStorage.getItem("productList")) setLocal("productList", productList);
+if (!localStorage.getItem("priceList")) setLocal("priceList", priceList);
+
+let imports = getLocal("importList");
+const productData = getLocal("productList");
+const priceData   = getLocal("priceList");
+
 let editingImportRow = null;
 
+// Hiển thị bảng phiếu nhập
 function renderImportTable(data = imports) {
-    importTbody.innerHTML = data.map(i => `
-    <tr>
-        <td>${i.id}</td>
-        <td>${i.date}</td>
-        <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
-        <td>${i.status}</td>
-        <td class="action">
+    importTbody.innerHTML = data
+        .map(
+        (i) => `
+        <tr>
+            <td>${i.id}</td>
+            <td>${i.date}</td>
+            <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
+            <td>${i.status}</td>
+            <td class="action">
+            <button class="view" onclick="viewImportDetail('${i.id}')">👁 Chi tiết</button>
             <button class="edit" onclick="openImportModal('edit', this)">Sửa</button>
             <button class="delete" onclick="deleteImport(this)">Xóa</button>
-        </td>
-    </tr>
-`).join("")
+            </td>
+        </tr>`
+        )
+        .join("");
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderImportTable();
-});
+// Mở form thêm / sửa
 function openImportModal(mode, btn) {
     importForm.reset();
-    importModal.style.display = 'flex';
+    importModal.style.display = "flex";
     editingImportRow = null;
+    document.getElementById("importTotal").readOnly = true; // không cho nhập thủ công
 
-    if (mode === 'add') {
-        document.getElementById('importCode').value = 'PN';
+    if (mode === "add") {
+        document.getElementById("importCode").value = "";
+        document.getElementById("importStatus").value = "Đang xử lý";
         loadProductItems([]);
-        document.getElementById('importStatus').value = 'Đang xử lý';
-        document.getElementById('importCode').readOnly = false;
-        document.getElementById('importTotal').value = 0;
+        document.getElementById("importTotal").value = 0;
+        document.getElementById("importCode").readOnly = false;
         return;
     }
 
-    if (mode === 'edit' && btn) {
-        const row = btn.closest('tr');
+    if (mode === "edit" && btn) {
+        const row = btn.closest("tr");
         const idToEdit = row.cells[0].innerText.trim();
-        const status = row.cells[3].innerText.trim();
-        const record = imports.find(i => i.id === idToEdit);
+        const record = imports.find((i) => i.id === idToEdit);
 
-        if (status === "Hoàn thành") {
-            alert("❌ Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
-            importModal.style.display = 'none';
-            return;
+        if (!record) return;
+        if (record.status === "Hoàn thành") {
+        alert("❌ Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
+        importModal.style.display = "none";
+        return;
         }
 
-        if (record) {
-            document.getElementById('importCode').value = record.id;
-            document.getElementById('importDate').value = record.date;
-            document.getElementById('importTotal').value = record.total;
-            document.getElementById('importStatus').value = record.status;
-            loadProductItems(record.items || []);
-            document.getElementById('importCode').readOnly = true;
-        }
+        document.getElementById("importCode").value = record.id;
+        document.getElementById("importDate").value = record.date;
+        document.getElementById("importTotal").value = record.total;
+        document.getElementById("importStatus").value = record.status;
+        loadProductItems(record.items || []);
+        document.getElementById("importCode").readOnly = true;
+
         editingImportRow = row;
     }
 }
+window.openImportModal = openImportModal;
 
-importCancelBtn?.addEventListener('click', (e) => {
+// Nút Hủy
+importCancelBtn?.addEventListener("click", (e) => {
     e.preventDefault();
-    importModal.style.display = 'none';
+    importModal.style.display = "none";
 });
-importForm?.addEventListener('submit', (e) => {
+
+// Submit Form
+importForm?.addEventListener("submit", (e) => {
     e.preventDefault();
 
+    const itemRows = document.querySelectorAll("#productItems .item-row");
     const items = [];
-    const itemRows = document.querySelectorAll('#productItems .item-row');
-    itemRows.forEach(row => {
-        const name = row.querySelector('.item-name')?.value?.trim();
-        const qty = Number(row.querySelector('.item-qty')?.value);
-        const price = Number(row.querySelector('.item-price')?.value);
-        if (name && qty > 0) items.push({ name, qty, price });
+
+    itemRows.forEach((row) => {
+        const productId = row.querySelector(".item-name").value.trim();
+        const quantity = Number(row.querySelector(".item-qty").value);
+        const price = Number(row.querySelector(".item-price").value);
+
+        if (productId && quantity > 0 && price > 0)
+        items.push({ productId, quantity, price });
     });
 
-    const total = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+    const total = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
 
-    const newPN = {
-        id: document.getElementById('importCode').value.trim(),
-        date: document.getElementById('importDate').value,
-        total: total,
-        status: document.getElementById('importStatus').value,
-        items: items
+    const newImport = {
+        id: document.getElementById("importCode").value.trim(),
+        date: document.getElementById("importDate").value,
+        total,
+        status: document.getElementById("importStatus").value,
+        items,
     };
 
-    if (!newPN.id || !newPN.date) {
-        alert('⚠️ Vui lòng nhập mã phiếu và ngày nhập!');
+    if (!newImport.id || !newImport.date) {
+        alert("⚠️ Vui lòng nhập mã phiếu và ngày nhập!");
+        return;
+    }
+    if (items.length === 0) {
+        alert("⚠️ Phiếu nhập phải có ít nhất 1 sản phẩm!");
         return;
     }
 
-    if (newPN.items.length === 0) {
-        alert('⚠️ Phiếu nhập phải có ít nhất một sản phẩm!');
-        return;
-    }
-
-    if (editingImportRow) {
-        const idOld = editingImportRow.cells[0].innerText.trim();
-        const idx = imports.findIndex(i => i.id === idOld);
-        if (idx > -1) imports[idx] = newPN;
+    // Nếu đang sửa
+    const existingIdx = imports.findIndex((i) => i.id === newImport.id);
+    if (editingImportRow && existingIdx !== -1) {
+        imports[existingIdx] = newImport;
     } else {
-        if (imports.some(i => i.id === newPN.id)) {
-            alert('⚠️ Mã phiếu đã tồn tại!');
-            return;
+        if (existingIdx !== -1) {
+        alert("⚠️ Mã phiếu đã tồn tại!");
+        return;
         }
-        imports.unshift(newPN);
+        imports.unshift(newImport);
     }
 
+    setLocal("importList", imports);
     renderImportTable();
-    importModal.style.display = 'none';
+    importModal.style.display = "none";
 });
 
+// Xóa phiếu nhập
 function deleteImport(btn) {
-    if (!confirm('Xóa phiếu nhập này?')) return;
-    const row = btn.closest('tr');
+    if (!confirm("Xóa phiếu nhập này?")) return;
+    const row = btn.closest("tr");
     const id = row.cells[0].innerText.trim();
-    imports = imports.filter(i => i.id !== id);
+    imports = imports.filter((i) => i.id !== id);
+    setLocal("importList", imports);
     renderImportTable();
 }
+window.deleteImport = deleteImport;
 
+// Tìm kiếm
 function searchImport() {
     const keyword = importSearchInput.value.trim().toLowerCase();
-    const filtered = imports.filter(i =>
+    const filtered = imports.filter(
+        (i) =>
         i.id.toLowerCase().includes(keyword) ||
         i.status.toLowerCase().includes(keyword)
     );
     renderImportTable(filtered);
 }
+window.searchImport = searchImport;
 
+// Hiển thị danh sách sản phẩm trong form nhập
 function loadProductItems(items) {
-    const container = document.getElementById('productItems');
-    if (!container) return;
+    const container = document.getElementById("productItems");
+    container.innerHTML = "";
 
-    container.innerHTML = items.map((item, index) => `
-        <div class="item-row" data-index="${index}">
-            <input type="text" class="item-name" placeholder="Tên sản phẩm" value="${item.name || ''}" required>
-            <input type="number" class="item-qty" min="1" value="${item.qty || 1}" required oninput="calculateTotal()">
-            <input type="number" class="item-price" min="0" value="${item.price || 0}" placeholder="Giá nhập" required oninput="calculateTotal()">
-            <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
-        </div>
-    `).join("");
-    calculateTotal();
-}
-
-function addProductItem() {
-    const container = document.getElementById('productItems');
-    if (!container) return;
-    const div = document.createElement('div');
-    div.classList.add('item-row');
-    div.innerHTML = `
-        <input type="text" class="item-name" placeholder="Tên sản phẩm" required>
-        <input type="number" class="item-qty" min="1" value="1" required oninput="calculateTotal()">
-        <input type="number" class="item-price" min="0" placeholder="Giá nhập" required oninput="calculateTotal()">
+    items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "item-row";
+        row.innerHTML = `
+        <select class="item-name" required>
+            ${products
+            .map(
+                (p) =>
+                `<option value="${p.id}" ${
+                    p.id === item.productId ? "selected" : ""
+                }>${p.name}</option>`
+            )
+            .join("")}
+        </select>
+        <input type="number" class="item-qty" min="1" value="${
+            item.quantity || 1
+        }" oninput="calculateTotal()">
+        <input type="number" class="item-price" min="0" value="${
+            item.price || 0
+        }" oninput="calculateTotal()">
         <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
-    `;
-    container.prepend(div);
+        `;
+        container.appendChild(row);
+    });
+
     calculateTotal();
 }
+window.loadProductItems = loadProductItems;
 
+// Thêm dòng sản phẩm mới
+function addProductItem() {
+  const container = document.getElementById("productItems");
+  if (!container) return;
+
+  const div = document.createElement("div");
+  div.classList.add("item-row");
+
+  div.innerHTML = `
+    <select class="item-name" required>
+      <option value="">-- Chọn sản phẩm --</option>
+      ${productData.map(p => `<option value="${p.id}">${p.name}</option>`).join("")}
+    </select>
+    <input type="number" class="item-qty" min="1" value="1" oninput="calculateTotal()">
+    <input type="number" class="item-price" min="0" placeholder="Giá nhập" oninput="calculateTotal()">
+    <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
+  `;
+
+  container.appendChild(div);
+  calculateTotal();
+}
+window.addProductItem = addProductItem;
+
+
+// Xóa dòng sản phẩm
 function removeProductItem(btn) {
     btn.parentElement.remove();
     calculateTotal();
 }
+window.removeProductItem = removeProductItem;
+
+// Tính tổng giá trị phiếu
 function calculateTotal() {
     let total = 0;
-    const itemRows = document.querySelectorAll('#productItems .item-row');
-    itemRows.forEach(row => {
-        const qty = Number(row.querySelector('.item-qty')?.value) || 0;
-        const price = Number(row.querySelector('.item-price')?.value) || 0;
+    document.querySelectorAll("#productItems .item-row").forEach((row) => {
+        const qty = Number(row.querySelector(".item-qty").value) || 0;
+        const price = Number(row.querySelector(".item-price").value) || 0;
         total += qty * price;
     });
-    document.getElementById('importTotal').value = total;
+    document.getElementById("importTotal").value = total.toLocaleString("vi-VN");
 }
+window.calculateTotal = calculateTotal;
+
+// Xem chi tiết phiếu nhập
+function viewImportDetail(importId) {
+    const record = imports.find((i) => i.id === importId);
+    if (!record) return;
+
+    const detailHTML = `
+        <p><strong>Mã phiếu:</strong> ${record.id}</p>
+        <p><strong>Ngày nhập:</strong> ${record.date}</p>
+        <p><strong>Tổng giá trị:</strong> ${Number(
+        record.total
+        ).toLocaleString("vi-VN")} ₫</p>
+        <p><strong>Trạng thái:</strong> ${record.status}</p>
+        <h4>Danh sách sản phẩm:</h4>
+        <table style="width:100%;border-collapse:collapse;">
+        <tr><th>Tên sản phẩm</th><th>Số lượng</th><th>Giá nhập</th><th>Thành tiền</th></tr>
+        ${record.items
+            .map((it) => {
+            const prod = productData.find((p) => p.id === it.productId);
+            const name = prod ? prod.name : it.productId;
+            const total = it.quantity * it.price;
+            return `<tr>
+                <td>${name}</td>
+                <td>${it.quantity}</td>
+                <td>${Number(it.price).toLocaleString("vi-VN")} ₫</td>
+                <td>${Number(total).toLocaleString("vi-VN")} ₫</td>
+            </tr>`;
+            })
+            .join("")}
+        </table>
+    `;
+
+    importDetailContent.innerHTML = detailHTML;
+    importDetailPopup.style.display = "flex";
+}
+window.viewImportDetail = viewImportDetail;
+
+closeImportDetail.addEventListener("click", () => {
+    importDetailPopup.style.display = "none";
+});
+
+// --- Khi load trang
+document.addEventListener("DOMContentLoaded", () => renderImportTable());
