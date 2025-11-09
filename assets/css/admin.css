@@ -56,7 +56,7 @@ button {
 .user-dropdown {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 
 .admin-profile-link {
@@ -83,10 +83,10 @@ button {
 }
 
 .dropdown-content a {
-    color: #007bff !important;
+    color: #333 !important;
     text-decoration: none;
     padding: 8px 15px;
-    border: 1px solid #007bff;
+    border: 1px solid #ddd;
     border-radius: 4px;
     background-color: white;
     transition: all 0.3s;
@@ -94,13 +94,9 @@ button {
 }
 
 .dropdown-content a:hover {
-    background-color: #007bff;
-    color: white !important;
-}
-
-/* Ẩn mũi tên dropdown nếu có */
-.user-dropdown::after {
-    display: none;
+    background-color: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff !important;
 }
 /* ========================== SIDEBAR ========================== */
 .sidebar {
