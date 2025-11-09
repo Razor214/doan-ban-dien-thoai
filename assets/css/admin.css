@@ -1191,11 +1191,17 @@ footer {
 .fade-out .toggle {
     background-color: green !important;
 }
-/* CHỈ ĐỔI MÀU CHỮ DROPDOWN - GIỮ NGUYÊN HIỆN TẠI */
-.user-dropdown .dropdown-content a {
-    color: #333 !important;
+/* URGENT FIX - FORCE BLACK TEXT */
+.headerbar .user-dropdown .dropdown-content a,
+body .headerbar .user-dropdown .dropdown-content a,
+html body .headerbar .user-dropdown .dropdown-content a {
+    color: #000000 !important;
+    background-color: white !important;
 }
 
-.user-dropdown .dropdown-content a:hover {
+.headerbar .user-dropdown .dropdown-content a:hover,
+body .headerbar .user-dropdown .dropdown-content a:hover,
+html body .headerbar .user-dropdown .dropdown-content a:hover {
     color: #ffffff !important;
+    background-color: #0055ff !important;
 }
