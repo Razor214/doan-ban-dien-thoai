@@ -24,6 +24,9 @@
             <a href="user.html?tab=register">Đăng ký</a>
             <a href="user.html?tab=profile">Hồ sơ</a>
             <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
+            <span id="user-greeting" style="font-weight:bold; margin-left:15px; display:none;">
+                Xin chào, <span id="greeting-name"></span>
+            </span>
 
         </nav>
 
@@ -125,7 +128,8 @@
                     <div class="profile-info" id="profile-info">
                         <p>Vui lòng đăng nhập để xem thông tin</p>
                     </div>
-                    <button class="btn-primary" onclick="toggleEditProfile()" style="margin-bottom: 10px; display: none;" id="editProfileBtn">Chỉnh sửa thông tin</button>
+                    <button class="btn-primary" onclick="toggleEditProfile()"
+                        style="margin-bottom: 10px; display: none;" id="editProfileBtn">Chỉnh sửa thông tin</button>
                     <form id="profileForm" style="display: none;">
                         <div class="form-group">
                             <label class="form-label">Họ và Tên</label>
@@ -143,6 +147,35 @@
                         </div>
 
                         <button type="submit" class="btn-primary">Cập Nhật</button>
+                    </form>
+                    <!-- CHANGE PASSWORD -->
+                    <h3 style="margin-top:20px; text-align:center;">Đổi Mật Khẩu</h3>
+                    <form id="changePassForm" style="margin-top:10px;">
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu cũ</label>
+                            <div class="password-box">
+                                <input type="password" id="oldPass" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('oldPass', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <div class="password-box">
+                                <input type="password" id="newPass" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('newPass', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <div class="password-box">
+                                <input type="password" id="confirmNewPass" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('confirmNewPass', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Đổi mật khẩu</button>
                     </form>
 
                     <button class="btn-primary logout-btn" onclick="logout()" style="display: none;">Đăng Xuất</button>

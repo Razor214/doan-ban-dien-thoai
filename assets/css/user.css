@@ -197,3 +197,13 @@
         font-size: 14px;
     }
 }
+.password-box {
+    position: relative;
+}
+.password-box .toggle-pass {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+    font-size: 18px;
+}
