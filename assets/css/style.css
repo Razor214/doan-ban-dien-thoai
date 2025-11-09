@@ -569,6 +569,8 @@ footer a:hover {
   text-transform: uppercase;
 }
 
+/* === ADMIN HEADER - IMPROVED TEXT COLOR === */
+
 /* Header admin */
 .headerbar {
   background: #0055ff;
@@ -578,6 +580,46 @@ footer a:hover {
   align-items: center;
 }
 
+.user-profile-simple {
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.user-profile-simple:hover {
+  color: #ffd700 !important;
+}
+
+.admin-badge {
+  background: #ffd700;
+  color: #2c3e50 !important;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+/* Dropdown text colors */
+.user-dropdown .dropdown-content a {
+  color: #2c3e50 !important;
+  padding: 14px 16px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #ecf0f1;
+  transition: 0.3s;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.user-dropdown .dropdown-content a:hover {
+  background-color: #3498db;
+  color: #ffffff !important;
+}
 /* cho các kích thước khác */
 @media (max-width: 768px) {
   header {
