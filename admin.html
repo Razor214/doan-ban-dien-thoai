@@ -9,36 +9,23 @@
 </head>
 
 <body>
-    <!-- HEADER -->
-<header class="headerbar">
+    <header class="headerbar">
         <div class="admin-user-info">
             <div class="user-dropdown">
-                <div class="user-profile-header">
-                    <div class="user-avatar">👑</div>
-                    <div class="user-info">
-                        <div class="user-name">Quản Trị Viên</div>
-                        <div class="user-role">Administrator</div>
-                    </div>
-                    <div class="dropdown-arrow">▼</div>
-                </div>
+                <a href="user.html?tab=profile" class="admin-profile-link">
+                    👤 Quản Trị Viên
+                </a>
                 <div class="dropdown-content">
-                    <a href="index.html" class="dropdown-item">
-                        <span class="item-icon">🏠</span>
-                        <span class="item-text">Về trang chủ</span>
-                    </a>
-                    <a href="user.html?tab=profile" class="dropdown-item">
-                        <span class="item-icon">👤</span>
-                        <span class="item-text">Hồ sơ cá nhân</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" onclick="logoutFromAdmin(); return false;" class="dropdown-item logout-item">
-                        <span class="item-icon">🚪</span>
-                        <span class="item-text">Đăng xuất</span>
-                    </a>
+                    <a href="index.html">🏠 Về trang chủ</a>
+                    <a href="user.html?tab=profile">👤 Hồ sơ cá nhân</a>
+                    <a href="#" onclick="logoutFromAdmin(); return false;">🚪 Đăng xuất</a>
                 </div>
             </div>
         </div>
     </header>
+</body>
+
+</html>
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
