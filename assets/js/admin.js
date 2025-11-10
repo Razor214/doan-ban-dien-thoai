@@ -48,12 +48,13 @@ table.addEventListener("click", (e) => {
 });
 //CHECK LỖI
 function validateID(code, prefix) {
-    return new RegExp(`^${prefix}\\d{3}$`).test(code);
+    return new RegExp(`^${prefix}\\d{2}$`).test(code);
 }
 
 // Kiểm tra số dương > 0
 function validatePositiveNumber(value) {
-    return parseFloat(value) > 0;
+    const cleanedValue = cleanNumber(value.value || value);
+    return cleanedValue > 0;
 }
 function openPriceModal(mode, btn) {
     form.reset();
@@ -72,11 +73,71 @@ function openPriceModal(mode, btn) {
         priceInput.value = row.cells[6].innerText.replace(/,/g, '');
         editingRow = row;
         costInput.setAttribute('readonly', true);
+        idPrice.setAttribute('readonly', true);
+        idImPrice.setAttribute('readonly', true);
+        brandSelect.setAttribute('disabled', true);
+        productSelect.setAttribute('disabled', true);
     }else{
-        costInput.removeAttribute('readonly');
+        costInput.removeAttribute('readonly');  
+        idPrice.removeAttribute('readonly');
+        idImPrice.removeAttribute('readonly');  
+        brandSelect.removeAttribute('disabled');
+        productSelect.removeAttribute('disabled');
+        autoFillNewCodes();
     }
 }
 window.openPriceModal = openPriceModal;
+const brandSelect = document.getElementById('categorySelect');; 
+const productSelect = document.getElementById('productSelect'); 
+//Gán mã thương hiệu
+const brandCodes = {
+    Samsung: 'TH01',
+    Apple: 'TH02',
+    Nokia: 'TH03',
+    Huawei: 'TH04',
+    Xiaomi: 'TH05',
+    Oppo: 'TH06',
+    Sony: 'TH07',
+    LG: 'TH08',
+    Oneplus: 'TH09',
+    Google: 'TH10',
+
+    //Gán mã sản phẩm
+    "iPhone 15 Pro 156GB": 'SP01',
+    "iPhone 16 Pro Max 512GB": 'SP02',
+    "Samsung Galaxy S23 Ultra 512GB": 'SP03',
+    "Xiaomi 13 Pro 256GB": 'SP04',
+    "Huawei P60 Pro 256GB": 'SP05',
+    "Sony Xperia 1 V 256GB": 'SP06',
+    "LG Velvet 2 128GB": 'SP07',
+    "Nokia X30 5G 128 GB": 'SP08',
+    "OnePlus 11 256GB": 'SP09',
+    "Google Pixel 8 Pro 512GB": 'SP10'
+};
+window.brandCodes = brandCodes;
+// Khi chọn thương hiệu
+brandSelect.addEventListener('change', () => {
+    const selectedBrand = brandSelect.value;
+    idCatePrice.value = brandCodes[selectedBrand] || '';
+});
+productSelect.addEventListener('change', () => {
+    const selectedProduct = productSelect.value;
+    idProPrice.value = brandCodes[selectedProduct] || '';
+});
+const generateCode = (prefix, colIndex) => {
+    const rows = Array.from(table.rows);
+    const maxNum = rows
+        .map(r => r.cells[colIndex].innerText)
+        .filter(c => c.startsWith(prefix))
+        .map(c => parseInt(c.slice(2)) || 0)
+        .reduce((a,b) => Math.max(a,b), 0);
+    return prefix + String(maxNum + 1).padStart(2,'0');
+};
+function autoFillNewCodes() {
+    idPrice.value = generateCode('GN', 0);    // Cột 0 là Mã GN
+    idImPrice.value = generateCode('PN', 3);  // Cột 3 là Mã nhập PN
+}
+
 cancelBtn.onclick = () => {
     form.reset();
     priceInput.value = '';
@@ -138,31 +199,19 @@ form.onsubmit = (e) => {
 
     if (!validateID(idPrice.value, 'GN')) {
         idPrice.style.border = '2px solid red';
-        alert('Mã sản phẩm phải bắt đầu GN và 3 số!');
+        alert('Mã phải bắt đầu GN và 2 số!');
         idPrice.focus();
-        return;
-    }
-    if (!validateID(idCatePrice.value, 'TH')) {
-        idCatePrice.style.border = '2px solid red';
-        alert('Mã danh mục phải bắt đầu TH và 3 số!');
-        idCatePrice.focus();
-        return;
-    }
-    if (!validateID(idProPrice.value, 'SP')) {
-        idProPrice.style.border = '2px solid red';
-        alert('Mã sản phẩm phải bắt đầu SP và 3 số!');
-        idProPrice.focus();
         return;
     }
     if (!validateID(idImPrice.value, 'PN')) {
         idImPrice.style.border = '2px solid red';
-        alert('Mã nhập phải bắt đầu PN và 3 số!');
+        alert('Mã nhập phải bắt đầu PN và 2 số!');
         idImPrice.focus();
         return;
     }
     if (!validatePositiveNumber(costInput)) {
         costInput.style.border = '2px solid red'; 
-        alert('Giá nhập phải lớn hơn 0!'); 
+        alert('Giá vốn phải lớn hơn 0!'); 
         return; }
     if (!validatePositiveNumber(profitInput)) {
         profitInput.style.border = '2px solid red'; 
@@ -216,9 +265,16 @@ function searchProduct() {
     const rows = table.getElementsByTagName('tr');
 
     for (let row of rows) {
-        const productName = row.cells[1].innerText.toLowerCase();
-        row.style.display = productName.startsWith(keyword) || keyword === '' ? '' : 'none';
+        // Bỏ header
+        if(row.rowIndex === 0) continue;
 
+        // Kiểm tra ký tự đầu của tất cả các ô trong hàng
+        const match = Array.from(row.cells).some(cell => {
+            const text = cell.innerText.trim().toLowerCase();
+            return text.startsWith(keyword);
+        });
+
+        row.style.display = match || keyword === '' ? '' : 'none';
     }
 }
 searchInput.addEventListener('input', searchProduct);
@@ -243,6 +299,7 @@ function confirmExit() {
     document.getElementById('confirmno').onclick = () => document.getElementById('xacnhanthoat').style.display = 'none';
 }
 window.confirmExit = confirmExit;
+
 //Quản lý đơn đặt hàng 
 function getLocalOrders() {
     return JSON.parse(localStorage.getItem('orderList')) || [];
@@ -389,9 +446,7 @@ if (!localStorage.getItem('inventoryList')) {
     setInventory(inventoryList); 
 }
 const tableBody = document.querySelector('#Table tbody');
-const cancelStock = document.getElementById('cancelStock');
 const tonkhoModal = document.getElementById('detailModal');
-const StockModal = document.getElementById('StockPopup');
 const summaryModal = document.getElementById('popup-modal');
 const btnSearch = document.getElementById('Btnsearch');
 const exportBtn = document.getElementById('exportBtn');
@@ -402,7 +457,6 @@ const searchSP = document.getElementById('Prosearch');
 const searchCate = document.getElementById('Catesearch');
 const startDateInput = document.getElementById('startDate');
 const endDateInput = document.getElementById('endDate');
-const formStock = document.getElementById('StockFormADD');
 const MIN_TON = 10;
 function displayTon(data) {
     tableBody.innerHTML = '';
@@ -425,12 +479,11 @@ function displayTon(data) {
             <td>${item.ngayCapNhat}</td>
             <td><span class="${statusClass}">${statusText}</span></td>
             <td class="action">
-                <button class="inout">Tạo phiếu</button>
                 <button class="delete">Xóa</button>
             </td>
         `;
         row.addEventListener('click', (e) => {
-            if(!e.target.classList.contains('inout') && !e.target.classList.contains('delete')){
+            if(!e.target.classList.contains('delete')){
                 openModal(item);
             }
         });
@@ -465,7 +518,7 @@ function openModal(item) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${hist.ngay}</td>
-                    <td class="${hist.hanhDong === 'Xuất' ? 'action-xuat' : 'action-nhap'}">${hist.hanhDong}</td>
+                    <td class="${['Bán', 'Xuất'].includes(hist.hanhDong) ? 'action-xuat' : 'action-nhap'}">${hist.hanhDong}</td>
                     <td>${hist.soLuong.toLocaleString()}</td>
                 `;
                 historyBody.appendChild(row);
@@ -484,7 +537,7 @@ function openSummaryModal() {
     document.getElementById('sum-outcount').textContent = `(${outOfStock.length})`;
     document.getElementById('sum-lowcount').textContent = `(${lowStock.length})`;
     document.getElementById('sum-okcount').textContent = `(${inStock.length})`;
-    const renderList = (list) => list.map(i => `<li><span class="summary-code">[${i.productId}]</span> Mã DM: ${i.categoryId}</li>`).join('');
+    const renderList = (list) => list.map(i => `<li><span class="summary-code">[${i.productId}]</span> Mã thương hiệu: ${i.categoryId}</li>`).join('');
     document.getElementById('sum-outList').innerHTML = outOfStock.length? renderList(outOfStock):'<li>Không có sản phẩm nào.</li>';
     document.getElementById('sum-lowlist').innerHTML = lowStock.length? renderList(lowStock):'<li>Không có sản phẩm nào.</li>';
     document.getElementById('sum-oklist').innerHTML = inStock.length? renderList(inStock):'<li>Không có sản phẩm nào.</li>';
@@ -534,7 +587,7 @@ if (btnSearch) {
 }
 if (exportBtn) {
     exportBtn.addEventListener('click', () => {
-        alert('Đã xuất báo cáo thành công! (Dữ liệu dựa trên kết quả lọc hiện tại)');
+        alert('Đã xuất báo cáo thành công!');
     });
 }
 
@@ -549,8 +602,6 @@ closeBtns.forEach(btn => {
         tonkhoModal.classList.remove('show');
         summaryModal.classList.remove('show');
         document.getElementById('xacnhanStock').style.display='none';
-        StockModal.style.display='none';
-        phieuStock.style.display='none';
     }
 });
 function closeInventory() {
@@ -559,129 +610,17 @@ function closeInventory() {
     summaryModal.classList.remove('show');
 }
 window.closeInventory=closeInventory;
-
-function openStockModal() {
-    StockModal.style.display = 'flex';
-}
-cancelStock.onclick = () => {
-    StockModal.style.display = 'none';
-    formStock.reset();
-};
-//Tạo phiếu nhập/xuất
-const phieuStock = document.getElementById("FormStockPopup");
-const phieuForm = document.getElementById("IntOut");
-const actionSelect = document.getElementById("inorout");
-const nhapSection = document.getElementById("input-section");
-const xuatSection = document.getElementById("out-section");
-const cancelPhieu = document.getElementById("cancelForm");
-const stockInInput = document.getElementById("stockFormIn");
-const stockOutInput = document.getElementById("stockFormOut");
 tableBody.addEventListener('click', (e) => {
-    if(e.target.classList.contains('inout')){
+    if(e.target.classList.contains('delete')){
         e.stopPropagation();
         const MA = e.target.closest('tr').children[0].textContent;
         const SP = inventory.find(sp=>sp.id === MA);
-        if(SP) {
-            openphieuStock(SP);
+        if(e) {
+            confirmDeleteStock(e.target);
         }
-    }else if(e.target.classList.contains('delete')) {
-        e.stopPropagation();
-        confirmDeleteStock(e.target);
     }
 });
-function updateStockFormVisibility() {
-    const selectedValue = actionSelect.value;
 
-    if (selectedValue === "Nhập") {
-        nhapSection.classList.remove("disabled-section");
-        xuatSection.classList.add("disabled-section");
-        stockOutInput.value = ""; 
-
-    } else if (selectedValue === "Xuất") {
-        nhapSection.classList.add("disabled-section");
-        xuatSection.classList.remove("disabled-section");
-        stockInInput.value = ""; 
-
-        stockOutInput.required = true;
-    } else {
-        nhapSection.classList.add("disabled-section");
-        xuatSection.classList.add("disabled-section");
-        stockInInput.value = "";
-        stockOutInput.value = "";
-    }
-    stockInInput.disabled = nhapSection.classList.contains("disabled-section");
-    stockOutInput.disabled = xuatSection.classList.contains("disabled-section");
-}
-actionSelect.addEventListener("change", updateStockFormVisibility);
-function openphieuStock(sp){
-    phieuStock.style.display ="flex";
-    phieuForm.dataset.maSP = sp.id;
-    phieuForm.reset();
-    actionSelect.value="";
-    updateStockFormVisibility();
-}
-cancelPhieu.addEventListener("click", () => {
-    phieuStock.style.display = "none";
-    phieuForm.reset();
-});
-phieuForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const mãSP = phieuForm.dataset.maSP;
-    const hànhĐộng = actionSelect.value;
-    const ngày = document.getElementById("inoutdate").value;
-    const sốNhập = Number(document.getElementById("stockFormIn").value);
-    const sốXuất = Number(document.getElementById("stockFormOut").value);
-    const sp = inventory.find(i => i.id === mãSP);
-    if (!hànhĐộng || !ngày) {
-         alert("Vui lòng chọn Hành động, nhập Người thực hiện và Ngày!");
-         return; // Thoát nếu thiếu thông tin cơ bản
-    }
-    if (!sp) return alert("Không tìm thấy sản phẩm!");
-    if (hànhĐộng === "Nhập" && (isNaN(sốNhập) || sốNhập <= 0)) {
-        alert("Vui lòng nhập số lượng Nhập hợp lệ (lớn hơn 0)!");
-        return;
-    }
-    if (hànhĐộng === "Xuất" && (isNaN(sốXuất) || sốXuất <= 0)) {
-        alert("Vui lòng nhập số lượng Xuất hợp lệ (lớn hơn 0)!");
-        return;
-    }
-    const slHanhDong = hànhĐộng === "Nhập" ? sốNhập : sốXuất;
-    if (hànhĐộng === "Nhập") {
-        sp.slNhap += slHanhDong;
-        sp.slTon += slHanhDong;
-    } else {
-        if (slHanhDong > sp.slTon) {
-             alert(`Không đủ hàng tồn (${sp.slTon}) để xuất ${slHanhDong}!`);
-             return;
-        }
-        sp.slXuat += slHanhDong;
-        sp.slTon -= slHanhDong;
-    }
-    sp.ngayCapNhat = ngày;
-    if (sp.slTon === 0) sp.trangThai = "out";
-    else if (sp.slTon <= sp.minTon) sp.trangThai = "low";
-    else sp.trangThai = "ok";
-
-    sp.history.unshift({
-        ngay: ngày,
-        hanhDong: hànhĐộng,
-        soLuong: slHanhDong
-    });
-    if (sp.history.length > 5) {
-    sp.history = sp.history.slice(0, 5);
-    }
-    displayTon(inventory);
-    renderSummary(inventory); 
-    const currentMa = document.getElementById('modalMaSP')?.textContent;
-    if (tonkhoModal.classList.contains('show') && currentMa === sp.maSP) {
-        openModal(sp); // refresh lại modal với history mới
-    }
-    setInventory(inventory);
-    syncAndRenderInventory();
-    phieuStock.style.display = "none";
-    phieuForm.reset();
-    alert("Đã lưu phiếu và cập nhật tồn kho!");
-});
 function confirmDeleteStock(btn) {
     const deleteStock = document.getElementById('xacnhanStock');
     deleteStock.style.display = 'flex';
@@ -695,6 +634,16 @@ function confirmDeleteStock(btn) {
     };
     document.getElementById('xacnhankhongStock').onclick = () => deleteStock.style.display = 'none';
 }
+function ResetDateStock() {
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
+    document.getElementById("Namesearch").value = "";
+    document.getElementById("Prosearch").value = "";
+    document.getElementById("Catesearch").value = "";
+    const inventory = getInventory();
+    displayTon(inventory);
+    renderSummary(inventory);
+}
 function openDetailModal(item) {
     tonkhoModal.classList.add('show');
 }
@@ -707,108 +656,83 @@ function openminiPU() {
 function closeMiniPU() {
     summaryModal.classList.remove('show');
 }
-if(formStock){
-    formStock.onsubmit = (e) => {
-        e.preventDefault();
-        const inputSLNhap = document.getElementById('stockIn');
-        const inputSLXuat = document.getElementById('stockOut');
-        const inputSLTon = document.getElementById('stockStill');
-        const MaSP = document.getElementById('stockMa').value.trim();
-        const TenSP = document.getElementById('stockPro').value.trim();
-        const MaCate = document.getElementById('stockCate').value.trim();
-        const SLNhapValue = inputSLNhap.value.trim(); // Dùng Value
-        const SLXuatValue = inputSLXuat.value.trim(); // Dùng Value
-        const SLTonValue = inputSLTon.value.trim();
-        const Ngay = document.getElementById('stockUpdate').value.trim();
-        if (!MaSP || !MaCate || !TenSP || !SLNhapValue || !SLXuatValue || !SLTonValue || !Ngay) {
-            alert('Vui lòng nhập đầy đủ thông tin!');
-            return;
-        }
-        let hasNegative = false;
-        
-        // Reset border cho tất cả trước
-        inputSLNhap.style.border = '';
-        inputSLXuat.style.border = '';
-        inputSLTon.style.border = '';
-        if (!validateID(MaSP, 'TK')) {
-            alert('Mã phải bắt đầu bằng TK (VD: TK01)');
-            document.getElementById('stockMa').style.border = '2px solid red';
-            return;
-        }
-        if (!validateID(TenSP, 'SP')) {
-            alert('Mã sản phẩm phải bắt đầu bằng SP (VD: SP01)');
-            document.getElementById('stockPro').style.border = '2px solid red';
-            return;
-        }   
-        if (!validateID(MaCate, 'TH')) {
-            alert('Mã danh mục phải bắt đầu bằng TH (VD: TH001)');
-            document.getElementById('stockCate').style.border = '2px solid red';
-            return;
-        }   
-        if (Number(SLNhapValue) < 0) {
-            inputSLNhap.style.border = '2px solid red'; // Dùng element
-            hasNegative = true;
-        }
-        if (Number(SLXuatValue) < 0) {
-            inputSLXuat.style.border = '2px solid red'; // Dùng element
-            hasNegative = true;
-        }
-        if (Number(SLTonValue) < 0) {
-            inputSLTon.style.border = '2px solid red'; // Dùng element
-            hasNegative = true;
-        }
-        
-        if (hasNegative) {
-            alert('Số lượng không được âm!');
-            return;
-        }
-        let statusText = 'Còn hàng';
-        let statusClass = 'ok';
-        const ton = Number(SLTonValue);
-
-        if (ton === 0) {
-            statusText = 'Hết hàng';
-            statusClass = 'out';
-        } else if (ton <= MIN_TON) {
-            statusText = 'Sắp hết';
-            statusClass = 'low';
-        }
-
-        const row = tableBody.insertRow();
-        row.innerHTML = `
-            <td>${MaSP}</td>
-            <td>${TenSP}</td>
-            <td>${MaCate}</td>
-            <td>${SLNhapValue}</td>
-            <td>${SLXuatValue}</td>
-            <td>${SLTonValue}</td>
-            <td>${Ngay}</td>
-            <td><span class="${statusClass}">${statusText}</span></td>
-            <td class="action">
-                <button class="inout">Tạo phiếu</button>
-                <button class="delete" onclick="confirmDeleteStock(this)">Xóa</button>
-            </td>
-        `;
-        const newItem = {
-            id: MaSP,
-            productId: TenSP,
-            categoryId: MaCate,
-            slNhap: Number(SLNhapValue||0),
-            slXuat: Number(SLXuatValue||0),
-            slTon: Number(SLTonValue||0),
-            ngayCapNhat: Ngay,
-            trangThai: statusClass,
-            minTon: MIN_TON,
-            history: []
-        };
-        inventory.push(newItem);
-        setInventory(inventory);
-        syncAndRenderInventory();
-        StockModal.style.display = 'none'; // Đóng modal
-        formStock.reset();                 // Reset form
-        alert('Đã thêm sản phẩm thành công!');
-    };
+//Liên kế phiếu nhập
+// --- Hàm tạo Mã Tồn kho (TKxx) ---
+function generateInventoryCode() {
+    const inventoryList = getInventory();
+    const prefix = 'TK';
+    // Tìm số lớn nhất hiện có
+    const maxNum = inventoryList
+        .map(item => parseInt(item.id.slice(2)) || 0)
+        .reduce((max, current) => Math.max(max, current), 0);
+    
+    // Mã mới: TK01, TK02, ...
+    return prefix + String(maxNum + 1).padStart(2, '0');
 }
+/**
+ * Tự động tạo mục tồn kho mới khi một phiếu nhập được lưu.
+ @param {object} newImport 
+ @param {boolean} isNewRecord 
+ */
+function processInventoryUpdate(newImport, isNewRecord) {
+    // Chỉ tạo tồn kho mới nếu đây là phiếu nhập MỚI.
+    if (!isNewRecord) return;
+    const ngayCapNhatTonKho = newImport.date;
+    // Lấy danh sách tồn kho hiện tại
+    const inventoryList = getInventory();
+    newImport.items.forEach(item => {
+        const productIdFromImport = item.productId;
+        const productInfo = productData.find(p => p.id === productIdFromImport);
+        const newInventoryCode = generateInventoryCode();
+
+        let existingInventory = inventoryList.find(i => i.productId === productIdFromImport);
+
+        // --- Tạo mục LỊCH SỬ NHẬP ---
+        const historyEntry = {
+            ngay: ngayCapNhatTonKho,
+            hanhDong: 'Nhập',
+            soLuong: item.quantity,
+            importId: newImport.id
+        };
+        
+        if (existingInventory) {
+            // --- 3. Cập nhật cho mục đã có (Tồn kho) ---
+            existingInventory.slNhap += item.quantity;
+            existingInventory.slTon += item.quantity;
+            existingInventory.ngayCapNhat = ngayCapNhatTonKho; 
+            existingInventory.trangThai = existingInventory.slTon > (window.MIN_TON || 10) ? 'Còn hàng' : 'Sắp hết';
+            existingInventory.history.unshift(historyEntry);
+            
+        } else if (productInfo) { 
+            // --- 4. TẠO MỚI mục tồn kho (TKxx) ---
+            const newInventoryCode = generateInventoryCode(); 
+            
+            const newInventoryItem = {
+                id: newInventoryCode,
+                productId: productIdFromImport, // <<< Lấy mã SP đã gán sẵn (ví dụ: SP01)
+                categoryId: productInfo.categoryId, // Mã TH (ví dụ: TH01) 
+                slNhap: item.quantity,
+                slXuat: 0,
+                slTon: item.quantity,
+                minTon: window.MIN_TON || 10,
+                stockPro: productInfo.name, 
+                // Sử dụng getCategoryName để lấy Tên thương hiệu 
+                stockCate: getCategoryName ? getCategoryName(productInfo.categoryId) : productInfo.categoryId, 
+                ngayCapNhat: ngayCapNhatTonKho,
+                trangThai: item.quantity > (window.MIN_TON || 10) ? 'Còn hàng' : 'Sắp hết', 
+                history: [historyEntry] 
+            };
+            inventoryList.push(newInventoryItem);
+        }
+    });
+    
+    setInventory(inventoryList); 
+    syncAndRenderInventory();
+}
+window.getInventory=getInventory;
+window.setInventory=setInventory;
+window.MIN_TON=MIN_TON;
+window.processInventoryUpdate = processInventoryUpdate;
 window.syncAndRenderInventory = syncAndRenderInventory;
 window.openModal = openModal; 
 window.openDetailModal = openDetailModal;       
@@ -816,10 +740,9 @@ window.openSummaryModal = openSummaryModal;
 window.closeModal = closeModal;            
 window.openminiPU = openminiPU;            
 window.closeMiniPU = closeMiniPU; 
-window.openStockModal = openStockModal; 
-window.openphieuStock = openphieuStock;  
 window.confirmDeleteStock = confirmDeleteStock;
 syncAndRenderInventory();
+
 // sidebar
 document.addEventListener("DOMContentLoaded", () => {
     const menuItems = document.querySelectorAll(".sidebar-menu a");
@@ -1416,9 +1339,13 @@ importForm?.addEventListener("submit", (e) => {
         return;
         }
         imports.unshift(newImport);
+        isNewRecord = true;
     }
 
     setLocal("importList", imports);
+    if (isNewRecord && typeof processInventoryUpdate === 'function') {
+        processInventoryUpdate(newImport, isNewRecord);
+    }
     renderImportTable();
     importModal.style.display = "none";
 });
