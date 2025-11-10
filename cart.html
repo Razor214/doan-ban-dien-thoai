@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giỏ hàng - SaiGonPhone</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    🛒 Giỏ hàng của bạn
+    <button class="orders-btn" id="showOrders">📦 Đơn đã mua</button>
+  </header>
+
+  <main>
+    <!-- Danh sách sản phẩm -->
+    <section class="product-list">
+      <div class="product" data-id="1" data-name="iPhone 15 Pro" data-price="32000000">
+        <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro" onerror="this.src='https://via.placeholder.com/200'">
+        <h3>iPhone 15 Pro</h3>
+        <p>Giá: 32.000.000₫</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+      <div class="product" data-id="2" data-name="Samsung Galaxy S24" data-price="25000000">
+        <img src="assets/img/samsung.jpg" alt="Samsung Galaxy S24" onerror="this.src='https://via.placeholder.com/200'">
+        <h3>Samsung Galaxy S24</h3>
+        <p>Giá: 25.000.000₫</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+      <div class="product" data-id="3" data-name="Xiaomi 14 Ultra" data-price="20000000">
+        <img src="assets/img/xiaomi.jpg" alt="Xiaomi 14 Ultra" onerror="this.src='https://via.placeholder.com/200'">
+        <h3>Xiaomi 14 Ultra</h3>
+        <p>Giá: 20.000.000₫</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+    </section>
+
+    <!-- Giỏ hàng -->
+    <section>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Tên sản phẩm</th><th>Giá</th><th>-</th><th>Số lượng</th><th>+</th><th>Tổng</th><th>Xóa</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="cart-summary">
+        <p><strong>Tổng cộng:</strong> <span id="totalPrice">0₫</span></p>
+        <button class="btn btn-update">Cập nhật giỏ hàng</button>
+      </div>
+
+      <!-- Địa chỉ nhận hàng -->
+      <div class="address-section">
+        <h3>Địa chỉ nhận hàng</h3>
+        <label for="savedAddress">Chọn địa chỉ có sẵn:</label>
+        <select id="savedAddress">
+          <option value="">-- Chọn địa chỉ --</option>
+        </select>
+
+        <label for="newName">Họ và tên:</label>
+        <input type="text" id="newName" placeholder="Nhập họ tên">
+        <label for="newPhone">Số điện thoại:</label>
+        <input type="text" id="newPhone" placeholder="Nhập số điện thoại">
+        <label for="newAddress">Địa chỉ:</label>
+        <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
+
+        <label for="paymentMethod">Phương thức thanh toán:</label>
+        <select id="paymentMethod">
+          <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
+          <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
+        </select>
+
+        <button class="btn btn-checkout">Đặt hàng</button>
+      </div>
+
+      <a href="index.html" class="btn-back">⬅ Tiếp tục đặt hàng</a>
+    </section>
+  </main>
+
+  <footer>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 6 – Khoa CNTT, Đại học Sài Gòn</footer>
+
+  <!-- Modal -->
+  <div class="modal" id="ordersModal">
+    <div class="modal-content">
+      <button class="close-btn" id="closeModal">Đóng</button>
+      <button class="btn btn-remove" id="clearAllOrdersBtn">Hủy tất cả đơn hàng</button>
+      <h2>📦 Đơn hàng đã mua</h2>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
