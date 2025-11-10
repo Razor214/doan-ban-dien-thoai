@@ -1,0 +1,595 @@
+chỉ sửa phần đơn đã mua cho code chạy<!DOCTYPE html> 
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giỏ hàng - SaiGonPhone</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f9ff;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(90deg, #0078d7, #2eb4e1);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .orders-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .orders-btn:hover {
+      background: rgba(255,255,255,0.4);
+    }
+
+    main {
+      width: 90%;
+      margin: 30px auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .product-list {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      width: 200px;
+      text-align: center;
+      background: #fdfdfd;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .product:hover {
+      transform: translateY(-4px);
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .product h3 {
+      font-size: 1rem;
+    }
+
+    .product button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .product button:hover {
+      background: #005fa3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #0078d7;
+      color: white;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .btn-plus, .btn-minus {
+      background: #3498db;
+    }
+
+    .btn-remove {
+      background: #e74c3c;
+    }
+
+    .btn-update {
+      background: #0078d7;
+    }
+
+    .btn-checkout {
+      background: #27ae60;
+    }
+
+    .btn-back {
+      background: #5dade2;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-top: 20px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .btn-back:hover {
+      background: #3498db;
+    }
+
+    .cart-summary {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+
+    input.qty-input {
+      width: 50px;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #0078d7;
+      color: white;
+      margin-top: 40px;
+    }
+
+    /* Modal đơn đã mua */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+
+    .modal-content h2 {
+      text-align: center;
+      color: #0078d7;
+    }
+
+    .close-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      float: right;
+      cursor: pointer;
+    }
+
+    .address-section {
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+
+    .address-section label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    .address-section input, .address-section select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .product-list { flex-direction: column; align-items: center; }
+      main { width: 95%; }
+      table { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    🛒 Giỏ hàng của bạn
+    <button class="orders-btn" id="showOrders">📦 Đơn đã mua</button>
+  </header>
+
+  <main>
+    <!-- Danh sách sản phẩm -->
+    <section class="product-list">
+      <div class="product" data-id="1" data-name="iPhone 15 Pro" data-price="32000000">
+        <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro" onerror="this.src='https://via.placeholder.com/200'">
+        <h3>iPhone 15 Pro</h3>
+        <p>Giá: 32.000.000₫</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+      <div class="product" data-id="2" data-name="Samsung Galaxy S24" data-price="25000000">
+        <img src="assets/img/samsung.jpg" alt="Samsung Galaxy S24" onerror="this.src='https://via.placeholder.com/200'">
+        <h3>Samsung Galaxy S24</h3>
+        <p>Giá: 25.000.000₫</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+      <div class="product" data-id="3" data-name="Xiaomi 14 Ultra" data-price="20000000">
+        <img src="assets/img/xiaomi.jpg" alt="Xiaomi 14 Ultra" onerror="this.src='https://via.placeholder.com/200'">
+        <h3>Xiaomi 14 Ultra</h3>
+        <p>Giá: 20.000.000₫</p>
+        <button class="btn-add">Thêm vào giỏ</button>
+      </div>
+    </section>
+
+    <!-- Giỏ hàng -->
+    <section>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>-</th>
+            <th>Số lượng</th>
+            <th>+</th>
+            <th>Tổng</th>
+            <th>Xóa</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="cart-summary">
+        <p><strong>Tổng cộng:</strong> <span id="totalPrice">0₫</span></p>
+        <button class="btn btn-update">Cập nhật giỏ hàng</button>
+      </div>
+
+      <!-- Chọn/nhập địa chỉ -->
+      <div class="address-section">
+        <h3>Địa chỉ nhận hàng</h3>
+        <label for="savedAddress">Chọn địa chỉ có sẵn:</label>
+        <select id="savedAddress">
+          <option value="">-- Chọn địa chỉ --</option>
+        </select>
+
+        <label for="newName">Họ và tên:</label>
+        <input type="text" id="newName" placeholder="Nhập họ tên">
+
+        <label for="newPhone">Số điện thoại:</label>
+        <input type="text" id="newPhone" placeholder="Nhập số điện thoại">
+
+        <label for="newAddress">Địa chỉ:</label>
+        <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
+
+        <button class="btn btn-checkout">Đặt hàng</button>
+      </div>
+
+      <a href="index.html" class="btn-back">⬅ Tiếp tục đặt hàng</a>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 SaiGonPhone | Thiết kế bởi Nhóm 6 – Khoa CNTT, Đại học Sài Gòn
+  </footer>
+
+  <!-- Modal hiển thị đơn đã mua -->
+<div class="modal" id="ordersModal">
+  <div class="modal-content">
+    <button class="close-btn" id="closeModal">Đóng</button>
+    <h2>📦 Đơn hàng đã mua</h2>
+    <div id="ordersList"></div>
+    <button id="clearAllOrders" style="
+      background:#e74c3c; color:white; border:none; 
+      padding:8px 12px; border-radius:5px; cursor:pointer; margin-top:10px;  </div>
+</div>
+
+<script>
+  // ======= QUẢN LÝ ĐƠN ĐÃ MUA (LOCALSTORAGE) =======
+  const ordersModal = document.getElementById("ordersModal");
+  const ordersList = document.getElementById("ordersList");
+  const showOrdersBtn = document.getElementById("showOrders");
+  const closeModalBtn = document.getElementById("closeModal");
+  const clearAllOrdersBtn = document.getElementById("clearAllOrders");
+
+  function renderOrders() {
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    if (orders.length === 0) {
+      ordersList.innerHTML = "<p>Chưa có đơn hàng nào.</p>";
+      clearAllOrdersBtn.style.display = "none";
+      return;
+    }
+
+    clearAllOrdersBtn.style.display = "block";
+
+    ordersList.innerHTML = orders.map((order, index) => {
+      const itemsHTML = order.items.map(item => {
+        const subtotal = item.price * item.qty;
+        return `<li>${item.name} - SL: ${item.qty} - ${subtotal.toLocaleString('vi-VN')}₫</li>`;
+      }).join("");
+
+      const totalOrder = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const c = order.customer || {};
+
+      return `
+        <div style="border:1px solid #ccc; padding:10px; margin:10px 0; border-radius:8px; background:#fdfdfd;">
+          <p><strong>🧾 Mã đơn:</strong> ${order.id}</p>
+          <p><strong>📅 Ngày đặt:</strong> ${order.date}</p>
+          ${c.name ? `<p><strong>👤 Khách hàng:</strong> ${c.name}</p>` : ""}
+          ${c.phone ? `<p><strong>📞 SĐT:</strong> ${c.phone}</p>` : ""}
+          ${c.address ? `<p><strong>🏠 Địa chỉ:</strong> ${c.address}</p>` : ""}
+          <ul style="margin-left:20px;">${itemsHTML}</ul>
+          <p style="text-align:right; font-weight:bold;">Tổng: ${totalOrder.toLocaleString('vi-VN')}₫</p>
+          <button class="btn-delete-order" data-index="${index}" style="
+            background:#e74c3c; color:white; border:none; padding:5px 10px;
+            border-radius:5px; cursor:pointer;">❌ Xóa đơn này</button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // Mở modal
+  showOrdersBtn.addEventListener("click", () => {
+    renderOrders();
+    ordersModal.style.display = "flex";
+  });
+
+  // Đóng modal
+  closeModalBtn.addEventListener("click", () => {
+    ordersModal.style.display = "none";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === ordersModal) ordersModal.style.display = "none";
+  });
+
+  // Xóa 1 đơn hàng
+  ordersList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("btn-delete-order")) {
+      const index = e.target.dataset.index;
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      if (confirm("Bạn có chắc muốn hủy đơn hàng này?")) {
+        orders.splice(index, 1);
+        localStorage.setItem("orders", JSON.stringify(orders));
+        renderOrders();
+      }
+    }
+  });
+
+  // Xóa tất cả đơn hàng
+  clearAllOrdersBtn.addEventListener("click", () => {
+    if (confirm("Bạn có chắc muốn hủy TẤT CẢ đơn hàng?")) {
+      localStorage.removeItem("orders");
+      renderOrders();
+    }
+  });
+</script>
+
+
+  <script>
+    let cart = {};
+    const cartTableBody = document.querySelector("#cartTable tbody");
+    const totalPriceEl = document.getElementById("totalPrice");
+
+    // Địa chỉ có sẵn
+    const savedAddresses = [
+      { name: "Nguyen Van A", phone: "0901234567", address: "123 Lê Lợi, Q1, TP.HCM" },
+      { name: "Tran Thi B", phone: "0912345678", address: "456 Nguyễn Trãi, Q5, TP.HCM" }
+    ];
+
+    const savedAddressSelect = document.getElementById("savedAddress");
+    savedAddresses.forEach((a,i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `${a.name} - ${a.address}`;
+      savedAddressSelect.appendChild(opt);
+    });
+
+    savedAddressSelect.addEventListener("change", () => {
+      const idx = savedAddressSelect.value;
+      if(idx !== "") {
+        const addr = savedAddresses[idx];
+        document.getElementById("newName").value = addr.name;
+        document.getElementById("newPhone").value = addr.phone;
+        document.getElementById("newAddress").value = addr.address;
+      } else {
+        document.getElementById("newName").value = "";
+        document.getElementById("newPhone").value = "";
+        document.getElementById("newAddress").value = "";
+      }
+    });
+
+    // ======= Load / Save giỏ hàng =======
+    function loadCart() {
+      const saved = localStorage.getItem("cart");
+      if (saved) cart = JSON.parse(saved);
+      renderCart();
+    }
+
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    // ======= Hiển thị giỏ hàng =======
+    function renderCart() {
+      cartTableBody.innerHTML = "";
+      let total = 0;
+      for (const id in cart) {
+        const item = cart[id];
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.price.toLocaleString('vi-VN')}₫</td>
+          <td><button class="btn btn-minus" data-id="${id}">-</button></td>
+          <td><input type="number" class="qty-input" min="1" value="${item.qty}" data-id="${id}"></td>
+          <td><button class="btn btn-plus" data-id="${id}">+</button></td>
+          <td>${subtotal.toLocaleString('vi-VN')}₫</td>
+          <td><button class="btn btn-remove" data-id="${id}">Xóa</button></td>`;
+        cartTableBody.appendChild(row);
+      }
+      totalPriceEl.textContent = total.toLocaleString('vi-VN') + "₫";
+    }
+
+    // ======= Xử lý các nút =======
+    document.querySelectorAll(".btn-add").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const p = btn.closest(".product");
+        const id = p.dataset.id;
+        const name = p.dataset.name;
+        const price = parseInt(p.dataset.price);
+        if (!cart[id]) cart[id] = { name, price, qty: 1 };
+        else cart[id].qty++;
+        renderCart();
+        saveCart();
+        alert("Đã thêm " + name + " vào giỏ hàng!");
+      });
+    });
+
+    cartTableBody.addEventListener("click", e => {
+      const id = e.target.dataset.id;
+      if (e.target.classList.contains("btn-plus")) { cart[id].qty++; }
+      if (e.target.classList.contains("btn-minus")) { 
+        cart[id].qty--; 
+        if (cart[id].qty <= 0) delete cart[id];
+      }
+      if (e.target.classList.contains("btn-remove")) { 
+        if (confirm("Bạn có chắc xóa sản phẩm này khỏi giỏ hàng?")) delete cart[id]; 
+      }
+      renderCart();
+      saveCart();
+    });
+
+    cartTableBody.addEventListener("change", e => {
+      if (e.target.classList.contains("qty-input")) {
+        const id = e.target.dataset.id;
+        const qty = parseInt(e.target.value);
+        if (qty <= 0) delete cart[id];
+        else cart[id].qty = qty;
+        renderCart();
+        saveCart();
+      }
+    });
+
+    document.querySelector(".btn-update").addEventListener("click", () => {
+      renderCart();
+      saveCart();
+      alert("Giỏ hàng đã được cập nhật!");
+    });
+
+    // ======= Đặt hàng (chuyển sang đơn đã mua) =======
+    document.querySelector(".btn-checkout").addEventListener("click", () => {
+      if (Object.keys(cart).length === 0) return alert("Giỏ hàng trống!");
+
+      const name = document.getElementById("newName").value.trim();
+      const phone = document.getElementById("newPhone").value.trim();
+      const address = document.getElementById("newAddress").value.trim();
+
+      if(!name || !phone || !address) {
+        return alert("Vui lòng nhập đầy đủ thông tin địa chỉ nhận hàng!");
+      }
+
+      if (confirm("Xác nhận đặt hàng?")) {
+        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        const order = {
+          id: Date.now(),
+          date: new Date().toLocaleString(),
+          items: Object.values(cart),
+          customer: { name, phone, address }
+        };
+        orders.push(order);
+        localStorage.setItem("orders", JSON.stringify(orders));
+
+        alert("Đặt hàng thành công!");
+        cart = {};
+        renderCart();
+        saveCart();
+
+        document.getElementById("newName").value = "";
+        document.getElementById("newPhone").value = "";
+        document.getElementById("newAddress").value = "";
+        savedAddressSelect.value = "";
+      }
+    });
+
+    // ======= Hiển thị Đơn đã mua =======
+    const ordersModal = document.getElementById("ordersModal");
+    const ordersList = document.getElementById("ordersList");
+    document.getElementById("showOrders").addEventListener("click", () => {
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      if (orders.length === 0) {
+        ordersList.innerHTML = "<p>Chưa có đơn hàng nào.</p>";
+      } else {
+        ordersList.innerHTML = orders.map(o => `
+          <div style="border:1px solid #ddd; margin:10px 0; padding:10px; border-radius:5px;">
+            <strong>🧾 Mã đơn:</strong> ${o.id}<br>
+            <strong>📅 Ngày đặt:</strong> ${o.date}<br>
+            <strong>👤 Khách hàng:</strong> ${o.customer.name} - ${o.customer.phone} <br>
+            <strong>🏠 Địa chỉ:</strong> ${o.customer.address} <br>
+            <ul>${o.items.map(i => `<li>${i.name} - SL: ${i.qty} - ${(i.price*i.qty).toLocaleString('vi-VN')}₫</li>`).join("")}</ul>
+          </div>
+        `).join("");
+      }
+      ordersModal.style.display = "flex";
+    });
+
+    document.getElementById("closeModal").addEventListener("click", () => {
+      ordersModal.style.display = "none";
+    });
+
+    window.onclick = e => {
+      if (e.target === ordersModal) ordersModal.style.display = "none";
+    };
+
+    // Khởi tạo
+    loadCart();
+  </script>
+</body>
+</html>
