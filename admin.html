@@ -185,7 +185,7 @@
                         <thead>
                             <tr>
                                 <th>Mã</th>
-                                <th>Mã danh mục</th>
+                                <th>Mã thương hiệu</th>
                                 <th>Mã sản phẩm</th>
                                 <th>Mã nhập</th>
                                 <th>Giá vốn</th>
@@ -204,11 +204,37 @@
                         <label for="id">Mã:</label>
                         <input type="text" id="id" placeholder="Nhập mã..." required>
 
-                        <label for="categoryId">Mã danh mục:</label>
-                        <input type="text" id="categoryId" placeholder="Nhập mã danh mục..." required>
+                        <label for="categoryId">Mã thương hiệu:</label>
+                        <input type="text" id="categoryId" placeholder="Mã thương hiệu..." required>
+                        <select id="categorySelect" required>
+                            <option value="">--Chọn thương hiệu--</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Nokia">Nokia</option>
+                            <option value="Huawei">Huawei</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Oppo">Oppo</option>
+                            <option value="Sony">Sony</option>
+                            <option value="LG">LG</option>
+                            <option value="Oneplus">OnePLus</option>
+                            <option value="Google">Google</option>
+                        </select>
 
                         <label for="productId">Mã sản phẩm:</label>
-                        <input type="text" id="productId" placeholder="Nhập mã sản phẩm..." required>
+                        <input type="text" id="productId" placeholder="Mã sản phẩm..." required>
+                        <select id="productSelect" required>
+                            <option value="">--Chọn sản phẩm--</option>
+                            <option value="iPhone 15 Pro 156GB">iPhone 15 Pro 156GB</option>
+                            <option value="iPhone 16 Pro Max 512GB">iPhone 16 Pro Max 512GB</option>
+                            <option value="Samsung Galaxy S23 Ultra 512GB">Samsung Galaxy S23 Ultra 512GB</option>
+                            <option value="Xiaomi 13 Pro 256GB">Xiaomi 13 Pro 256GB</option>
+                            <option value="Huawei P60 Pro 256GB">Huawei P60 Pro 256GB</option>
+                            <option value="Sony Xperia 1 V 256GB">Sony Xperia 1 V 256GB</option>
+                            <option value="LG Velvet 2 128GB">LG Velvet 2 128GB</option>
+                            <option value="Nokia X30 5G 128 GB">Nokia X30 5G 128 GB</option>
+                            <option value="OnePlus 11 256GB">OnePlus 11 256GB</option>
+                            <option value=">Google Pixel 8 Pro 512GB">Google Pixel 8 Pro 512GB</option>
+                        </select>
 
                         <label for="importId">Mã nhập:</label>
                         <input type="text" id="importId" placeholder="Nhập mã nhập..." required>
@@ -260,7 +286,7 @@
                         <option value="cancelled">cancelled</option>
                     </select>
                     <button onclick="Orders()">Lọc</button>
-                    <button onclick="ResetDate()">Đặt lại</button>
+                    <button id="resetorder" onclick="ResetDate()">Đặt lại</button>
                 </div>
                 <div class="wraporders-table">
                     <table class="orders-table">
@@ -325,14 +351,14 @@
                 <div class="filter">
                     <input type="text" id="Namesearch" placeholder="Mã...">
                     <input type="text" id="Prosearch" placeholder="Mã sản phẩm...">
-                    <input type="text" id="Catesearch" placeholder="Mã danh mục...">
+                    <input type="text" id="Catesearch" placeholder="Mã thương hiệu...">
                     <div class="date-filter">
                         <label for="time">Thời gian: </label>
                         <input type="date" id="startDate">
                         <input type="date" id="endDate">
                     </div>
-                    <button id="Btnsearch">Tìm kiếm</button>
-                     <button onclick="openStockModal('add')">Thêm sản phẩm</button>
+                    <button id="Btnsearch">Lọc</button>
+                    <button id="resetstock" onclick="ResetDateStock()">Đặt lại</button>
                 </div>
                 <div class="sum">
                     <div class="sum-status">
@@ -348,7 +374,7 @@
                             <tr>
                                 <th>Mã</th>
                                 <th>Mã sản phẩm</th>
-                                <th>Mã danh mục</th>
+                                <th>Mã thương hiệu</th>
                                 <th>Số lượng nhập</th>
                                 <th>Số lượng bán</th>
                                 <th>Số lượng tồn</th>
@@ -359,55 +385,6 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-                </div>
-            </div>
-            <div class="popup" id="StockPopup">
-                <div class="popup-content">
-                    <form id="StockFormADD">
-                        <label>Mã:</label>
-                        <input type="text" id="stockMa" required>
-                        <label>Mã sản phẩm</label>
-                        <input type="text" id="stockPro" required>
-                        <label>Mã danh mục:</label>
-                        <input type="text" id="stockCate" required>
-                        <label>Số lượng nhập:</label>
-                        <input type="number" id="stockIn" required>
-                        <label>Số lượng xuất:</label>
-                        <input type="number" id="stockOut" required>
-                        <label>Số lượng tồn:</label>
-                        <input type="number" id="stockStill" required>
-                        <label>Ngày cập nhật:</label>
-                        <input type="date" id="stockUpdate" required>
-                        <div class="popup-foot">
-                            <button type="submit" id="saveStock">Lưu</button>
-                            <button type="button" id="cancelStock">Hủy</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="popup" id="FormStockPopup">
-                <div class="popup-content">
-                    <form id="IntOut">
-                        <label>Ngày:</label>
-                        <input type="date" id="inoutdate" required>
-                        <label>Hành động:</label>
-                        <select id="inorout">
-                            <option value="Nhập">Nhập</option>
-                            <option value="Xuất">Xuất</option>
-                        </select>
-                        <div id="input-section">
-                            <label>Số lượng nhập:</label>
-                            <input type="number" id="stockFormIn">
-                        </div>
-                        <div id="out-section">
-                            <label>Số lượng xuất:</label>
-                            <input type="number" id="stockFormOut">
-                        </div>
-                       <div class="popup-foot">
-                            <button type="submit" id="creatForm">Lưu</button>
-                            <button type="button" id="cancelForm">Hủy</button>
-                        </div>
-                    </form>
                 </div>
             </div>
             <div id="detailModal" class="modal">

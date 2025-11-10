@@ -376,7 +376,7 @@ h2 {
     position: absolute;
     right: 20px;
     top: 20px;
-    font-size: 20px;
+    font-size: 32px;
     color: #555;
     cursor: pointer;
     transition: 0.2s;
@@ -769,28 +769,17 @@ button:hover {
 }
 
 .hanhdong button {
-    border: 1px solid #ccc;
     padding: 9px 16px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
-}
-.action .inout {
-    background: rgb(13, 68, 196)
-}
-.hanhdong button:hover {
-    transform: translateY(-1px);
-}
-
-#exportBtn {
     background: #007bff;
     color: #fff;
 }
-
-#exportBtn:hover {
+.hanhdong button:hover {
+    transform: translateY(-1px);
     background: #0056b3;
 }
-
 .filter {
     display: flex;
     align-items: center;
@@ -828,9 +817,10 @@ button:hover {
 }
 
 .filter button {
+    display: flex;
+    flex-wrap:wrap;
     background: #007bff;
     color: #fff;
-    border: none;
     padding: 9px 18px;
     border-radius: 8px;
     cursor: pointer;
@@ -929,16 +919,10 @@ button:hover {
     opacity: 0.5;
     pointer-events: none;
 }
-#StockFormADD textarea {
-    flex: 1;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-#cancelStock, #cancelForm, #xacnhankhongStock{background: grey;}
-#cancelStock:hover, #cancelForm:hover, #xacnhankhongStock:hover{background-color: rgb(95, 91, 91);}
-#saveStock, #creatForm, #xacnhanxoaStock {background: #007bff;}
-#saveStock:hover, #creatForm:hover, #xacnhanxoaStock:hover {background: #0056b3;}
+#xacnhankhongStock, #resetorder, #resetstock{background: grey;}
+#xacnhankhongStock:hover, #resetorder:hover, #resetstock:hover{background-color: rgb(95, 91, 91);}
+#xacnhanxoaStock {background: #007bff;}
+#xacnhanxoaStock:hover {background: #0056b3;}
 .modal,
 .popup-modal {
     display: none;
