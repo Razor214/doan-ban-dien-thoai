@@ -1555,7 +1555,7 @@ function openImportModal(mode, btn) {
 
   if (mode === "add") {
     document.getElementById("importCode").value = "";
-    document.getElementById("importStatus").value = "Đang xử lý";
+    document.getElementById("importStatus").value = "pending";
     loadProductItems([]);
     document.getElementById("importTotal").value = 0;
     document.getElementById("importCode").readOnly = false;
@@ -1568,7 +1568,7 @@ function openImportModal(mode, btn) {
     const record = imports.find((i) => i.id === idToEdit);
 
     if (!record) return;
-    if (record.status === "Hoàn thành") {
+    if (record.status === "completed") {
       alert("Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
       importModal.style.display = "none";
       return;
