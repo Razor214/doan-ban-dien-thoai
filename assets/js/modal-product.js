@@ -57,7 +57,6 @@ class ProductModal {
 
     const priceInfo = priceData.find((price) => price.productId === productId);
 
-
     this.currentProduct = {
       id: product.id,
       name: product.name,
@@ -89,6 +88,7 @@ class ProductModal {
 
     this.renderModalImage();
     this.renderSpecifications();
+    this.renderQuantitySelector();
   }
 
   renderModalImage() {
@@ -127,7 +127,81 @@ class ProductModal {
       .join("");
   }
 
+  renderQuantitySelector() {
+    // Tìm hoặc tạo phần tử chứa số lượng
+    let quantitySection = document.querySelector(".product-quantity");
+
+    if (!quantitySection) {
+      quantitySection = document.createElement("div");
+      quantitySection.className = "product-quantity";
+
+      // Chèn vào trước phần tử product-actions
+      const productActions = document.querySelector(".product-actions");
+      if (productActions) {
+        productActions.parentNode.insertBefore(quantitySection, productActions);
+      }
+    }
+
+    quantitySection.innerHTML = `
+      <div class="quantity-selector">
+        <label for="modalQuantity">Số lượng:</label>
+        <div class="quantity-controls">
+          <button type="button" class="quantity-btn minus" id="modalQuantityMinus">-</button>
+          <input type="number" id="modalQuantity" name="quantity" value="1" min="1" max="99" class="quantity-input">
+          <button type="button" class="quantity-btn plus" id="modalQuantityPlus">+</button>
+        </div>
+      </div>
+    `;
+
+    // Thêm sự kiện cho nút +/-
+    document
+      .getElementById("modalQuantityMinus")
+      .addEventListener("click", () => {
+        this.adjustQuantity(-1);
+      });
+
+    document
+      .getElementById("modalQuantityPlus")
+      .addEventListener("click", () => {
+        this.adjustQuantity(1);
+      });
+
+    // Thêm sự kiện cho input
+    document.getElementById("modalQuantity").addEventListener("change", (e) => {
+      this.validateQuantity(e.target);
+    });
+  }
+
+  adjustQuantity(change) {
+    const quantityInput = document.getElementById("modalQuantity");
+    let currentValue = parseInt(quantityInput.value) || 1;
+    let newValue = currentValue + change;
+
+    // Đảm bảo số lượng không nhỏ hơn 1 và không lớn hơn 99
+    if (newValue < 1) newValue = 1;
+    if (newValue > 99) newValue = 99;
+
+    quantityInput.value = newValue;
+  }
+
+  validateQuantity(input) {
+    let value = parseInt(input.value) || 1;
+
+    if (value < 1) value = 1;
+    if (value > 99) value = 99;
+
+    input.value = value;
+  }
+
   getBrandFromCategory(categoryId) {
+    // Lấy dữ liệu loại sản phẩm mới nhất từ localStorage
+    const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
+    const category = categories.find((c) => c.id === categoryId);
+
+    if (category) {
+      return category.brand;
+    }
+
     const brandMap = {
       TH01: "Apple",
       TH02: "Samsung",
@@ -139,7 +213,7 @@ class ProductModal {
       TH08: "OnePlus",
       TH09: "Google",
     };
-    return brandMap[categoryId] || "Unknown";
+    return brandMap[categoryId] || categoryId || "Unknown";
   }
 
   showModal() {
@@ -163,30 +237,37 @@ class ProductModal {
 
     if (!this.currentProduct) return;
 
+    const quantityInput = document.getElementById("modalQuantity");
+    const quantity = parseInt(quantityInput.value) || 1;
+
     const productToAdd = {
       id: this.currentProduct.id,
       name: this.currentProduct.name,
       brand: this.currentProduct.brand,
       price: this.currentProduct.price,
       image: this.currentProduct.image,
-      quantity: 1,
+      quantity: quantity,
     };
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingItem = cart.find((item) => item.id === productToAdd.id);
 
     if (existingItem) {
-      existingItem.quantity += 1;
+      existingItem.quantity += quantity;
     } else {
       cart.push(productToAdd);
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    this.showNotification(`Đã thêm ${this.currentProduct.name} vào giỏ hàng!`);
+    this.showNotification(
+      `Đã thêm ${quantity} ${this.currentProduct.name} vào giỏ hàng!`
+    );
   }
 
   checkLogin() {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const currentUser =
+      JSON.parse(localStorage.getItem("CurrentUser")) ||
+      JSON.parse(localStorage.getItem("currentUser"));
     return currentUser !== null;
   }
 
@@ -224,6 +305,7 @@ class ProductModal {
       setTimeout(() => notification.remove(), 300);
     }, 3000);
   }
+
   formatPrice(price) {
     return new Intl.NumberFormat("vi-VN").format(price);
   }

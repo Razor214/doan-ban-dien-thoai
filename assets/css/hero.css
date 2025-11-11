@@ -5,7 +5,7 @@
   padding: 70px 0 0 0;
   display: flex;
   justify-content: center; /* canh hero-inner giữa toàn màn */
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   position: relative;
   overflow: hidden;
   min-height: 480px;
@@ -61,16 +61,16 @@
   all: unset; /* reset toàn bộ kế thừa CSS khác */
   display: inline-block;
   padding: 12px 28px;
-  border: 2px solid #fff;       /* viền mảnh chuẩn */
+  border: 2px solid #fff; /* viền mảnh chuẩn */
   color: white;
   border-radius: 6px;
   text-decoration: none;
   font-weight: 500;
   font-size: 1.05em;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-sizing: border-box;       /* giữ kích thước ổn định */
+  box-sizing: border-box; /* giữ kích thước ổn định */
   text-align: center;
 }
 
@@ -79,7 +79,6 @@
   color: #1c1b1f;
   border-color: white;
 }
-
 
 /* HÌNH ẢNH HERO */
 .hero-image {
@@ -96,7 +95,7 @@
   height: auto;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }
 
 /* RESPONSIVE */
@@ -126,4 +125,3 @@
     max-width: 320px;
   }
 }
-
