@@ -1178,13 +1178,35 @@ productForm?.addEventListener("submit", (e) => {
     productModal.style.display = "none";
 });
 function populateCategoryDropdown() {
-  const select = document.getElementById("prodType");
-  const categories = getLocal("categoryList");
-  select.innerHTML = categories.map(c => 
-    `<option value="${c.id}">${c.brand}</option>`
-  ).join("");
+    const select = document.getElementById("prodType");
+    const categories = getLocal("categoryList");
+    select.innerHTML = categories.map(c => 
+        `<option value="${c.id}">${c.brand}</option>`
+    ).join("");
 }
-document.addEventListener("DOMContentLoaded", populateCategoryDropdown);
+function populateRamDropdown() {
+    const ramSelect = document.getElementById("prodRam");
+    const ramOptions = [4, 6, 8, 12, 16];
+    ramSelect.innerHTML = ramOptions.map(r => 
+        `<option value="${r}GB">${r}GB</option>`
+    ).join("");
+}
+
+function populateStorageDropdown() {
+    const storageSelect = document.getElementById("prodStorage");
+    const storageOptions = ["32GB", "64GB", "128GB", "256GB", "512GB", "1TB"];
+    storageSelect.innerHTML = storageOptions.map(s => 
+        `<option value="${s}">${s}</option>`
+    ).join("");
+}
+document.addEventListener("DOMContentLoaded", () => {
+    populateCategoryDropdown();
+    populateRamDropdown();
+    populateStorageDropdown();
+    renderProductTable();
+});
+
+
 
 // --- XÓA ---
 function deleteProduct(btn) {
