@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaiGonPhone - Tài Khoản</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/user.css">
+    <link rel="stylesheet" href="assets/css/user2.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <img src="assets/img/logo.png" alt="SaiGonPhone Logo">
+            <h1>SaiGonPhone</h1>
+        </div>
+
+        <nav class="navbar">
+            <a href="index.html" class="bar_right">Trang Chủ</a>
+            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+            <a href="user.html?tab=register">Đăng ký</a>
+            <a href="user.html?tab=profile">Hồ sơ</a>
+            <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
+
+        </nav>
+
+    </header>
+
+    <!------------------ PHẦN TÀI KHOẢN ------------------->
+    <div class="auth-container">
+        <div class="container">
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab active" data-tab="login" onclick="showTab('login')">Đăng Nhập</button>
+                <button class="tab" data-tab="register" onclick="showTab('register')">Đăng Ký</button>
+                <button class="tab" data-tab="profile" onclick="showTab('profile')">Hồ Sơ</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- LOGIN PAGE -->
+                <div id="login" class="form-page active">
+                    <h2 class="form-title">Đăng Nhập</h2>
+
+                    <div id="login-alert"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">Tên đăng nhập hoặc Email</label>
+                            <input type="text" id="loginUsername" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" id="loginPassword" class="form-input" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Đăng Nhập</button>
+
+                        <div class="form-footer">
+                            <p>Chưa có tài khoản? <span class="form-link" onclick="showTab('register')">Đăng ký
+                                    ngay</span></p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- REGISTER PAGE -->
+                <div id="register" class="form-page">
+                    <h2 class="form-title">Đăng Ký</h2>
+
+                    <div id="register-alert"></div>
+
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label">Họ và Tên</label>
+                            <input type="text" id="fullName" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tên đăng nhập</label>
+                            <input type="text" id="username" class="form-input" required minlength="6">
+                            <small id="usernameError" class="error-text"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" required>
+                            <small id="emailError" class="error-text"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" id="password" class="form-input" required minlength="8">
+                            <small id="passwordError" class="error-text"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <input type="password" id="confirmPassword" class="form-input" required>
+                            <small id="confirmPasswordError" class="error-text"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="phone" class="form-input">
+                        </div>
+
+                        <button type="submit" class="btn-primary">Đăng Ký</button>
+
+                        <div class="form-footer">
+                            <p>Đã có tài khoản? <span class="form-link" onclick="showTab('login')">Đăng nhập</span></p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- PROFILE PAGE -->
+                <div id="profile" class="form-page">
+                    <h2 class="form-title">Hồ Sơ Cá Nhân</h2>
+
+                    <div id="profile-alert"></div>
+
+                    <div class="profile-info" id="profile-info">
+                        <p>Vui lòng đăng nhập để xem thông tin</p>
+                    </div>
+
+                    <!-- Nút hành động -->
+                    <div class="profile-actions" id="profileActions" style="display: none;">
+                        <button class="btn-primary" onclick="toggleEditProfile()" id="editProfileBtn">
+                            Chỉnh sửa thông tin
+                        </button>
+                        <button class="btn-primary logout-btn" onclick="logout()">
+                            Đăng Xuất
+                        </button>
+                    </div>
+
+                    <!-- Form chỉnh sửa thông tin và đổi mật khẩu -->
+                    <form id="profileForm" style="display: none;">
+                        <h3
+                            style="margin-bottom: 20px; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">
+                            Chỉnh sửa thông tin cá nhân
+                        </h3>
+
+                        <div class="form-group">
+                            <label class="form-label">Họ và Tên</label>
+                            <input type="text" id="profileFullName" class="form-input" placeholder="Nhập họ và tên">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="profileEmail" class="form-input" placeholder="Nhập email">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="profilePhone" class="form-input" placeholder="Nhập số điện thoại">
+                        </div>
+
+                        <h3
+                            style="margin: 30px 0 20px 0; color: #333; border-bottom: 2px solid #2196F3; padding-bottom: 10px;">
+                            Đổi mật khẩu
+                        </h3>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu hiện tại</label>
+                            <div class="password-box">
+                                <input type="password" id="currentPassword" class="form-input"
+                                    placeholder="Nhập mật khẩu hiện tại">
+                                <span class="toggle-pass" onclick="togglePassword('currentPassword', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <div class="password-box">
+                                <input type="password" id="newPassword" class="form-input"
+                                    placeholder="Nhập mật khẩu mới">
+                                <span class="toggle-pass" onclick="togglePassword('newPassword', this)">👁️</span>
+                            </div>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                            <div class="password-box">
+                                <input type="password" id="confirmNewPassword" class="form-input"
+                                    placeholder="Xác nhận mật khẩu mới">
+                                <span class="toggle-pass"
+                                    onclick="togglePassword('confirmNewPassword', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" style="margin-right: 10px;">Cập nhật thông
+                                tin</button>
+                            <button type="button" class="btn-secondary" onclick="cancelEdit()">Hủy bỏ</button>
+                        </div>
+                    </form>
+
+                    <div class="form-footer">
+                        <p>Quay lại <span class="form-link" onclick="showTab('login')">Đăng nhập</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/user.js"></script>
+
+</body>
+
+</html>
