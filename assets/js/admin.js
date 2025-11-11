@@ -1007,7 +1007,7 @@ categoryForm.onsubmit = (e) => {
   // Kiểm tra định dạng ID: phải là TH + 2 chữ số
   const idPattern = /^TH\d{2}$/;
   if (!idPattern.test(newData.id)) {
-    alert("ID phải có định dạng THXX, trong đó XX là số (ví dụ: TH01, TH99)");
+    alert("ID phải có định dạng THXX, trong đó XX là số");
     return;
   }
 
