@@ -146,6 +146,71 @@ function getAdminAccount() {
     return admin || { username: 'admin', password: 'admin123' }; // Fallback
 }
 
+// ===== QUẢN LÝ TRẠNG THÁI ĐĂNG NHẬP ADMIN =====
+const ADMIN_SESSION_KEY = 'admin_logged_in';
+
+// Hàm kiểm tra đăng nhập admin
+function isAdminLoggedIn() {
+    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+}
+
+// Hàm lưu trạng thái đăng nhập admin
+function setAdminLoggedIn(status) {
+    if (status) {
+        localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    } else {
+        localStorage.removeItem(ADMIN_SESSION_KEY);
+    }
+}
+
+// ===== HÀM HIỂN THỊ FORM ĐĂNG NHẬP ADMIN =====
+function showAdminLogin() {
+    console.log('🔐 HIỆN FORM ĐĂNG NHẬP ADMIN');
+    
+    // ẨN TOÀN BỘ NỘI DUNG ADMIN
+    const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
+    adminElements.forEach(el => {
+        if (el) el.style.display = 'none';
+    });
+
+    // THÊM CSS VÀO HEAD
+    if (!document.querySelector('#admin-login-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'admin-login-styles';
+        styleElement.textContent = adminLoginStyles;
+        document.head.appendChild(styleElement);
+    }
+
+    // TẠO FORM ĐĂNG NHẬP
+    const adminAccount = getAdminAccount();
+    const loginHTML = `
+        <div class="admin-login-overlay" id="adminLoginOverlay">
+            <div class="admin-login-form">
+                <h2>🔐 Đăng nhập Admin</h2>
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <input type="text" id="adminUsername" placeholder="Tên đăng nhập" required value="${adminAccount.username}">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="adminPassword" placeholder="Mật khẩu" required value="${adminAccount.password}">
+                    </div>
+                    <button type="submit" class="login-btn">Đăng nhập Admin</button>
+                    <div id="adminLoginError" class="login-error">Sai tài khoản hoặc mật khẩu!</div>
+                </form>
+                <div style="text-align:center; margin-top:15px; font-size:12px; color:#666;">
+                    <p><strong>Tài khoản admin:</strong> ${adminAccount.username} / ${adminAccount.password}</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Thêm vào body
+    document.body.insertAdjacentHTML('beforeend', loginHTML);
+
+    // Xử lý sự kiện đăng nhập
+    document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
+}
+
 // ===== HÀM XỬ LÝ ĐĂNG NHẬP ADMIN =====
 function handleAdminLogin(e) {
     e.preventDefault();
@@ -168,96 +233,6 @@ function handleAdminLogin(e) {
     // Kiểm tra đăng nhập từ userList
     const adminAccount = getAdminAccount();
     if (username === adminAccount.username && password === adminAccount.password) {
-        console.log('✅ ĐĂNG NHẬP ADMIN THÀNH CÔNG');
-        
-        // Lưu trạng thái đăng nhập
-        setAdminLoggedIn(true);
-        
-        // Ẩn form đăng nhập
-        const loginOverlay = document.querySelector('.admin-login-overlay');
-        if (loginOverlay) loginOverlay.remove();
-        
-        // HIỆN LẠI TOÀN BỘ NỘI DUNG ADMIN
-        const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
-        adminElements.forEach(el => {
-            if (el) el.style.display = '';
-        });
-        
-        console.log('✅ ĐÃ HIỆN NỘI DUNG ADMIN');
-        
-    } else {
-        // Hiển thị lỗi
-        errorDiv.style.display = 'block';
-        document.getElementById('adminPassword').value = '';
-        
-        // Khôi phục button
-        button.innerHTML = originalText;
-        button.disabled = false;
-        console.log('❌ Đăng nhập admin thất bại');
-    }
-}
-
-// ===== QUẢN LÝ TRẠNG THÁI ĐĂNG NHẬP ADMIN =====
-const ADMIN_SESSION_KEY = 'admin_logged_in';
-
-// Hàm kiểm tra đăng nhập admin
-function isAdminLoggedIn() {
-    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
-}
-
-// Hàm lưu trạng thái đăng nhập admin
-function setAdminLoggedIn(status) {
-    if (status) {
-        localStorage.setItem(ADMIN_SESSION_KEY, 'true');
-    } else {
-        localStorage.removeItem(ADMIN_SESSION_KEY);
-    }
-}
-
-// ===== HÀM HIỂN THỊ FORM ĐĂNG NHẬP ADMIN =====
-// Trong hàm showAdminLogin(), cập nhật phần hiển thị:
-const adminAccount = getAdminAccount();
-const loginHTML = `
-    <div class="admin-login-overlay" id="adminLoginOverlay">
-        <div class="admin-login-form">
-            <h2>🔐 Đăng nhập Admin</h2>
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <input type="text" id="adminUsername" placeholder="Tên đăng nhập" required value="${adminAccount.username}">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="adminPassword" placeholder="Mật khẩu" required value="${adminAccount.password}">
-                </div>
-                <button type="submit" class="login-btn">Đăng nhập Admin</button>
-                <div id="adminLoginError" class="login-error">Sai tài khoản hoặc mật khẩu!</div>
-            </form>
-            <div style="text-align:center; margin-top:15px; font-size:12px; color:#666;">
-                <p><strong>Tài khoản admin:</strong> ${adminAccount.username} / ${adminAccount.password}</p>
-            </div>
-        </div>
-    </div>
-`;
-// ===== HÀM XỬ LÝ ĐĂNG NHẬP ADMIN =====
-function handleAdminLogin(e) {
-    e.preventDefault();
-
-    const username = document.getElementById('adminUsername').value.trim();
-    const password = document.getElementById('adminPassword').value;
-    const errorDiv = document.getElementById('adminLoginError');
-    const button = document.querySelector('.login-btn');
-
-    console.log('🔐 Thử đăng nhập admin:', { username, password });
-
-    // Ẩn thông báo lỗi cũ
-    errorDiv.style.display = 'none';
-
-    // Hiển thị loading
-    const originalText = button.innerHTML;
-    button.innerHTML = 'Đang đăng nhập...';
-    button.disabled = true;
-
-    // Kiểm tra đăng nhập đơn giản
-    if (username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password) {
         console.log('✅ ĐĂNG NHẬP ADMIN THÀNH CÔNG');
         
         // Lưu trạng thái đăng nhập
