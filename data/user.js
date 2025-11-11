@@ -1,4 +1,14 @@
 const userList = [
+     {
+        id: "admin",
+        fullname: "Quản Trị Viên",
+        username: "admin",
+        email: "admin@saigonphone.com",
+        sdt: "", // Bạn có thể thêm số điện thoại nếu cần
+        password: "admin123",
+        status: "active",
+        address: "" // Bạn có thể thêm địa chỉ nếu cần
+    },
     {
         id: "KH01",
         fullname: "Lê Thị Bích Ngọc",
