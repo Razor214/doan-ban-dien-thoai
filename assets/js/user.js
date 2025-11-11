@@ -127,6 +127,7 @@ if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUs
     localStorage.setItem("ListUser", JSON.stringify(userList));
     console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
 }
+
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
   return JSON.parse(localStorage.getItem("ListUser")) || [];
@@ -176,7 +177,7 @@ const phoneRegex = /^0\d{9}$/;
 const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
 const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-// ================== ĐĂNG KÝ (SỬA LỖI) ==================
+// ================== ĐĂNG KÝ ==================
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -187,7 +188,6 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   let confirmPass = document.getElementById("confirmPassword").value;
   let phone = document.getElementById("phone").value.trim();
 
-  // --- kiểm tra định dạng ---
   if (!usernameRegex.test(username))
     return showRegisterError("Tên đăng nhập chỉ gồm chữ, số, gạch dưới (4-20 ký tự)");
 
@@ -205,14 +205,12 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
 
   let list = getListUser();
 
-  // kiểm tra trùng
   for (let u of list) {
     if (u.username === username) return showRegisterError("Tên đăng nhập đã tồn tại!");
     if (u.email === email) return showRegisterError("Email đã tồn tại!");
     if (u.phone === phone && phone !== "") return showRegisterError("Số điện thoại đã tồn tại!");
   }
 
-  // SỬA LỖI: Thêm đầy đủ thông tin user
   let newUser = {
     id: "KH" + (list.length + 1).toString().padStart(2, '0'),
     fullName,
@@ -233,27 +231,24 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   document.getElementById("registerForm").reset();
 });
 
-// ================== THÊM HÀM BỊ THIẾU ==================
-function updateHeaderUserStatus() {
-    updateUserPageHeader();
+function showRegisterError(msg) {
+  document.getElementById("register-alert").innerHTML =
+    `<div class="alert alert-error">${msg}</div>`;
 }
-// ================== ĐĂNG NHẬP ==================
+
+// ================== ĐĂNG NHẬP (CHỈ CHO USER) ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
   let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
   let pass = document.getElementById("loginPassword").value;
 
-  console.log('🔐 Attempting login with:', userInput);
-
   let list = getListUser();
-  console.log('👥 Users in storage:', list);
 
+  // CHỈ CHO PHÉP USER THÔNG THƯỜNG ĐĂNG NHẬP
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && u.pass === pass
+    (u.username === userInput || u.email === userInput) && u.pass === pass && u.role === "user"
   );
-
-  console.log('🔍 Found user:', found);
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
@@ -264,13 +259,9 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   setCurrentUser(found);
   console.log('✅ User logged in:', found);
 
-  if (found.role === 'admin') {
-    window.location.href = "admin.html";
-  } else {
-    window.location.href = "index.html";
-  }
+  // LUÔN CHUYỂN VỀ TRANG CHỦ
+  window.location.href = "index.html";
 });
-
 // ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
   let currentUser = getCurrentUser();
@@ -472,19 +463,14 @@ function capNhatMoiThu() {
   console.log("✅ Đồng bộ hoàn tất");
 }
 
-// ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
 window.onload = function () {
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
-  // Cập nhật header
   updateUserPageHeader();
 
   if (currentUser) {
-    // Nếu đã đăng nhập, luôn hiển thị tab profile
     showTab("profile");
-    
-    // Ẩn các tab đăng nhập/đăng ký
     document.querySelectorAll('.tab').forEach(tab => {
       if (tab.dataset.tab !== 'profile') {
         tab.style.display = 'none';
