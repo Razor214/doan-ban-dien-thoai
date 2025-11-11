@@ -564,3 +564,81 @@ function updateUserPageHeader() {
 document.addEventListener('DOMContentLoaded', function() {
     updateUserPageHeader();
 });
+// ================== THÊM HÀM BỊ THIẾU ==================
+function updateHeaderUserStatus() {
+    updateUserPageHeader();
+}
+
+// ================== KIỂM TRA VÀ ẨN ADMIN BADGE TRÊN TRANG USER ==================
+function hideAdminElements() {
+    const adminBadge = document.getElementById('admin-badge');
+    const adminMenuLink = document.getElementById('admin-menu-link');
+    
+    if (adminBadge) adminBadge.style.display = 'none';
+    if (adminMenuLink) adminMenuLink.style.display = 'none';
+}
+
+// ================== KIỂM TRA VÀ XỬ LÝ ADMIN SESSION ==================
+function checkAndClearAdminSession() {
+    if (window.location.pathname.includes('user.html')) {
+        const currentUser = getCurrentUser();
+        if (currentUser && currentUser.role === 'admin') {
+            localStorage.removeItem("CurrentUser");
+            console.log('✅ Đã xóa admin session trên trang user');
+        }
+    }
+}
+
+// ================== CẬP NHẬT HEADER - SỬA LẠI ==================
+function updateUserPageHeader() {
+    const currentUser = getCurrentUser();
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const userNameSpan = document.getElementById('user-name');
+
+    if (currentUser && currentUser.username) {
+        if (guestLinks) guestLinks.style.display = 'none';
+        if (userLinks) userLinks.style.display = 'flex';
+
+        const userName = currentUser.fullName || currentUser.username;
+        if (userNameSpan) userNameSpan.textContent = userName;
+
+        // Ẩn admin elements
+        hideAdminElements();
+        
+    } else {
+        if (guestLinks) guestLinks.style.display = 'flex';
+        if (userLinks) userLinks.style.display = 'none';
+        hideAdminElements();
+    }
+}
+
+// Sửa phần window.onload
+window.onload = function () {
+  let currentUser = getCurrentUser();
+  let query = new URLSearchParams(window.location.search).get('tab');
+
+  // Kiểm tra admin session
+  checkAndClearAdminSession();
+  currentUser = getCurrentUser(); // Cập nhật lại
+
+  updateUserPageHeader();
+
+  if (currentUser) {
+    showTab("profile");
+    document.querySelectorAll('.tab').forEach(tab => {
+      if (tab.dataset.tab !== 'profile') {
+        tab.style.display = 'none';
+      }
+    });
+  } else if (query) {
+    showTab(query);
+  } else {
+    showTab("login");
+  }
+};
+
+// Gọi hàm khi trang user.html load
+document.addEventListener('DOMContentLoaded', function() {
+    updateUserPageHeader();
+});
