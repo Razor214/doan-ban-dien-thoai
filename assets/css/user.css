@@ -1,5 +1,17 @@
-/* USER AUTHENTICATION STYLES */
+/* USER AUTHENTICATION STYLES - MERGED & OPTIMIZED */
+#auth-section {
+    padding: 40px 20px;
+    background: white;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .auth-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,6 +26,7 @@
     overflow: hidden;
     width: 90%;
     max-width: 400px;
+    margin: 0 auto;
 }
 
 .tabs {
@@ -160,25 +173,40 @@
     text-align: center;
 }
 
-.logout-btn {
-    background: #dc3545;
-    margin-top: 10px;
-    width: 100%;
-    padding: 12px;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s;
+.info-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
-.logout-btn:hover {
-    background: #c82333;
+.info-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
+.password-box {
+    position: relative;
+}
+
+.password-box .toggle-pass {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+    font-size: 18px;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    #auth-section {
+        padding: 20px 10px;
+        min-height: 60vh;
+    }
+    
     .auth-container {
         padding: 20px 10px;
         min-height: 60vh;
@@ -196,4 +224,67 @@
         padding: 12px;
         font-size: 14px;
     }
+    
+    .container {
+        margin: 10px auto;
+    }
+}
+/* PROFILE OPTIMIZED STYLES */
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+.profile-actions button {
+    flex: 1;
+    max-width: 200px;
+    padding: 12px 20px;
+    font-size: 16px;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* Nút Chỉnh sửa thông tin */
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* Nút Đăng Xuất */
+.logout-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.logout-btn:hover {
+    background: #c82333;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    flex: 1;
+    padding: 12px 20px;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

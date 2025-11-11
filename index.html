@@ -21,36 +21,54 @@
 
   </head>
   <body>
-    <!-- THANH THÔNG TIN (khu vực riêng) -->
-    <div class="top-info-bar">
-      <div class="container">
-        <div class="contact-info">
-          <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
-          <span><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5, TP.HCM</span>
-        </div>
-      </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="SaiGonPhone Logo">
+      <h1>SaiGonPhone</h1>
     </div>
 
-    <header class="modern-header">
-      <div class="container">
-        <div class="logo">
-          <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
-          <h1>SaiGonPhone</h1>
-        </div>
+    <!-- THANH TÌM KIẾM -->
+    <div class="search-bar">
+      <input type="text" id="headerSearch" placeholder="Bạn muốn tìm kiếm gì?" />
+      <button id="headerSearchBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+      </button>
+    </div>
 
-        <div class="search-bar modern-search">
-          <input type="text" id="headerSearch" placeholder="Search" />
-          <button id="headerSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
-        <nav class="navbar modern-nav" id="navbar">
-          <div id="userArea"></div>
-          <a href="user/cart.html" class="icon-btn cart-link" title="Giỏ hàng">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span>Giỏ Hàng</span>
-          </a>
-        </nav>
+    <nav class="navbar" id="navbar">
+      <a href="index.html" class="bar_right">Trang Chủ</a>
+
+      <!-- Hiển thị khi chưa đăng nhập -->
+      <div id="guest-links" class="navbar-links">
+        <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+        <a href="user.html?tab=register">Đăng ký</a>
       </div>
-    </header>
+
+      <!-- Hiển thị khi đã đăng nhập -->
+      <div id="user-links" style="display: none;" class="navbar-links">
+        <div class="user-dropdown">
+          <a href="user.html?tab=profile" class="user-profile-link">
+            Xin chào, <span id="user-name"></span>
+            <span class="admin-badge" id="admin-badge" style="display: none;">Admin</span>
+          </a>
+          <div class="dropdown-content">
+            <a href="index.html" class="icon-home">Về trang chủ</a>
+            <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
+            <a href="#" onclick="navigateToCart(); return false;" class="icon-cart">🛒 Giỏ hàng</a>
+            <a href="admin.html"class="icon-admin admin-menu-item" id="admin-menu-link" style="display: none;">
+              Quản Trị Viên
+            </a>
+            <a href="#" onclick="logoutFromHome(); return false;" class="icon-logout">Đăng xuất</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
 
     <!-- TOP MENU -->
     <div class="topmenu">
@@ -293,8 +311,54 @@
         Liên hệ:
         <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
       </p>
+      <p>
+        <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
+        <span><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5, TP.HCM</span>
+      </p>
     </footer>
-    <script src="assets/js/hero.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const userData = localStorage.getItem('CurrentUser');
+        const currentUser = userData ? JSON.parse(userData) : null;
+
+        const guestLinks = document.getElementById('guest-links');
+        const userLinks = document.getElementById('user-links');
+        const adminBadge = document.getElementById('admin-badge');
+        const adminMenuLink = document.getElementById('admin-menu-link');
+        const userNameSpan = document.getElementById('user-name');
+
+        if (currentUser && currentUser.username) {
+          // Ẩn guest links, hiển thị user links
+          guestLinks.style.display = 'none';
+          userLinks.style.display = 'flex';
+
+          // Hiển thị tên user
+          const userName = currentUser.fullName || currentUser.username;
+          userNameSpan.textContent = userName;
+
+          // Kiểm tra và hiển thị badge admin + menu item nếu là admin
+          const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+          if (isAdmin) {
+            adminBadge.style.display = 'inline-block';
+            adminMenuLink.style.display = 'flex';
+          } else {
+            adminBadge.style.display = 'none';
+            adminMenuLink.style.display = 'none';
+          }
+        } else {
+          guestLinks.style.display = 'flex';
+          userLinks.style.display = 'none';
+        }
+      });
+
+      function logoutFromHome() {
+        if (confirm('Bạn có chắc muốn đăng xuất?')) {
+          localStorage.removeItem('CurrentUser');
+          window.location.href = 'index.html';
+        }
+        return false;
+      }
+    </script>
     <script src="data/product.js"></script>
     <script src="data/price.js"></script>
     <script src="assets/js/products.js"></script>
