@@ -265,26 +265,31 @@ function checkAdminAccess() {
     return true;
 }
 
-// ===== GIẢI PHÁP ĐƠN GIẢN - LUÔN HIỆN FORM =====
-console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
-
-// Luôn hiện form đăng nhập khi vào admin.html
-function forceShowLogin() {
-    console.log('🚨 LUÔN HIỆN FORM ĐĂNG NHẬP');
+// ===== CHẮC CHẮN CHẠY SAU KHI TẤT CẢ CÁC SCRIPT KHÁC ĐÃ LOAD =====
+window.addEventListener('load', function() {
+    console.log('=== TRANG ĐÃ LOAD HOÀN TOÀN ===');
+    console.log('Kiểm tra đăng nhập admin...');
     
-    // Ẩn toàn bộ nội dung admin ngay lập tức
-    const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
-    adminElements.forEach(el => {
-        if (el) el.style.display = 'none';
-    });
-    
-    // Hiện form đăng nhập
-    showAdminLogin();
-}
+    // Đợi thêm 1 chút để chắc chắn
+    setTimeout(() => {
+        console.log('isAdminLoggedIn():', isAdminLoggedIn());
+        
+        if (!isAdminLoggedIn()) {
+            console.log('🚨 CHƯA ĐĂNG NHẬP - HIỆN FORM ĐĂNG NHẬP');
+            showAdminLogin();
+        } else {
+            console.log('✅ ĐÃ ĐĂNG NHẬP ADMIN');
+        }
+    }, 500);
+});
 
-// Chạy ngay khi DOM ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', forceShowLogin);
-} else {
-    forceShowLogin();
-}
+// Hoặc thử cách đơn giản hơn - chạy sau 2 giây để đảm bảo mọi thứ đã sẵn sàng
+setTimeout(() => {
+    console.log('🕒 KIỂM TRA SAU 2 GIÂY...');
+    console.log('isAdminLoggedIn():', isAdminLoggedIn());
+    
+    if (!isAdminLoggedIn()) {
+        console.log('🚨 VẪN CHƯA ĐĂNG NHẬP - HIỆN FORM');
+        showAdminLogin();
+    }
+}, 2000);
