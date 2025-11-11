@@ -8,35 +8,69 @@ if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUs
 
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
-  return JSON.parse(localStorage.getItem("ListUser")) || [];
+  return JSON.parse(localStorage.getItem("userList")) || [];
 }
 
 function setListUser(list) {
-  localStorage.setItem("ListUser", JSON.stringify(list));
+  localStorage.setItem("userList", JSON.stringify(list));
 }
 
 function getCurrentUser() {
+  // 🚨 QUAN TRỌNG: Kiểm tra nếu đang ở trang admin thì không trả về user
+  if (window.location.pathname.includes('admin.html')) {
+    return null;
+  }
   return JSON.parse(localStorage.getItem("CurrentUser"));
 }
 
 function setCurrentUser(u) {
-  localStorage.setItem("CurrentUser", JSON.stringify(u));
-}
-
-function equalUser(u1, u2) {
-  return u1.username === u2.username;
-}
-
-function updateListUser(user, newData) {
-  let list = getListUser();
-  for (let i = 0; i < list.length; i++) {
-    if (equalUser(list[i], user)) {
-      list[i] = newData ? newData : user;
-      break;
-    }
+  // 🚨 QUAN TRỌNG: Chỉ lưu CurrentUser nếu KHÔNG phải trang admin
+  if (!window.location.pathname.includes('admin.html')) {
+    localStorage.setItem("CurrentUser", JSON.stringify(u));
   }
-  setListUser(list);
 }
+
+// ================== ĐĂNG NHẬP USER (CHỈ CHO USER THƯỜNG) ==================
+document.getElementById("loginForm")?.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
+  let pass = document.getElementById("loginPassword").value;
+
+  let list = getListUser();
+
+  // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG TÌM ADMIN
+  let found = list.find(u =>
+    (u.username === userInput || u.email === userInput) && 
+    (u.password === pass || u.pass === pass) && 
+    u.role === "user" && // QUAN TRỌNG: CHỈ user thường
+    u.status === "active" // CHỈ cho phép tài khoản active
+  );
+
+  if (!found) {
+    document.getElementById("login-alert").innerHTML =
+      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu!</div>`;
+    return;
+  }
+
+  const normalizedUser = {
+    id: found.id,
+    fullName: found.fullname || found.fullName,
+    username: found.username,
+    email: found.email,
+    phone: found.phone,
+    pass: found.password || found.pass,
+    status: found.status,
+    address: found.address || "",
+    role: found.role
+  };
+
+  setCurrentUser(normalizedUser);
+  console.log('✅ User logged in:', normalizedUser);
+
+  // 🚨 LUÔN CHUYỂN VỀ TRANG CHỦ, KHÔNG VÀO ADMIN
+  window.location.href = "index.html";
+});
 
 // ================== TAB CONTROL ==================
 function showTab(tab) {
@@ -114,48 +148,6 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   document.getElementById("registerForm").reset();
 });
 
-// ================== ĐĂNG NHẬP (CHỈ CHO USER) ==================
-document.getElementById("loginForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
-  let pass = document.getElementById("loginPassword").value;
-
-  let list = getListUser();
-
-  // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG TÌM ADMIN
-  let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && 
-    (u.pass === pass || u.password === pass) && // Hỗ trợ cả pass và password
-    u.role === "user" && // QUAN TRỌNG: CHỈ user thường
-    u.status === "active" // CHỈ cho phép tài khoản active
-  );
-
-  if (!found) {
-    document.getElementById("login-alert").innerHTML =
-      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu, hoặc tài khoản bị khóa!</div>`;
-    return;
-  }
-
-  // Chuẩn hóa đối tượng user để đảm bảo tính nhất quán
-  const normalizedUser = {
-    id: found.id,
-    fullName: found.fullname || found.fullName,
-    username: found.username,
-    email: found.email,
-    phone: found.phone,
-    pass: found.password || found.pass,
-    status: found.status,
-    address: found.address || "",
-    role: found.role
-  };
-
-  setCurrentUser(normalizedUser);
-  console.log('✅ User logged in:', normalizedUser);
-
-  // 🚨 LUÔN CHUYỂN VỀ TRANG CHỦ
-  window.location.href = "index.html";
-});
 
 // ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
