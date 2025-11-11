@@ -270,7 +270,7 @@ function adminLogin(username, password) {
         // Tìm user với role admin
         const adminUser = userList.find(u => {
             const usernameMatch = u.username === username || u.email === username;
-            const passwordMatch = u.password === password;
+            const passwordMatch = u.pass === password; // Sửa thành u.pass để khớp với user.js
             const roleMatch = u.role === 'admin';
             
             return usernameMatch && passwordMatch && roleMatch;
