@@ -1,4 +1,5 @@
 // ===== ADMIN LOGIN STYLES =====
+// ===== ADMIN LOGIN STYLES =====
 const adminLoginStyles = `
 /* === RESET & OVERRIDE === */
 .admin-login-overlay * {
@@ -115,10 +116,6 @@ const adminLoginStyles = `
     border: 1px solid #e74c3c !important;
     font-weight: 500 !important;
 }
-    
-`
-`
-/* ... (giữ nguyên CSS cũ) ... */
 
 /* === RESPONSIVE === */
 @media (max-width: 480px) {
