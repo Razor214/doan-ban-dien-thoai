@@ -265,7 +265,9 @@ class ProductModal {
   }
 
   checkLogin() {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const currentUser =
+      JSON.parse(localStorage.getItem("CurrentUser")) ||
+      JSON.parse(localStorage.getItem("currentUser"));
     return currentUser !== null;
   }
 
