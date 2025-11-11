@@ -1,5 +1,4 @@
 // ===== ADMIN LOGIN STYLES =====
-// ===== ADMIN LOGIN STYLES =====
 const adminLoginStyles = `
 /* === RESET & OVERRIDE === */
 .admin-login-overlay * {
@@ -117,6 +116,31 @@ const adminLoginStyles = `
     font-weight: 500 !important;
 }
 
+/* === NÚT ĐĂNG XUẤT === */
+#adminLogoutBtn {
+    position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    padding: 12px 20px !important;
+    background: linear-gradient(135deg, #6c757d, #495057) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3) !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+#adminLogoutBtn:hover {
+    background: linear-gradient(135deg, #5a6268, #3d4348) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4) !important;
+}
+
 /* === RESPONSIVE === */
 @media (max-width: 480px) {
     .admin-login-form {
@@ -140,7 +164,7 @@ const adminLoginStyles = `
     
     #adminLogoutBtn {
         top: 10px !important;
-        right: 10px !important;
+        left: 10px !important;
         padding: 10px 15px !important;
         font-size: 12px !important;
     }
@@ -309,6 +333,9 @@ function handleAdminLogin(e) {
         // Thông báo thành công
         button.innerHTML = 'Đăng nhập thành công!';
         
+        // Thêm nút đăng xuất
+        addLogoutButton();
+        
         // Reload để kích hoạt toàn bộ tính năng admin
         setTimeout(() => {
             window.location.reload();
@@ -325,6 +352,7 @@ function handleAdminLogin(e) {
         console.log('❌ Đăng nhập thất bại');
     }
 }
+
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
@@ -418,6 +446,26 @@ function ensureAdminAccount() {
     }
 }
 
+// ===== TẠO NÚT ĐĂNG XUẤT TRÊN GIAO DIỆN ADMIN =====
+function addLogoutButton() {
+    // Kiểm tra xem đã có nút đăng xuất chưa
+    if (document.getElementById('adminLogoutBtn')) return;
+    
+    // Tạo nút đăng xuất
+    const logoutBtn = document.createElement('button');
+    logoutBtn.id = 'adminLogoutBtn';
+    logoutBtn.innerHTML = '🚪 Đăng xuất';
+    logoutBtn.onclick = function() {
+        if (confirm('Bạn có chắc muốn đăng xuất?')) {
+            clearAdminSession();
+            window.location.reload();
+        }
+    };
+    
+    document.body.appendChild(logoutBtn);
+    console.log('✅ Đã thêm nút đăng xuất');
+}
+
 // ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
 
@@ -437,6 +485,7 @@ window.addEventListener('load', function() {
             showAdminLogin();
         } else {
             console.log('✅ ĐÃ ĐĂNG NHẬP - HIỆN NỘI DUNG ADMIN');
+            addLogoutButton();
         }
     }, 500);
 });
@@ -449,54 +498,3 @@ setTimeout(() => {
         showAdminLogin();
     }
 }, 2000);
-// ===== TẠO NÚT ĐĂNG XUẤT TRÊN GIAO DIỆN ADMIN =====
-function addLogoutButton() {
-    // Kiểm tra xem đã có nút đăng xuất chưa
-    if (document.getElementById('adminLogoutBtn')) return;
-    
-    // Tạo nút đăng xuất
-    const logoutBtn = document.createElement('button');
-    logoutBtn.id = 'adminLogoutBtn';
-    logoutBtn.innerHTML = '🚪 Đăng xuất';
-    logoutBtn.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 12px 20px;
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        z-index: 9999;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-        transition: all 0.3s ease;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-    `;
-    
-    // Hiệu ứng hover
-    logoutBtn.onmouseover = function() {
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 6px 20px rgba(231, 76, 60, 0.4)';
-    };
-    
-    logoutBtn.onmouseout = function() {
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.3)';
-    };
-    
-    logoutBtn.onclick = function() {
-        if (confirm('Bạn có chắc muốn đăng xuất?')) {
-            clearAdminSession();
-            window.location.reload();
-        }
-    };
-    
-    document.body.appendChild(logoutBtn);
-}
-// Thêm vào cuối file
-if (isAdminLoggedIn()) {
-    setTimeout(addLogoutButton, 1000);
-}
