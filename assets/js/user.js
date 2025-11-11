@@ -175,7 +175,7 @@ function checkAccountStatus(username) {
     );
     
     if (user) {
-        return user.status; // 'active' hoặc 'locked'
+        return user.status; // 'active' hoặc 'blocked'
     }
     return 'active'; // Mặc định nếu không tìm thấy
 }
@@ -271,7 +271,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
 
   // KIỂM TRA TRẠNG THÁI TÀI KHOẢN TRƯỚC
   const accountStatus = checkAccountStatus(userInput);
-  if (accountStatus === 'locked') {
+  if (accountStatus === 'blocked') {
       document.getElementById("login-alert").innerHTML =
           `<div class="alert alert-error">Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!</div>`;
       return;
@@ -290,7 +290,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   }
 
   // KIỂM TRA LẦN CUỐI TRƯỚC KHI ĐĂNG NHẬP
-  if (found.status === 'locked') {
+  if (found.status === 'blocked') {
       document.getElementById("login-alert").innerHTML =
           `<div class="alert alert-error">Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!</div>`;
       return;
@@ -319,8 +319,8 @@ function loadProfile() {
     return;
   }
 
-  const statusText = currentUser.status === 'locked' ? 'Đã khóa' : 'Đang hoạt động';
-  const statusClass = currentUser.status === 'locked' ? 'status-locked' : 'status-active';
+  const statusText = currentUser.status === 'blocked' ? 'Đã khóa' : 'Đang hoạt động';
+  const statusClass = currentUser.status === 'blocked' ? 'status-blocked' : 'status-active';
 
   infoBox.innerHTML = `
         <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${currentUser.fullName}</span></div>
