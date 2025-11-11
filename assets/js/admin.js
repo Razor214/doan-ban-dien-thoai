@@ -1165,31 +1165,29 @@ function getPriceByProductId(productId) {
     : "Chưa có giá";
 }
 
-// --- RENDER TABLE ---
-function renderImportTable(data = imports) {
-    importTbody.innerHTML = data
-        .map((i) => {
-        const statusText =
-            i.status === "pending"
-            ? "Đang xử lý"
-            : i.status === "completed"
-            ? "Hoàn thành"
-            : i.status;
-
-        return `
-            <tr>
-            <td>${i.id}</td>
-            <td>${i.date}</td>
-            <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
-            <td>${statusText}</td>
-            <td class="action">
-                <button class="view" onclick="viewImportDetail('${i.id}')">👁 Chi tiết</button>
-                <button class="edit" onclick="openImportModal('edit', this)">Sửa</button>
-                <button class="delete" onclick="deleteImport(this)">Xóa</button>
-            </td>
-            </tr>`;
-        })
-        .join("");
+// --- RENDER TABLE (SẢN PHẨM) ---
+function renderProductTable(data = products) {
+  productTbody.innerHTML = data.map((p) => `
+    <tr>
+      <td>${getCategoryName(p.categoryId)}</td>
+      <td>${p.id}</td>
+      <td>${p.name}</td>
+      <td>
+        <img src="${p.img || "assets/img/logo.png"}"
+             style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+      </td>
+      <td>${p.desc}</td>
+      <td>${p.status === "active" ? "Đang hiển thị" : "Đã ẩn"}</td>
+      <td class="action">
+        <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
+        <button class="delete" onclick="deleteProduct(this)">Xóa</button>
+        <button class="toggle" onclick="toggleProductStatus('${p.id}')">
+          ${p.status === "active" ? "Ẩn" : "Hiện"}
+        </button>
+        <button class="view" onclick="viewProductDetail('${p.id}')">Chi tiết</button>
+      </td>
+    </tr>
+  `).join("");
 }
 
 
@@ -1318,8 +1316,11 @@ productForm?.addEventListener("submit", (e) => {
   productModal.style.display = "none";
 });
 function populateCategoryDropdown() {
-  updateProductCategoryDropdown();
+  const select = document.getElementById("prodType");
+  const cats = getLocal("categoryList");
+  select.innerHTML = cats.map(c => `<option value="${c.id}">${c.brand}</option>`).join("");
 }
+
 
 function populateRamDropdown() {
   const ramSelect = document.getElementById("prodRam");
@@ -1382,11 +1383,6 @@ function searchProductCategory() {
   renderProductTable(filtered);
 }
 window.searchProductCategory = searchProductCategory;
-
-// --- KHỞI TẠO ---
-document.addEventListener("DOMContentLoaded", () => {
-  renderProductTable();
-});
 
 /* ======================================================
                QUẢN LÝ NHẬP SẢN PHẨM
