@@ -188,7 +188,6 @@ function showAdminLogin() {
                     <div id="adminLoginError" class="login-error">Sai tài khoản hoặc mật khẩu!</div>
                 </form>
                 <div style="text-align:center; margin-top:15px; font-size:12px; color:#666;">
-                    Tài khoản mẫu: admin / admin123
                 </div>
             </div>
         </div>
