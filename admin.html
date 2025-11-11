@@ -547,15 +547,6 @@
     <script src="assets/js/validators.js"></script>
     <script src="assets/js/admin.js"></script>
     <script src="assets/js/admin-login.js"></script>
-    <script>
-    // Tạm thời bỏ qua kiểm tra đăng nhập
-    // if (!checkAdminAccess()) {
-    //     window.location.href = "index.html";
-    // }
-</script>
-    <button onclick="showAdminLogin()">Đăng nhập Admin</button>
-
-    <script src="assets/js/admin-login.js"></script>
 
 
     <!-- FOOTER -->
@@ -564,5 +555,17 @@
         <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
     </footer>
 </body>
+<!-- THÊM ĐOẠN NÀY NGAY SAU THẺ BODY -->
+<script src="assets/js/admin-login.js"></script>
+<script>
+    // Kiểm tra đăng nhập ngay khi body bắt đầu load
+    if (!isAdminLoggedIn()) {
+        setTimeout(() => showAdminLogin(), 50);
+    }
+</script>
+
+<!-- PHẦN HEADER, SIDEBAR HIỆN TẠI... -->
+<header class="headerbar">
+    ...
 
 </html>
