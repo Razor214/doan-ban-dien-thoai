@@ -288,3 +288,27 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loginOverlay) loginOverlay.remove();
     }
 });
+// ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
+console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
+
+// Kiểm tra ngay khi script được load
+function initAdminAuth() {
+    console.log('initAdminAuth - isAdminLoggedIn():', isAdminLoggedIn());
+    
+    if (!isAdminLoggedIn()) {
+        console.log('Chưa đăng nhập, sẽ hiện form...');
+        // Đợi DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => showAdminLogin(), 100);
+            });
+        } else {
+            setTimeout(() => showAdminLogin(), 100);
+        }
+    } else {
+        console.log('Đã đăng nhập admin');
+    }
+}
+
+// Chạy ngay lập tức
+initAdminAuth();
