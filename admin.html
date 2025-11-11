@@ -130,8 +130,11 @@
             <div class="popup" id="ProductPopup">
                 <div class="popup-content">
                     <form id="ProductForm">
-                        <label>Loại:</label>
-                        <input type="text" id="prodType" required>
+                        <label>Loại sản phẩm:</label>
+                        <select id="prodType" required>
+                            <option value="">-- Chọn loại --</option>
+                        </select>
+
 
                         <label>Mã:</label>
                         <input type="text" id="prodCode" required>
@@ -541,6 +544,7 @@
     <script src="data/product.js"></script>
     <script src="data/import.js"></script>
     <script src="data/user.js"></script>
+    <script src="assets/js/validators.js"></script>
     <script src="assets/js/admin.js"></script>
 
 
