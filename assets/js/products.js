@@ -19,38 +19,43 @@ class ProductManager {
     this.applyFilters();
   }
 
-  loadProducts() {
-    if (
-      typeof productList === "undefined" ||
-      typeof priceList === "undefined"
-    ) {
-      console.error("❌ Không tìm thấy dữ liệu productList hoặc priceList");
-      return;
-    }
+loadProducts() {
+  // 1️⃣ Lấy dữ liệu từ LocalStorage nếu có
+  const storedProducts = JSON.parse(localStorage.getItem("productList"));
+  const storedPrices = JSON.parse(localStorage.getItem("priceList"));
 
-    this.products = productList.map((product) => {
-      const priceInfo = priceList.find(
-        (price) => price.productId === product.id
-      );
-      return {
-        id: product.id,
-        name: product.name,
-        brand: this.getBrandFromCategory(product.categoryId),
-        price: priceInfo ? priceInfo.price : 0,
-        stock: Math.floor(Math.random() * 20) + 1,
-        image: product.img,
-        ram: parseInt(product.ram),
-        storage: parseInt(product.storage),
-        cpu: product.chip,
-        display: product.display,
-        camera: product.camera,
-        battery: product.battery,
-        os: product.os,
-        color: product.color,
-      };
-    });
-    this.filteredProducts = [...this.products];
-  }
+  // 2️⃣ Nếu LocalStorage chưa có, dùng file tĩnh để khởi tạo
+  const productsData = storedProducts || (typeof productList !== "undefined" ? productList : []);
+  const pricesData = storedPrices || (typeof priceList !== "undefined" ? priceList : []);
+
+  // 3️⃣ Gán dữ liệu
+  this.products = productsData.map((product) => {
+    const priceInfo = pricesData.find((price) => price.productId === product.id);
+    return {
+      id: product.id,
+      name: product.name,
+      brand: this.getBrandFromCategory(product.categoryId),
+      price: priceInfo ? priceInfo.price : 0,
+      stock: Math.floor(Math.random() * 20) + 1,
+      image: product.img,
+      ram: parseInt(product.ram),
+      storage: parseInt(product.storage),
+      cpu: product.chip,
+      display: product.display,
+      camera: product.camera,
+      battery: product.battery,
+      os: product.os,
+      color: product.color,
+    };
+  });
+
+  // 4️⃣ Cập nhật lại nếu LocalStorage chưa có dữ liệu
+  if (!storedProducts) localStorage.setItem("productList", JSON.stringify(this.products));
+  if (!storedPrices) localStorage.setItem("priceList", JSON.stringify(pricesData));
+
+  this.filteredProducts = [...this.products];
+}
+
 
   getBrandFromCategory(categoryId) {
     const brandMap = {

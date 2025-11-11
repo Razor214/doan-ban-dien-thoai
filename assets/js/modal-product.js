@@ -46,10 +46,17 @@ class ProductModal {
   }
 
   openProductModal(productId) {
-    const product = productList.find((p) => p.id === productId);
-    if (!product) return;
+    const productData = JSON.parse(localStorage.getItem("productList")) || [];
+    const priceData = JSON.parse(localStorage.getItem("priceList")) || [];
 
-    const priceInfo = priceList.find((price) => price.productId === productId);
+    const product = productData.find((p) => p.id === productId);
+    if (!product) {
+      alert("Không tìm thấy sản phẩm trong dữ liệu hiện tại!");
+      return;
+    }
+
+    const priceInfo = priceData.find((price) => price.productId === productId);
+
 
     this.currentProduct = {
       id: product.id,
