@@ -115,6 +115,39 @@ const adminLoginStyles = `
     border: 1px solid #e74c3c !important;
     font-weight: 500 !important;
 }
+    
+`
+`
+/* ... (giữ nguyên CSS cũ) ... */
+
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+    .admin-login-form {
+        margin: 20px !important;
+        padding: 2rem 1.5rem !important;
+        width: 95% !important;
+    }
+    
+    .admin-login-form h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .form-group input {
+        padding: 12px !important;
+    }
+    
+    .login-btn {
+        padding: 12px !important;
+    }
+    
+    #adminLogoutBtn {
+        top: 10px !important;
+        right: 10px !important;
+        padding: 10px 15px !important;
+        font-size: 12px !important;
+    }
+}
 `;
 
 // ===== QUẢN LÝ TRẠNG THÁI ĐĂNG NHẬP =====
@@ -255,7 +288,6 @@ function handleAdminLogin(e) {
         `;
         document.head.appendChild(style);
     }
-}
 
     // Kiểm tra đăng nhập
     const adminUser = adminLogin(username, password);
@@ -295,7 +327,7 @@ function handleAdminLogin(e) {
         button.disabled = false;
         console.log('❌ Đăng nhập thất bại');
     }
-
+}
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
@@ -466,4 +498,8 @@ function addLogoutButton() {
     };
     
     document.body.appendChild(logoutBtn);
+}
+// Thêm vào cuối file
+if (isAdminLoggedIn()) {
+    setTimeout(addLogoutButton, 1000);
 }
