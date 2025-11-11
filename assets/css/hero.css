@@ -1,0 +1,129 @@
+/* ===== HERO CHỮ GIỮA, KHÔNG LỆCH DÙ PHÓNG TO ===== */
+.hero-modern {
+  background: #1c1b1f;
+  color: white;
+  padding: 70px 0 0 0;
+  display: flex;
+  justify-content: center; /* canh hero-inner giữa toàn màn */
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+}
+
+/* Container trung tâm hero */
+.hero-inner {
+  max-width: 1200px; /* giới hạn chiều ngang hero */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px; /* khoảng cách giữa chữ và hình */
+  padding: 0 50px;
+}
+
+/* Hero content */
+.hero-content {
+  flex: 1 1 45%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.hero-content h5 {
+  font-size: 1.3em;
+  color: #9a9a9a;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+
+.hero-content h1 {
+  font-size: 4.2em;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.hero-content p {
+  color: #ccc;
+  font-size: 1.2em;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 480px;
+}
+
+/* ===== FIX CHO NÚT "SHOP NOW" ===== */
+.hero-btn {
+  all: unset; /* reset toàn bộ kế thừa CSS khác */
+  display: inline-block;
+  padding: 12px 28px;
+  border: 2px solid #fff;       /* viền mảnh chuẩn */
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05em;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;       /* giữ kích thước ổn định */
+  text-align: center;
+}
+
+.hero-btn:hover {
+  background: white;
+  color: #1c1b1f;
+  border-color: white;
+}
+
+
+/* HÌNH ẢNH HERO */
+.hero-image {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: -5px;
+}
+
+.hero-image img {
+  max-width: 430px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 50px 20px 0 20px;
+    gap: 30px;
+  }
+
+  .hero-content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 3em;
+  }
+
+  .hero-content p {
+    font-size: 1em;
+    margin: 0 auto 25px auto;
+  }
+
+  .hero-image img {
+    max-width: 320px;
+  }
+}
+
