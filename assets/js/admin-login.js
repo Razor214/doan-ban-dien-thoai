@@ -449,23 +449,58 @@ function ensureAdminAccount() {
 // ===== TẠO NÚT ĐĂNG XUẤT TRÊN GIAO DIỆN ADMIN =====
 function addLogoutButton() {
     // Kiểm tra xem đã có nút đăng xuất chưa
-    if (document.getElementById('adminLogoutBtn')) return;
+    if (document.getElementById('adminLogoutBtn')) {
+        console.log('✅ Nút đăng xuất đã tồn tại');
+        return;
+    }
+    
+    console.log('🔄 Đang tạo nút đăng xuất...');
     
     // Tạo nút đăng xuất
     const logoutBtn = document.createElement('button');
     logoutBtn.id = 'adminLogoutBtn';
-    logoutBtn.innerHTML = '🚪 Đăng xuất';
-    logoutBtn.onclick = function() {
+    logoutBtn.textContent = '🚪 Đăng xuất'; // Dùng textContent thay vì innerHTML
+    
+    // Thêm style trực tiếp
+    logoutBtn.style.position = 'fixed';
+    logoutBtn.style.top = '20px';
+    logoutBtn.style.left = '20px';
+    logoutBtn.style.padding = '12px 20px';
+    logoutBtn.style.background = 'linear-gradient(135deg, #6c757d, #495057)';
+    logoutBtn.style.color = 'white';
+    logoutBtn.style.border = 'none';
+    logoutBtn.style.borderRadius = '8px';
+    logoutBtn.style.cursor = 'pointer';
+    logoutBtn.style.zIndex = '9999';
+    logoutBtn.style.fontSize = '14px';
+    logoutBtn.style.fontWeight = '600';
+    logoutBtn.style.boxShadow = '0 4px 15px rgba(108, 117, 125, 0.3)';
+    logoutBtn.style.transition = 'all 0.3s ease';
+    logoutBtn.style.border = '2px solid rgba(255, 255, 255, 0.1)';
+    
+    // Hiệu ứng hover
+    logoutBtn.addEventListener('mouseover', function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 6px 20px rgba(108, 117, 125, 0.4)';
+    });
+    
+    logoutBtn.addEventListener('mouseout', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 4px 15px rgba(108, 117, 125, 0.3)';
+    });
+    
+    // Sự kiện click
+    logoutBtn.addEventListener('click', function() {
         if (confirm('Bạn có chắc muốn đăng xuất?')) {
             clearAdminSession();
-            window.location.reload();
+            window.location.href = 'index.html';
         }
-    };
+    });
     
+    // Thêm vào body
     document.body.appendChild(logoutBtn);
-    console.log('✅ Đã thêm nút đăng xuất');
+    console.log('✅ Đã thêm nút đăng xuất thành công');
 }
-
 // ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
 
@@ -498,3 +533,26 @@ setTimeout(() => {
         showAdminLogin();
     }
 }, 2000);
+// ===== KIỂM TRA VÀ KÍCH HOẠT NÚT ĐĂNG XUẤT =====
+function initAdminLogout() {
+    console.log('🔍 Kiểm tra trạng thái đăng nhập...');
+    
+    if (isAdminLoggedIn()) {
+        console.log('✅ Đã đăng nhập - Thêm nút đăng xuất');
+        // Thử nhiều lần để đảm bảo nút được thêm
+        setTimeout(addLogoutButton, 100);
+        setTimeout(addLogoutButton, 500);
+        setTimeout(addLogoutButton, 1000);
+    } else {
+        console.log('❌ Chưa đăng nhập');
+    }
+}
+
+// Chạy khi trang load
+window.addEventListener('load', function() {
+    console.log('🔄 Trang đã load hoàn toàn');
+    initAdminLogout();
+});
+
+// Chạy lại sau 2 giây để đảm bảo
+setTimeout(initAdminLogout, 2000);
