@@ -1158,6 +1158,9 @@ productForm?.addEventListener("submit", (e) => {
         return;
         }
     }
+    if (!validateProductForm(newProd)) return;
+    if (!checkDuplicateProduct(newProd)) return;
+    if (!businessLogicCheck(newProd)) return;
 
     const existingIndex = products.findIndex((p) => p.id === newProd.id);
     if (editingProductRow && existingIndex > -1) {
@@ -1174,6 +1177,14 @@ productForm?.addEventListener("submit", (e) => {
     renderProductTable();
     productModal.style.display = "none";
 });
+function populateCategoryDropdown() {
+  const select = document.getElementById("prodType");
+  const categories = getLocal("categoryList");
+  select.innerHTML = categories.map(c => 
+    `<option value="${c.id}">${c.brand}</option>`
+  ).join("");
+}
+document.addEventListener("DOMContentLoaded", populateCategoryDropdown);
 
 // --- XÓA ---
 function deleteProduct(btn) {
@@ -1320,14 +1331,11 @@ importForm?.addEventListener("submit", (e) => {
         items,
     };
 
-    if (!newImport.id || !newImport.date) {
-        alert("⚠️ Vui lòng nhập mã phiếu và ngày nhập!");
-        return;
-    }
-    if (items.length === 0) {
-        alert("⚠️ Phiếu nhập phải có ít nhất 1 sản phẩm!");
-        return;
-    }
+    // === Gọi ràng buộc từ validators.js ===
+    if (!validateImportForm(newImport)) return;
+    if (!checkDuplicateImport(newImport)) return;
+    if (!businessLogicImportCheck(newImport)) return;
+
 
     // Nếu đang sửa
     const existingIdx = imports.findIndex((i) => i.id === newImport.id);
