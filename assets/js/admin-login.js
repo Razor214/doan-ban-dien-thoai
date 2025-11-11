@@ -265,27 +265,26 @@ function checkAdminAccess() {
     return true;
 }
 
-// ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
+// ===== GIẢI PHÁP ĐƠN GIẢN - LUÔN HIỆN FORM =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
 
-// Kiểm tra ngay khi script được load
-function initAdminAuth() {
-    console.log('initAdminAuth - isAdminLoggedIn():', isAdminLoggedIn());
+// Luôn hiện form đăng nhập khi vào admin.html
+function forceShowLogin() {
+    console.log('🚨 LUÔN HIỆN FORM ĐĂNG NHẬP');
     
-    if (!isAdminLoggedIn()) {
-        console.log('Chưa đăng nhập, sẽ hiện form...');
-        // Đợi DOM ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                setTimeout(() => showAdminLogin(), 100);
-            });
-        } else {
-            setTimeout(() => showAdminLogin(), 100);
-        }
-    } else {
-        console.log('Đã đăng nhập admin');
-    }
+    // Ẩn toàn bộ nội dung admin ngay lập tức
+    const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
+    adminElements.forEach(el => {
+        if (el) el.style.display = 'none';
+    });
+    
+    // Hiện form đăng nhập
+    showAdminLogin();
 }
 
-// Chạy ngay lập tức
-initAdminAuth();
+// Chạy ngay khi DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceShowLogin);
+} else {
+    forceShowLogin();
+}
