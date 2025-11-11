@@ -197,7 +197,7 @@ const phoneRegex = /^0\d{9}$/;
 const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
 const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-// ================== ĐĂNG KÝ ==================
+// ================== ĐĂNG KÝ (ĐÃ CẬP NHẬT VỚI HIỂN THỊ MẬT KHẨU) ==================
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -251,11 +251,6 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     `<div class="alert alert-success">Đăng ký thành công! Hãy đăng nhập.</div>`;
   document.getElementById("registerForm").reset();
 });
-
-function showRegisterError(msg) {
-  document.getElementById("register-alert").innerHTML =
-    `<div class="alert alert-error">${msg}</div>`;
-}
 
 // ================== ĐĂNG NHẬP (ĐÃ CẬP NHẬT) ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {

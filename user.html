@@ -17,6 +17,30 @@
             color: #dc3545;
             font-weight: bold;
         }
+        
+        .password-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-box .form-input {
+            padding-right: 40px;
+            width: 100%;
+        }
+        
+        .toggle-pass {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            user-select: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .toggle-pass:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -84,7 +108,10 @@
 
                         <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" id="loginPassword" class="form-input" required>
+                            <div class="password-box">
+                                <input type="password" id="loginPassword" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('loginPassword', this)">👁️</span>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-primary">Đăng Nhập</button>
@@ -122,14 +149,21 @@
 
                         <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" id="password" class="form-input" required minlength="8">
-                            <small id="passwordError" class="error-text"></small>
+                            <div class="password-box">
+                                <input type="password" id="password" class="form-input" required minlength="8">
+                                <span class="toggle-pass" onclick="togglePassword('password', this)">👁️</span>
+                            </div>
+                            <small id="passwordError" class="error-text" style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số
+                            </small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Xác nhận mật khẩu</label>
-                            <input type="password" id="confirmPassword" class="form-input" required>
-                            <small id="confirmPasswordError" class="error-text"></small>
+                            <div class="password-box">
+                                <input type="password" id="confirmPassword" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">👁️</span>
+                            </div>
                         </div>
 
                         <div class="form-group">
