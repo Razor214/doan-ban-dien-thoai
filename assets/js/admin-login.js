@@ -264,30 +264,7 @@ function checkAdminAccess() {
     }
     return true;
 }
-// ===== TỰ ĐỘNG KIỂM TRA KHI TRANG LOAD =====
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Đang kiểm tra đăng nhập admin...');
-    console.log('isAdminLoggedIn():', isAdminLoggedIn());
-    
-    if (!isAdminLoggedIn()) {
-        console.log('Chưa đăng nhập, hiển thị form đăng nhập');
-        // Đợi một chút để đảm bảo DOM đã load hoàn toàn
-        setTimeout(() => {
-            showAdminLogin();
-        }, 100);
-    } else {
-        console.log('Đã đăng nhập admin - HIỆN NỘI DUNG ADMIN');
-        // Đảm bảo nội dung admin được hiển thị và form đăng nhập bị ẩn
-        const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
-        adminElements.forEach(el => {
-            if (el) el.style.display = '';
-        });
-        
-        // Ẩn form đăng nhập nếu có
-        const loginOverlay = document.querySelector('.admin-login-overlay');
-        if (loginOverlay) loginOverlay.remove();
-    }
-});
+
 // ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
 
