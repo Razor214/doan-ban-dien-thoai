@@ -48,7 +48,7 @@
             </div>
         </nav>
     </header>
-    
+
     <!------------------ PHẦN TÀI KHOẢN ------------------->
     <div class="auth-container">
         <div class="container">
@@ -230,29 +230,6 @@
     </div>
 
     <script src="assets/js/user.js"></script>
-    <script>
-        // ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
-        window.onload = function () {
-            let currentUser = getCurrentUser();
-            let query = new URLSearchParams(window.location.search).get('tab');
-
-            if (currentUser) {
-                // Nếu đã đăng nhập, luôn hiển thị tab profile và ẩn các tab khác
-                showTab("profile");
-
-                // Ẩn các tab đăng nhập/đăng ký
-                document.querySelectorAll('.tab').forEach(tab => {
-                    if (tab.dataset.tab !== 'profile') {
-                        tab.style.display = 'none';
-                    }
-                });
-            } else if (query) {
-                showTab(query);
-            } else {
-                showTab("login");
-            }
-        };
-    </script>
 
 </body>
 
