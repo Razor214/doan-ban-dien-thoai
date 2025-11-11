@@ -144,6 +144,8 @@ function handleAdminLogin(e) {
     const errorDiv = document.getElementById('adminLoginError');
     const button = document.querySelector('.login-btn');
 
+    console.log('Đang đăng nhập với:', { username, password });
+
     // Ẩn thông báo lỗi cũ
     errorDiv.style.display = 'none';
 
@@ -154,32 +156,33 @@ function handleAdminLogin(e) {
 
     // Kiểm tra đăng nhập
     const adminUser = adminLogin(username, password);
+    console.log('Kết quả adminLogin:', adminUser);
 
     if (adminUser) {
         // Lưu thông tin user
         localStorage.setItem('CurrentUser', JSON.stringify(adminUser));
+        console.log('Đã lưu CurrentUser vào localStorage');
+        
+        // KIỂM TRA NGAY SAU KHI LƯU
+        console.log('Kiểm tra ngay sau khi lưu - isAdminLoggedIn():', isAdminLoggedIn());
         
         // === HIỆN LẠI TOÀN BỘ NỘI DUNG ADMIN ===
         const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
         adminElements.forEach(el => {
             if (el) el.style.display = '';
         });
+        console.log('Đã hiện nội dung admin');
         
         // Ẩn form đăng nhập
         const loginOverlay = document.querySelector('.admin-login-overlay');
-        if (loginOverlay) loginOverlay.remove();
+        if (loginOverlay) {
+            loginOverlay.remove();
+            console.log('Đã ẩn form đăng nhập');
+        }
         
-        // Thông báo thành công và KHÔNG RELOAD
+        // Thông báo thành công
         button.innerHTML = 'Đăng nhập thành công!';
-        setTimeout(() => {
-            // KHÔNG RELOAD TRANG - chỉ ẩn thông báo
-            const loginOverlay = document.querySelector('.admin-login-overlay');
-            if (loginOverlay) loginOverlay.remove();
-            
-            // Kích hoạt các tính năng admin (nếu cần)
-            console.log('Đăng nhập admin thành công!');
-            
-        }, 1000);
+        console.log('ĐĂNG NHẬP THÀNH CÔNG!');
         
     } else {
         // Hiển thị lỗi
@@ -189,33 +192,58 @@ function handleAdminLogin(e) {
         // Khôi phục button
         button.innerHTML = originalText;
         button.disabled = false;
+        console.log('Đăng nhập thất bại');
     }
 }
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
         const list = JSON.parse(localStorage.getItem('ListUser')) || [];
+        console.log('Danh sách user từ localStorage:', list);
 
         // Tìm user với role admin
-        const adminUser = list.find(u =>
-            (u.username === username || u.email === username) &&
-            u.pass === password &&
-            u.role === 'admin'
-        );
+        const adminUser = list.find(u => {
+            const usernameMatch = u.username === username || u.email === username;
+            const passwordMatch = u.pass === password;
+            const roleMatch = u.role === 'admin';
+            
+            console.log('Kiểm tra user:', {
+                user: u,
+                usernameMatch,
+                passwordMatch, 
+                roleMatch
+            });
+            
+            return usernameMatch && passwordMatch && roleMatch;
+        });
 
+        console.log('User tìm thấy:', adminUser);
         return adminUser || null;
     } catch (error) {
         console.error('Lỗi khi đăng nhập:', error);
         return null;
     }
 }
-
 // ===== HÀM KIỂM TRA ĐÃ ĐĂNG NHẬP CHƯA =====
 function isAdminLoggedIn() {
     try {
-        const currentUser = JSON.parse(localStorage.getItem('CurrentUser'));
-        return !!(currentUser && currentUser.role === 'admin');
+        const currentUserStr = localStorage.getItem('CurrentUser');
+        console.log('CurrentUser từ localStorage:', currentUserStr);
+        
+        if (!currentUserStr) {
+            console.log('Không có CurrentUser trong localStorage');
+            return false;
+        }
+        
+        const currentUser = JSON.parse(currentUserStr);
+        console.log('CurrentUser parsed:', currentUser);
+        
+        const isAdmin = !!(currentUser && currentUser.role === 'admin');
+        console.log('isAdminLoggedIn trả về:', isAdmin);
+        
+        return isAdmin;
     } catch (error) {
+        console.error('Lỗi khi kiểm tra đăng nhập:', error);
         return false;
     }
 }
