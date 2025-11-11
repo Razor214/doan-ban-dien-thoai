@@ -1,4 +1,3 @@
-console.log('🚀 Initializing sample data...');
 
 // Khởi tạo dữ liệu nếu chưa có
 if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
