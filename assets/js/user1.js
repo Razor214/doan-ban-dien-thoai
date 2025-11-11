@@ -147,10 +147,10 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     return;
   }
 
-  // TÌM USER
+  // TÌM USER - SỬA THÀNH password
   let found = list.find(u =>
     (u.username === userInput || u.email === userInput) &&
-    u.pass === pass &&
+    (u.password === pass || u.pass === pass) && // CHECK CẢ HAI TRƯỜNG
     u.status === "active"
   );
 
@@ -173,12 +173,11 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     username: found.username,
     email: found.email,
     phone: found.phone,
-    pass: found.pass,   
+    pass: found.password || found.pass, // LẤY TỪ password HOẶC pass
     status: found.status,
     address: found.address || "",
     role: found.role
-};
-
+  };
 
   setCurrentUser(normalizedUser);
   console.log('✅ User logged in:', normalizedUser);
@@ -248,13 +247,19 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   let currentUser = getCurrentUser();
   let list = getListUser();
 
+  // Kiểm tra nếu không có currentUser
+  if (!currentUser) {
+    showProfileAlert("Vui lòng đăng nhập!", "error");
+    return;
+  }
+
   let newData = {
     id: currentUser.id,
     fullname: document.getElementById("profileFullName").value.trim(),
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
-    password: currentUser.pass,
+    password: currentUser.password || currentUser.pass,
     status: currentUser.status,
     address: currentUser.address || "",
     role: currentUser.role
@@ -299,7 +304,9 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
       return;
     }
 
-    if (currentPassword !== currentUser.pass) {
+    // Kiểm tra mật khẩu hiện tại
+    const currentUserPassword = currentUser.password || currentUser.pass;
+    if (currentPassword !== currentUserPassword) {
       showProfileAlert("Mật khẩu hiện tại không đúng!", "error");
       return;
     }
@@ -319,9 +326,34 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
     passwordChanged = true;
   }
 
+  // Chuẩn hóa đối tượng user
+  const normalizedCurrentUser = {
+    id: currentUser.id,
+    fullname: currentUser.fullName || currentUser.fullname,
+    username: currentUser.username,
+    email: currentUser.email,
+    phone: currentUser.phone,
+    password: currentUser.password || currentUser.pass,
+    status: currentUser.status,
+    address: currentUser.address || "",
+    role: currentUser.role
+  };
+
+  const normalizedNewData = {
+    id: newData.id,
+    fullname: newData.fullname,
+    username: newData.username,
+    email: newData.email,
+    phone: newData.phone,
+    password: newData.password,
+    status: newData.status,
+    address: newData.address,
+    role: newData.role
+  };
+
   // Cập nhật dữ liệu
-  setCurrentUser(newData);
-  updateListUser(currentUser, newData);
+  setCurrentUser(normalizedNewData);
+  updateListUser(normalizedCurrentUser, normalizedNewData);
 
   let successMsg = "Cập nhật thông tin thành công!";
   if (passwordChanged) {
@@ -333,47 +365,6 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
     cancelEdit();
   }, 1500);
 });
-
-// Chuẩn hóa đối tượng user để cả hai hệ thống
-const normalizedCurrentUser = {
-  id: currentUser.id,
-  fullname: currentUser.fullName,
-  username: currentUser.username,
-  email: currentUser.email,
-  phone: currentUser.phone,
-  password: currentUser.pass,
-  status: currentUser.status,
-  address: currentUser.address || "",
-  role: currentUser.role
-};
-
-const normalizedNewData = {
-  id: newData.id,
-  fullname: newData.fullname,
-  username: newData.username,
-  email: newData.email,
-  phone: newData.phone,
-  password: newData.password,
-  status: newData.status,
-  address: newData.address,
-  role: newData.role
-};
-
-// Cập nhật dữ liệu
-setCurrentUser(newData);
-updateListUser(currentUser, newData); // DÙNG HÀM CHUNG
-
-let successMsg = "Cập nhật thông tin thành công!";
-if (passwordChanged) {
-  successMsg = "Cập nhật thông tin và đổi mật khẩu thành công!";
-}
-
-showProfileAlert(successMsg, "success");
-setTimeout(() => {
-  cancelEdit();
-}, 1500);
-;
-
 
 // ================== PROFILE ALERT ==================
 function showProfileAlert(msg, type) {
