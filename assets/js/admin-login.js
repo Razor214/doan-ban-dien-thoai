@@ -151,7 +151,11 @@ function saveAdminSession(user) {
         expires: new Date().getTime() + SESSION_DURATION
     };
     localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData));
-    localStorage.setItem('CurrentUser', JSON.stringify(user));
+    
+    // 🚨 CHỈ lưu CurrentUser nếu thực sự là admin
+    if (user.role === 'admin') {
+        localStorage.setItem('CurrentUser', JSON.stringify(user));
+    }
     console.log('✅ Đã lưu session admin');
 }
 
@@ -442,3 +446,17 @@ setTimeout(() => {
         showAdminLogin();
     }
 }, 2000);
+// ===== NGĂN XUNG ĐỘT VỚI USER.JS =====
+function clearUserSessionIfNeeded() {
+    // Nếu đang ở trang admin và có user session thường, xóa nó
+    if (window.location.pathname.includes('admin.html')) {
+        const currentUser = JSON.parse(localStorage.getItem('CurrentUser') || 'null');
+        if (currentUser && currentUser.role === 'user') {
+            localStorage.removeItem('CurrentUser');
+            console.log('✅ Đã xóa user session trên trang admin');
+        }
+    }
+}
+
+// Gọi hàm clear khi trang admin load
+clearUserSessionIfNeeded();

@@ -176,7 +176,7 @@ const phoneRegex = /^0\d{9}$/;
 const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
 const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-// ================== ĐĂNG KÝ ==================
+// ================== ĐĂNG KÝ (SỬA LỖI) ==================
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -213,11 +213,14 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   }
 
   let newUser = {
+    id: "KH" + (list.length + 1).toString().padStart(2, '0'), // THÊM ID
     fullName,
     username,
     email,
-    pass,
     phone,
+    pass,
+    status: "active", // THÊM STATUS
+    address: "", // THÊM ADDRESS
     role: "user"
   };
 
@@ -229,28 +232,21 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   document.getElementById("registerForm").reset();
 });
 
-function showRegisterError(msg) {
-  document.getElementById("register-alert").innerHTML =
-    `<div class="alert alert-error">${msg}</div>`;
-}
-
-// ================== ĐĂNG NHẬP ==================
+// ================== ĐĂNG NHẬP (CHỈ CHO USER) ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
   let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
   let pass = document.getElementById("loginPassword").value;
 
-  console.log('🔐 Attempting login with:', userInput);
-
   let list = getListUser();
-  console.log('👥 Users in storage:', list);
 
+  // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG TÌM ADMIN
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && u.pass === pass
+    (u.username === userInput || u.email === userInput) && 
+    u.pass === pass && 
+    u.role === "user"  // QUAN TRỌNG: CHỈ user thường
   );
-
-  console.log('🔍 Found user:', found);
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
@@ -261,11 +257,8 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   setCurrentUser(found);
   console.log('✅ User logged in:', found);
 
-  if (found.role === 'admin') {
-    window.location.href = "admin.html";
-  } else {
-    window.location.href = "index.html";
-  }
+  // 🚨 LUÔN CHUYỂN VỀ TRANG CHỦ
+  window.location.href = "index.html";
 });
 
 // ================== HIỂN THỊ PROFILE ==================
@@ -553,6 +546,23 @@ function updateHeaderUserStatus() {
         if (adminMenuLink) {
             adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
         }
+    } else {
+        if (guestLinks) guestLinks.style.display = 'flex';
+        if (userLinks) userLinks.style.display = 'none';
+    }
+}
+// ================== THÊM HÀM BỊ THIẾU ==================
+function updateHeaderUserStatus() {
+    // Cập nhật trạng thái header
+    const currentUser = getCurrentUser();
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const userNameSpan = document.getElementById('user-name');
+
+    if (currentUser && currentUser.username) {
+        if (guestLinks) guestLinks.style.display = 'none';
+        if (userLinks) userLinks.style.display = 'flex';
+        if (userNameSpan) userNameSpan.textContent = currentUser.fullName || currentUser.username;
     } else {
         if (guestLinks) guestLinks.style.display = 'flex';
         if (userLinks) userLinks.style.display = 'none';
