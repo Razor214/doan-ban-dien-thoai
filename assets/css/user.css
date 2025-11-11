@@ -206,29 +206,30 @@
         padding: 20px 10px;
         min-height: 60vh;
     }
-    
+
     .auth-container {
         padding: 20px 10px;
         min-height: 60vh;
     }
-    
+
     .tab-content {
         padding: 20px 15px;
     }
-    
+
     .form-title {
         font-size: 20px;
     }
-    
+
     .tab {
         padding: 12px;
         font-size: 14px;
     }
-    
+
     .container {
         margin: 10px auto;
     }
 }
+
 /* PROFILE OPTIMIZED STYLES */
 .profile-actions {
     display: flex;
@@ -287,4 +288,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Ẩn tab khi đã đăng nhập */
+.tab[data-tab]:not([data-tab="profile"]) {
+    display: none;
+}
+
+/* Đảm bảo tab profile chiếm toàn bộ width khi các tab khác ẩn */
+.tab[data-tab="profile"] {
+    flex: 1;
 }

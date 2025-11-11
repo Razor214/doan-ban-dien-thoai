@@ -474,8 +474,19 @@ window.onload = function () {
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
-  if (currentUser && (!query || query === "profile")) {
+  // Cập nhật header
+  updateUserPageHeader();
+
+  if (currentUser) {
+    // Nếu đã đăng nhập, luôn hiển thị tab profile
     showTab("profile");
+    
+    // Ẩn các tab đăng nhập/đăng ký
+    document.querySelectorAll('.tab').forEach(tab => {
+      if (tab.dataset.tab !== 'profile') {
+        tab.style.display = 'none';
+      }
+    });
   } else if (query) {
     showTab(query);
   } else {
@@ -488,15 +499,7 @@ function navigateToCart() {
     
     if (!currentUser) {
         if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-            // Kiểm tra xem đang ở trang nào
-            if (window.location.pathname.includes('user.html') || 
-                window.location.href.includes('user.html')) {
-                // Đang ở user.html -> chuyển tab login
-                showTab('login');
-            } else {
-                // Đang ở trang khác -> chuyển đến user.html
-                window.location.href = 'user.html?tab=login';
-            }
+            window.location.href = 'user.html?tab=login';
         }
         return false;
     }
@@ -504,6 +507,15 @@ function navigateToCart() {
     // Đã đăng nhập -> chuyển đến cart.html
     window.location.href = 'cart.html';
     return true;
+}
+
+// ================== ĐĂNG XUẤT TỪ TRANG CHỦ ==================
+function logoutFromHome() {
+    if (confirm('Bạn có chắc muốn đăng xuất?')) {
+        localStorage.removeItem("CurrentUser");
+        window.location.href = "index.html";
+    }
+    return false;
 }
 
 // ================== CHUYỂN TỪ PROFILE SANG CART ==================
@@ -527,8 +539,8 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHeaderUserStatus();
 });
 
-// ================== CẬP NHẬT HEADER ==================
-function updateHeaderUserStatus() {
+// ================== CẬP NHẬT HEADER TRONG USER.HTML ==================
+function updateUserPageHeader() {
     const currentUser = getCurrentUser();
     const guestLinks = document.getElementById('guest-links');
     const userLinks = document.getElementById('user-links');
@@ -558,3 +570,8 @@ function updateHeaderUserStatus() {
         if (userLinks) userLinks.style.display = 'none';
     }
 }
+
+// Gọi hàm khi trang user.html load
+document.addEventListener('DOMContentLoaded', function() {
+    updateUserPageHeader();
+});
