@@ -1046,6 +1046,7 @@ function saveAndRender() {
 renderCategorys();
 
 // Quan ly khach hangg
+// Quan ly khach hangg
 function closeData2() {
   document.getElementById("customers-section").style.display = "none";
   document.getElementById("home-section").style.display = "block";
@@ -1056,8 +1057,9 @@ const customersTable = document.getElementById("data2");
 let customers_data_local = [];
 let editingIndex2 = null;
 
-const savedCustomers = localStorage.getItem("userList");
-customers_data_local = savedCustomers ? JSON.parse(savedCustomers) : userList;
+// SỬA: Sử dụng cùng key "ListUser" với user.js
+const savedCustomers = localStorage.getItem("ListUser");
+customers_data_local = savedCustomers ? JSON.parse(savedCustomers) : [];
 
 function renderCustomers() {
   customersTable.innerHTML = customers_data_local
@@ -1067,16 +1069,14 @@ function renderCustomers() {
       return `
             <tr data-index2="${index2}" class="${isBlocked ? "fade-out" : ""}">
                 <td>${isBlocked ? "Đã khóa" : cm.id}</td>
-                <td>${isBlocked ? "Đã khóa" : cm.fullname}</td>
+                <td>${isBlocked ? "Đã khóa" : cm.fullName}</td>
                 <td>${isBlocked ? "Đã khóa" : cm.username}</td>
                 <td>${isBlocked ? "Đã khóa" : cm.email}</td>
-                <td>${isBlocked ? "Đã khóa" : cm.sdt}</td> 
+                <td>${isBlocked ? "Đã khóa" : cm.phone}</td>
                 <td>${cm.status}</td>
                 <td class = "action1">
-                    <div class = "wrapper-button"><button class="unlock">${cm.status === "active" ? "Khóa" : "Mở khóa"
-        }</button></div>
-                    <button class="reset" ${isBlocked ? "disabled" : ""
-        }>Đặt lại mật khẩu</button>
+                    <div class = "wrapper-button"><button class="unlock">${cm.status === "active" ? "Khóa" : "Mở khóa"}</button></div>
+                    <button class="reset" ${isBlocked ? "disabled" : ""}>Đặt lại mật khẩu</button>
                 </td>
             </tr>
         `;
@@ -1096,21 +1096,22 @@ function attachEventHandlers2() {
 
     unlockBtn.addEventListener("click", () => {
       const isActive = customers_data_local[index2].status === "active";
-      if (isActive)
+      if (isActive) {
         if (confirm("Bạn có muốn khóa tài khoản người dùng này không?")) {
           customers_data_local[index2].status = "blocked";
           saveAndRender2();
         }
-      if (!isActive)
+      } else {
         if (confirm("Bạn có muốn mở khóa tài khoản người dùng này không?")) {
           customers_data_local[index2].status = "active";
           saveAndRender2();
         }
+      }
     });
 
     resetBtn.addEventListener("click", () => {
       if (confirm("Bạn có muốn đặt lại mật khẩu?")) {
-        customers_data_local[index2].password = "12345";
+        customers_data_local[index2].pass = "12345";
         saveAndRender2();
         alert("Đã đặt lại mật khẩu mặc định: '12345'");
       }
@@ -1119,8 +1120,18 @@ function attachEventHandlers2() {
 }
 
 function saveAndRender2() {
-  localStorage.setItem("userList", JSON.stringify(customers_data_local));
+  // SỬA: Lưu vào "ListUser" thay vì "userList"
+  localStorage.setItem("ListUser", JSON.stringify(customers_data_local));
   renderCustomers();
+}
+
+// Khởi tạo nếu chưa có dữ liệu
+if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
+  // Copy dữ liệu mẫu từ userList nếu có
+  if (typeof userList !== 'undefined' && userList.length > 0) {
+    localStorage.setItem("ListUser", JSON.stringify(userList));
+  }
+  customers_data_local = JSON.parse(localStorage.getItem("ListUser")) || [];
 }
 
 renderCustomers();
