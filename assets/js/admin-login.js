@@ -67,9 +67,34 @@ const adminLoginStyles = `
     display: none;
 }
 `;
-
 // ===== HÀM HIỂN THỊ FORM ĐĂNG NHẬP =====
 function showAdminLogin() {
+    // === THÊM ĐOẠN NÀY: ẨN TOÀN BỘ NỘI DUNG ADMIN TRƯỚC KHI HIỆN FORM ===
+    const adminContent = document.querySelector('.admin-container, .headerbar, .sidebar, footer');
+    if (adminContent) {
+        adminContent.style.display = 'none';
+    }
+    
+    // Tạo một div để che toàn bộ trang
+    const overlay = document.createElement('div');
+    overlay.id = 'fullpage-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 9998;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: #333;
+    `;
+    overlay.innerHTML = '<div>Đang tải...</div>';
+    document.body.appendChild(overlay);
+
     // Thêm CSS vào head
     if (!document.querySelector('#admin-login-styles')) {
         const styleElement = document.createElement('style');
@@ -100,10 +125,16 @@ function showAdminLogin() {
     // Thêm vào body
     document.body.insertAdjacentHTML('beforeend', loginHTML);
 
+    // Xóa overlay loading sau 0.5s
+    setTimeout(() => {
+        if (document.getElementById('fullpage-overlay')) {
+            document.getElementById('fullpage-overlay').remove();
+        }
+    }, 500);
+
     // Xử lý sự kiện đăng nhập
     document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
 }
-
 // ===== HÀM XỬ LÝ ĐĂNG NHẬP =====
 function handleAdminLogin(e) {
     e.preventDefault();
@@ -128,10 +159,22 @@ function handleAdminLogin(e) {
         // Lưu thông tin user
         localStorage.setItem('CurrentUser', JSON.stringify(adminUser));
         
-        // Chuyển hướng đến admin.html
+        // === THÊM ĐOẠN NÀY: Ẩn form đăng nhập và hiện admin content ===
+        const loginOverlay = document.querySelector('.admin-login-overlay');
+        if (loginOverlay) loginOverlay.remove();
+        
+        // Hiện nội dung admin (nếu có element adminContent)
+        const adminContent = document.getElementById('adminContent');
+        if (adminContent) {
+            adminContent.style.display = 'block';
+        }
+        
+        // Thông báo và reload
+        button.innerHTML = 'Đăng nhập thành công!';
         setTimeout(() => {
-            window.location.href = 'admin.html';
-        }, 500);
+            window.location.reload(); // Reload để kích hoạt toàn bộ tính năng admin
+        }, 1000);
+        
     } else {
         // Hiển thị lỗi
         errorDiv.style.display = 'block';
@@ -142,7 +185,6 @@ function handleAdminLogin(e) {
         button.disabled = false;
     }
 }
-
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
@@ -187,56 +229,4 @@ function checkAdminAccess() {
         return false;
     }
     return true;
-}
-function handleAdminLogin(e) {
-    e.preventDefault();
-
-    const username = document.getElementById('adminUsername').value.trim();
-    const password = document.getElementById('adminPassword').value;
-    const errorDiv = document.getElementById('adminLoginError');
-    const button = document.querySelector('.login-btn');
-
-    // Ẩn thông báo lỗi cũ
-    errorDiv.style.display = 'none';
-
-    // Hiển thị loading
-    const originalText = button.innerHTML;
-    button.innerHTML = 'Đang đăng nhập...';
-    button.disabled = true;
-
-    // Kiểm tra đăng nhập
-    const adminUser = adminLogin(username, password);
-
-    if (adminUser) {
-        // Lưu thông tin user
-        localStorage.setItem('CurrentUser', JSON.stringify(adminUser));
-        
-        // === THÊM ĐOẠN NÀY ===
-        // Ẩn form đăng nhập
-        const loginOverlay = document.querySelector('.admin-login-overlay');
-        if (loginOverlay) loginOverlay.remove();
-        
-        // Hiện nội dung admin
-        const adminContent = document.getElementById('adminContent');
-        if (adminContent) adminContent.style.display = 'block';
-        
-        // Thông báo thành công
-        alert('Đăng nhập Admin thành công!');
-        
-        // Ở lại trang admin (không chuyển hướng)
-        button.innerHTML = 'Đăng nhập thành công!';
-        setTimeout(() => {
-            window.location.reload(); // Reload để kích hoạt toàn bộ tính năng admin
-        }, 1000);
-        // === HẾT PHẦN THÊM ===
-        
-    } else {
-        // Hiển thị lỗi
-        errorDiv.style.display = 'block';
-        document.getElementById('adminPassword').value = '';
-        
-        // Khôi phục button
-        button.innerHTML = originalText;
-        button.disabled = false;
-    }
 }
