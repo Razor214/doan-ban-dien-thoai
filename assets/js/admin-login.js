@@ -325,18 +325,13 @@ function handleAdminLogin(e) {
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
-        // Thử lấy từ cả ListUser và userList để đồng bộ
-        const listUser = JSON.parse(localStorage.getItem('ListUser')) || [];
+        // 🚨 CHỈ SỬ DỤNG userList TỪ ADMIN - BỎ ListUser HOÀN TOÀN
         const userList = JSON.parse(localStorage.getItem('userList')) || [];
         
-        console.log('Danh sách user từ ListUser:', listUser);
         console.log('Danh sách user từ userList:', userList);
 
-        // Kết hợp cả hai danh sách, ưu tiên ListUser
-        const allUsers = [...listUser, ...userList];
-        
-        // Tìm user với role admin - HỖ TRỢ CẢ HAI ĐỊNH DẠNG
-        const adminUser = allUsers.find(u => {
+        // Tìm user với role admin
+        const adminUser = userList.find(u => {
             const usernameMatch = u.username === username || u.email === username;
             
             // Hỗ trợ cả pass và password
@@ -426,13 +421,11 @@ function checkAdminAccess() {
 
 // ===== KIỂM TRA VÀ KHỞI TẠO TÀI KHOẢN ADMIN MẪU =====
 function ensureAdminAccount() {
-    const listUser = JSON.parse(localStorage.getItem('ListUser')) || [];
     const userList = JSON.parse(localStorage.getItem('userList')) || [];
     
-    const hasAdminInListUser = listUser.some(u => u.role === 'admin');
-    const hasAdminInUserList = userList.some(u => u.role === 'admin');
+    const hasAdmin = userList.some(u => u.role === 'admin');
     
-    if (!hasAdminInListUser && !hasAdminInUserList) {
+    if (!hasAdmin) {
         const adminAccount = {
             id: "AD01",
             username: 'admin',
@@ -445,11 +438,8 @@ function ensureAdminAccount() {
             role: 'admin'
         };
         
-        // Thêm vào cả hai danh sách để đồng bộ
-        listUser.push(adminAccount);
+        // 🚨 CHỈ THÊM VÀO userList - BỎ ListUser HOÀN TOÀN
         userList.push(adminAccount);
-        
-        localStorage.setItem('ListUser', JSON.stringify(listUser));
         localStorage.setItem('userList', JSON.stringify(userList));
         
         console.log('👤 Đã tạo tài khoản admin mẫu: admin / admin123');
@@ -458,47 +448,12 @@ function ensureAdminAccount() {
     }
 }
 
-// ===== ĐỒNG BỘ DỮ LIỆU USER =====
-function syncUserData() {
-    try {
-        const listUser = JSON.parse(localStorage.getItem('ListUser')) || [];
-        const userList = JSON.parse(localStorage.getItem('userList')) || [];
-        
-        // Nếu một trong hai rỗng, sao chép từ cái kia
-        if (listUser.length === 0 && userList.length > 0) {
-            localStorage.setItem('ListUser', JSON.stringify(userList));
-            console.log('✅ Đã đồng bộ ListUser từ userList');
-        } else if (userList.length === 0 && listUser.length > 0) {
-            localStorage.setItem('userList', JSON.stringify(listUser));
-            console.log('✅ Đã đồng bộ userList từ ListUser');
-        } else if (listUser.length > 0 && userList.length > 0) {
-            // Merge dữ liệu từ cả hai
-            const mergedUsers = [];
-            const allUsersMap = new Map();
-            
-            // Thêm từ ListUser trước
-            listUser.forEach(user => {
-                allUsersMap.set(user.id, user);
-            });
-            
-            // Thêm từ userList, không ghi đè nếu đã có
-            userList.forEach(user => {
-                if (!allUsersMap.has(user.id)) {
-                    allUsersMap.set(user.id, user);
-                }
-            });
-            
-            // Chuyển Map thành mảng
-            const mergedArray = Array.from(allUsersMap.values());
-            
-            // Cập nhật cả hai
-            localStorage.setItem('ListUser', JSON.stringify(mergedArray));
-            localStorage.setItem('userList', JSON.stringify(mergedArray));
-            
-            console.log('✅ Đã merge và đồng bộ dữ liệu user');
-        }
-    } catch (error) {
-        console.error('❌ Lỗi khi đồng bộ dữ liệu user:', error);
+// ===== XÓA ListUser CŨ ĐỂ TRÁNH LỖI =====
+function cleanupOldUserData() {
+    // Xóa ListUser cũ để chỉ sử dụng userList
+    if (localStorage.getItem('ListUser')) {
+        localStorage.removeItem('ListUser');
+        console.log('✅ Đã xóa ListUser cũ, chỉ sử dụng userList');
     }
 }
 
@@ -517,8 +472,8 @@ function clearUserSessionIfNeeded() {
 // ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
 
-// Đồng bộ dữ liệu user trước
-syncUserData();
+// Dọn dẹp dữ liệu cũ
+cleanupOldUserData();
 
 // Đảm bảo có tài khoản admin
 ensureAdminAccount();
