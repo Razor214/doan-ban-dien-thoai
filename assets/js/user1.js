@@ -16,36 +16,47 @@ function setListUser(list) {
 }
 
 function getCurrentUser() {
-  // 🚨 QUAN TRỌNG: Kiểm tra nếu đang ở trang admin thì không trả về user
-  if (window.location.pathname.includes('admin.html')) {
-    return null;
-  }
-  return JSON.parse(localStorage.getItem("CurrentUser"));
+    // 🚨 QUAN TRỌNG: Kiểm tra nếu đang ở trang admin thì không trả về user
+    if (window.location.pathname.includes('admin.html')) {
+        // KIỂM TRA THÊM: Nếu là admin đã đăng nhập, vẫn trả về null
+        if (localStorage.getItem('admin_logged_in') === 'true') {
+            return null;
+        }
+        return null;
+    }
+    return JSON.parse(localStorage.getItem("CurrentUser"));
 }
 
 function setCurrentUser(u) {
-  // 🚨 QUAN TRỌNG: Chỉ lưu CurrentUser nếu KHÔNG phải trang admin
-  if (!window.location.pathname.includes('admin.html')) {
-    localStorage.setItem("CurrentUser", JSON.stringify(u));
-  }
+    // 🚨 QUAN TRỌNG: Chỉ lưu CurrentUser nếu KHÔNG phải trang admin
+    // VÀ user không có quyền admin
+    if (!window.location.pathname.includes('admin.html') && 
+        u.role !== 'admin') {
+        localStorage.setItem("CurrentUser", JSON.stringify(u));
+    }
 }
-
-// ================== ĐĂNG NHẬP USER (CHỈ CHO USER THƯỜNG) ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
-  let pass = document.getElementById("loginPassword").value;
+    let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
+    let pass = document.getElementById("loginPassword").value;
 
-  let list = getListUser();
+    let list = getListUser();
 
-  // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG TÌM ADMIN
-  let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && 
-    (u.password === pass || u.pass === pass) && 
-    u.role === "user" && // QUAN TRỌNG: CHỈ user thường
-    u.status === "active" // CHỈ cho phép tài khoản active
-  );
+    // 🚨 CHẶN USER THƯỜNG ĐĂNG NHẬP VÀO TRANG ADMIN
+    if (window.location.pathname.includes('admin.html')) {
+        document.getElementById("login-alert").innerHTML =
+            `<div class="alert alert-error">Vui lòng sử dụng trang đăng nhập admin!</div>`;
+        return;
+    }
+
+    // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG TÌM ADMIN
+    let found = list.find(u =>
+        (u.username === userInput || u.email === userInput) && 
+        (u.password === pass || u.pass === pass) && 
+        u.role === "user" && // QUAN TRỌNG: CHỈ user thường
+        u.status === "active" // CHỈ cho phép tài khoản active
+    );
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
