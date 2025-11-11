@@ -118,6 +118,7 @@
                                 <th>Tên</th>
                                 <th>Hình ảnh</th>
                                 <th>Mô tả</th>
+                                <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
@@ -149,6 +150,12 @@
 
                         <label>Mô tả:</label>
                         <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>
+                        <label>Trạng thái:</label>
+
+                        <select id="prodStatus">
+                            <option value="active">Đang hiển thị</option>
+                            <option value="hidden">Đã ẩn</option>
+                        </select>
 
                         <label>Màu sắc:</label><input type="text" id="prodColor" required>
                         <label>Dung lượng:</label><select id="prodStorage"></select>

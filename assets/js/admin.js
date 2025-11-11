@@ -1034,28 +1034,33 @@ function getPriceByProductId(productId) {
 }
 
 // --- RENDER TABLE ---
-function renderProductTable(data = products) {
-    productTbody.innerHTML = data
-        .map(
-        (p) => `
-        <tr>
-        <td>${getCategoryName(p.categoryId)}</td>
-        <td>${p.id}</td>
-        <td>${p.name}</td>
-        <td>
-            <img src="${p.img || "assets/img/logo.png"}"
-                style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-        </td>
-        <td>${p.desc}</td>
-        <td class="action">
-            <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
-            <button class="delete" onclick="deleteProduct(this)">Xóa</button>
-            <button class="view" onclick="viewProductDetail('${p.id}')">Chi tiết</button>
-        </td>
-        </tr>`
-        )
+function renderImportTable(data = imports) {
+    importTbody.innerHTML = data
+        .map((i) => {
+        const statusText =
+            i.status === "pending"
+            ? "Đang xử lý"
+            : i.status === "completed"
+            ? "Hoàn thành"
+            : i.status;
+
+        return `
+            <tr>
+            <td>${i.id}</td>
+            <td>${i.date}</td>
+            <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
+            <td>${statusText}</td>
+            <td class="action">
+                <button class="view" onclick="viewImportDetail('${i.id}')">👁 Chi tiết</button>
+                <button class="edit" onclick="openImportModal('edit', this)">Sửa</button>
+                <button class="delete" onclick="deleteImport(this)">Xóa</button>
+            </td>
+            </tr>`;
+        })
         .join("");
 }
+
+
 
 // --- MỞ POPUP THÊM/SỬA ---
 function openProductModal(mode, btn) {
@@ -1154,7 +1159,7 @@ productForm?.addEventListener("submit", (e) => {
     // --- RÀNG BUỘC DỮ LIỆU ---
     for (const [key, val] of Object.entries(newProd)) {
         if (!val && key !== "img") {
-        alert("⚠️ Vui lòng nhập đầy đủ thông tin sản phẩm!");
+        alert("Vui lòng nhập đầy đủ thông tin sản phẩm!");
         return;
         }
     }
@@ -1167,7 +1172,7 @@ productForm?.addEventListener("submit", (e) => {
         products[existingIndex] = newProd;
     } else {
         if (existingIndex !== -1) {
-        alert("⚠️ Mã sản phẩm đã tồn tại!");
+        alert("Mã sản phẩm đã tồn tại!");
         return;
         }
         products.unshift(newProd);
@@ -1206,6 +1211,20 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProductTable();
 });
 
+function toggleProductStatus(id) {
+  const index = products.findIndex(p => p.id === id);
+  if (index === -1) return alert("Không tìm thấy sản phẩm!");
+
+  const current = products[index];
+  const newStatus = current.status === "active" ? "hidden" : "active";
+  products[index].status = newStatus;
+
+  setLocal("productList", products);
+  renderProductTable();
+
+  alert(`Sản phẩm "${current.name}" đã được ${newStatus === "hidden" ? "ẩn" : "hiển thị"}!`);
+}
+window.toggleProductStatus = toggleProductStatus;
 
 
 // --- XÓA ---
@@ -1304,7 +1323,7 @@ function openImportModal(mode, btn) {
 
         if (!record) return;
         if (record.status === "Hoàn thành") {
-        alert("❌ Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
+        alert("Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
         importModal.style.display = "none";
         return;
         }
@@ -1338,13 +1357,11 @@ importForm?.addEventListener("submit", (e) => {
         const productId = row.querySelector(".item-name").value.trim();
         const quantity = Number(row.querySelector(".item-qty").value);
         const price = Number(row.querySelector(".item-price").value);
-
         if (productId && quantity > 0 && price > 0)
         items.push({ productId, quantity, price });
     });
 
     const total = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-
     const newImport = {
         id: document.getElementById("importCode").value.trim(),
         date: document.getElementById("importDate").value,
@@ -1353,32 +1370,34 @@ importForm?.addEventListener("submit", (e) => {
         items,
     };
 
-    // === Gọi ràng buộc từ validators.js ===
     if (!validateImportForm(newImport)) return;
-    if (!checkDuplicateImport(newImport)) return;
-    if (!businessLogicImportCheck(newImport)) return;
 
+    const idOld = editingImportRow ? editingImportRow.cells[0].innerText.trim() : null;
+    const exists = imports.some(i => i.id === newImport.id && i.id !== idOld);
+    if (exists) {
+        alert("⚠️ Mã phiếu nhập đã tồn tại!");
+        return;
+    }
 
-    // Nếu đang sửa
-    const existingIdx = imports.findIndex((i) => i.id === newImport.id);
+    const existingIdx = imports.findIndex(i => i.id === idOld);
+    let isNewRecord = false;
+
     if (editingImportRow && existingIdx !== -1) {
         imports[existingIdx] = newImport;
     } else {
-        if (existingIdx !== -1) {
-        alert("⚠️ Mã phiếu đã tồn tại!");
-        return;
-        }
         imports.unshift(newImport);
         isNewRecord = true;
     }
 
     setLocal("importList", imports);
-    if (isNewRecord && typeof processInventoryUpdate === 'function') {
+    if (isNewRecord && typeof processInventoryUpdate === "function") {
         processInventoryUpdate(newImport, isNewRecord);
     }
+
     renderImportTable();
     importModal.style.display = "none";
-});
+    });
+
 
 // Xóa phiếu nhập
 function deleteImport(btn) {
