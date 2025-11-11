@@ -1,62 +1,175 @@
 // ===== ADMIN LOGIN STYLES =====
 const adminLoginStyles = `
-/* ... (giữ nguyên styles) ... */
-`;
-
-// ===== QUẢN LÝ TRẠNG THÁI ĐĂNG NHẬP =====
-const ADMIN_SESSION_KEY = 'admin_session';
-const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 giờ
-
-// Hàm lưu trạng thái đăng nhập ADMIN - KHÔNG ĐỤNG ĐẾN CurrentUser
-function saveAdminSession(user) {
-    const sessionData = {
-        user: user,
-        loginTime: new Date().getTime(),
-        expires: new Date().getTime() + SESSION_DURATION
-    };
-    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData));
-    
-    // 🚨 QUAN TRỌNG: KHÔNG lưu vào CurrentUser để tránh xung đột
-    console.log('✅ Đã lưu session admin (không động đến CurrentUser)');
+/* === RESET & OVERRIDE === */
+.admin-login-overlay * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-// Hàm kiểm tra session còn hiệu lực không
-function isSessionValid() {
-    try {
-        const sessionStr = localStorage.getItem(ADMIN_SESSION_KEY);
-        if (!sessionStr) return false;
-        
-        const session = JSON.parse(sessionStr);
-        const now = new Date().getTime();
-        
-        if (now > session.expires) {
-            clearAdminSession();
-            return false;
-        }
-        
-        return true;
-    } catch (error) {
-        console.error('Lỗi kiểm tra session:', error);
-        return false;
+.admin-login-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 10000 !important;
+}
+
+.admin-login-form {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    padding: 2.5rem !important;
+    border-radius: 15px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    width: 90% !important;
+    max-width: 420px !important;
+    position: relative !important;
+    z-index: 10001 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.admin-login-form h2 {
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+    color: #2c3e50 !important;
+    font-size: 1.8rem !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, #3498db, #2c3e50) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.form-group {
+    margin-bottom: 1.5rem !important;
+    width: 100% !important;
+}
+
+.form-group input {
+    width: 100% !important;
+    padding: 15px !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    transition: all 0.3s ease !important;
+    background: #f8f9fa !important;
+}
+
+.form-group input:focus {
+    border-color: #3498db !important;
+    outline: none !important;
+    background: white !important;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+.login-btn {
+    width: 100% !important;
+    padding: 15px !important;
+    background: linear-gradient(135deg, #3498db, #2980b9) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    margin-top: 10px !important;
+    font-weight: 600 !important;
+    display: block !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3) !important;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #2573a7) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4) !important;
+}
+
+.login-btn:active {
+    transform: translateY(0) !important;
+}
+
+.login-btn:disabled {
+    background: #95a5a6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.login-error {
+    color: #e74c3c !important;
+    text-align: center !important;
+    margin: 15px 0 !important;
+    padding: 12px !important;
+    background: #fde8e6 !important;
+    border-radius: 8px !important;
+    display: none !important;
+    border: 1px solid #e74c3c !important;
+    font-weight: 500 !important;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+    .admin-login-form {
+        margin: 20px !important;
+        padding: 2rem 1.5rem !important;
+        width: 95% !important;
+    }
+    
+    .admin-login-form h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .form-group input {
+        padding: 12px !important;
+    }
+    
+    .login-btn {
+        padding: 12px !important;
+    }
+}
+`;
+
+// ===== TÀI KHOẢN ADMIN MẪU =====
+const ADMIN_ACCOUNT = {
+    username: 'admin',
+    password: 'admin123'
+};
+
+// ===== QUẢN LÝ TRẠNG THÁI ĐĂNG NHẬP ADMIN =====
+const ADMIN_SESSION_KEY = 'admin_logged_in';
+
+// Hàm kiểm tra đăng nhập admin
+function isAdminLoggedIn() {
+    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+}
+
+// Hàm lưu trạng thái đăng nhập admin
+function setAdminLoggedIn(status) {
+    if (status) {
+        localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    } else {
+        localStorage.removeItem(ADMIN_SESSION_KEY);
     }
 }
 
-// Hàm xóa session - CHỈ XÓA ADMIN SESSION
-function clearAdminSession() {
-    localStorage.removeItem(ADMIN_SESSION_KEY);
-    console.log('✅ Đã xóa session admin (giữ nguyên CurrentUser)');
-}
-
-// ===== HÀM HIỂN THỊ FORM ĐĂNG NHẬP =====
+// ===== HÀM HIỂN THỊ FORM ĐĂNG NHẬP ADMIN =====
 function showAdminLogin() {
-    console.log('🎯 BẮT ĐẦU HIỆN FORM ĐĂNG NHẬP ADMIN...');
+    console.log('🔐 HIỆN FORM ĐĂNG NHẬP ADMIN');
     
     // ẨN TOÀN BỘ NỘI DUNG ADMIN
     const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
     adminElements.forEach(el => {
-        if (el) {
-            el.style.display = 'none';
-        }
+        if (el) el.style.display = 'none';
     });
 
     // THÊM CSS VÀO HEAD
@@ -83,7 +196,7 @@ function showAdminLogin() {
                     <div id="adminLoginError" class="login-error">Sai tài khoản hoặc mật khẩu!</div>
                 </form>
                 <div style="text-align:center; margin-top:15px; font-size:12px; color:#666;">
-                    <p><strong>Lưu ý:</strong> Đây là trang quản trị, không dùng tài khoản người dùng thường</p>
+                    <p><strong>Tài khoản mẫu:</strong> admin / admin123</p>
                 </div>
             </div>
         </div>
@@ -96,7 +209,7 @@ function showAdminLogin() {
     document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
 }
 
-// ===== HÀM XỬ LÝ ĐĂNG NHẬP =====
+// ===== HÀM XỬ LÝ ĐĂNG NHẬP ADMIN =====
 function handleAdminLogin(e) {
     e.preventDefault();
 
@@ -105,44 +218,26 @@ function handleAdminLogin(e) {
     const errorDiv = document.getElementById('adminLoginError');
     const button = document.querySelector('.login-btn');
 
-    console.log('🔐 Đang đăng nhập ADMIN với:', { username, password });
+    console.log('🔐 Thử đăng nhập admin:', { username, password });
 
     // Ẩn thông báo lỗi cũ
     errorDiv.style.display = 'none';
 
     // Hiển thị loading
     const originalText = button.innerHTML;
-    button.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <div class="loading-spinner" style="
-                width: 18px;
-                height: 18px;
-                border: 2px solid rgba(255,255,255,0.3);
-                border-radius: 50%;
-                border-top: 2px solid white;
-                animation: spin 1s linear infinite;
-            "></div>
-            Đang đăng nhập...
-        </div>
-    `;
+    button.innerHTML = 'Đang đăng nhập...';
     button.disabled = true;
 
-    // Thêm CSS animation cho loading
-    if (!document.querySelector('#loading-styles')) {
-        const style = document.createElement('style');
-        style.id = 'loading-styles';
-        style.textContent = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
-        document.head.appendChild(style);
-    }
-
-    // Kiểm tra đăng nhập
-    const adminUser = adminLogin(username, password);
-
-    if (adminUser) {
-        // LƯU SESSION ADMIN - KHÔNG ĐỘNG ĐẾN CurrentUser
-        saveAdminSession(adminUser);
-        
+    // Kiểm tra đăng nhập đơn giản
+    if (username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password) {
         console.log('✅ ĐĂNG NHẬP ADMIN THÀNH CÔNG');
+        
+        // Lưu trạng thái đăng nhập
+        setAdminLoggedIn(true);
+        
+        // Ẩn form đăng nhập
+        const loginOverlay = document.querySelector('.admin-login-overlay');
+        if (loginOverlay) loginOverlay.remove();
         
         // HIỆN LẠI TOÀN BỘ NỘI DUNG ADMIN
         const adminElements = document.querySelectorAll('.admin-container, .headerbar, .sidebar, footer');
@@ -150,17 +245,7 @@ function handleAdminLogin(e) {
             if (el) el.style.display = '';
         });
         
-        // Ẩn form đăng nhập
-        const loginOverlay = document.querySelector('.admin-login-overlay');
-        if (loginOverlay) loginOverlay.remove();
-        
-        // Thông báo thành công
-        button.innerHTML = 'Đăng nhập thành công!';
-        
-        // Reload để kích hoạt toàn bộ tính năng admin
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+        console.log('✅ ĐÃ HIỆN NỘI DUNG ADMIN');
         
     } else {
         // Hiển thị lỗi
@@ -174,144 +259,21 @@ function handleAdminLogin(e) {
     }
 }
 
-// ===== HÀM KIỂM TRA ĐĂNG NHẬP ADMIN =====
-function adminLogin(username, password) {
-    try {
-        const userList = JSON.parse(localStorage.getItem('userList')) || [];
-        
-        console.log('🔍 Tìm admin trong userList:', userList);
-
-        // Tìm user với role admin - CHỈ CHO PHÉP ADMIN
-        const adminUser = userList.find(u => {
-            const usernameMatch = u.username === username || u.email === username;
-            const passwordMatch = u.password === password || u.pass === password;
-            const roleMatch = u.role === 'admin'; // 🚨 CHỈ ADMIN
-            const statusActive = u.status === 'active' || u.status === undefined;
-            
-            return usernameMatch && passwordMatch && roleMatch && statusActive;
-        });
-
-        if (adminUser) {
-            console.log('✅ Tìm thấy admin:', adminUser.username);
-            return {
-                id: adminUser.id,
-                fullName: adminUser.fullname || adminUser.fullName,
-                username: adminUser.username,
-                email: adminUser.email,
-                phone: adminUser.phone,
-                password: adminUser.password || adminUser.pass,
-                status: adminUser.status || 'active',
-                address: adminUser.address || '',
-                role: 'admin'
-            };
-        } else {
-            console.log('❌ Không tìm thấy admin hoặc không phải quyền admin');
-            return null;
-        }
-        
-    } catch (error) {
-        console.error('Lỗi khi đăng nhập admin:', error);
-        return null;
-    }
-}
-
-// ===== HÀM KIỂM TRA ĐÃ ĐĂNG NHẬP ADMIN CHƯA =====
-function isAdminLoggedIn() {
-    try {
-        // Chỉ kiểm tra admin session, không kiểm tra CurrentUser
-        if (!isSessionValid()) {
-            console.log('❌ Admin session không hợp lệ');
-            return false;
-        }
-        
-        const sessionStr = localStorage.getItem(ADMIN_SESSION_KEY);
-        if (!sessionStr) return false;
-        
-        const session = JSON.parse(sessionStr);
-        const isAdmin = !!(session.user && session.user.role === 'admin');
-        
-        console.log('🔍 Kiểm tra admin login:', {
-            cóAdminSession: !!sessionStr,
-            role: session.user?.role,
-            isAdmin: isAdmin
-        });
-        
-        return isAdmin;
-    } catch (error) {
-        console.error('Lỗi khi kiểm tra admin login:', error);
-        return false;
-    }
-}
-
 // ===== HÀM ĐĂNG XUẤT ADMIN =====
 function logoutFromAdmin() {
     if (confirm('Bạn có chắc muốn đăng xuất khỏi admin?')) {
-        clearAdminSession();
-        console.log('🚪 Đã đăng xuất admin - Chuyển về trang chủ');
+        setAdminLoggedIn(false);
+        console.log('🚪 Đã đăng xuất admin');
         window.location.href = 'index.html';
     }
 }
 
-// ===== KIỂM TRA VÀ KHỞI TẠO TÀI KHOẢN ADMIN MẪU =====
-function ensureAdminAccount() {
-    const userList = JSON.parse(localStorage.getItem('userList')) || [];
-    
-    const hasAdmin = userList.some(u => u.role === 'admin');
-    
-    if (!hasAdmin) {
-        const adminAccount = {
-            id: "AD01",
-            username: 'admin',
-            email: 'admin@saigonphone.com',
-            password: 'admin123',
-            fullname: 'Quản Trị Viên',
-            phone: '0123456789',
-            status: 'active',
-            address: '',
-            role: 'admin'
-        };
-        
-        userList.push(adminAccount);
-        localStorage.setItem('userList', JSON.stringify(userList));
-        
-        console.log('👤 Đã tạo tài khoản admin mẫu: admin / admin123');
-    } else {
-        console.log('✅ Đã có tài khoản admin');
-    }
-}
-
-// ===== KIỂM TRA TRANG ADMIN VÀ CHUYỂN HƯỚNG =====
-function checkAdminPageAccess() {
-    // Nếu đang ở trang admin.html mà chưa đăng nhập admin
-    if (window.location.pathname.includes('admin.html') && !isAdminLoggedIn()) {
-        console.log('🚫 Truy cập trái phép vào admin - Chuyển hướng...');
-        window.location.href = 'index.html';
-        return false;
-    }
-    
-    // Nếu đang ở trang admin.html và đã đăng nhập admin
-    if (window.location.pathname.includes('admin.html') && isAdminLoggedIn()) {
-        console.log('✅ Đã đăng nhập admin - Cho phép truy cập');
-        return true;
-    }
-    
-    return true;
-}
-
-// ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
+// ===== KIỂM TRA VÀ XỬ LÝ KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
 
-// Đảm bảo có tài khoản admin
-ensureAdminAccount();
-
-// Kiểm tra và xử lý khi trang load
+// Kiểm tra khi trang load
 window.addEventListener('load', function() {
-    console.log('🔄 TRANG ADMIN ĐÃ LOAD HOÀN TOÀN');
-    
-    // Kiểm tra quyền truy cập trang admin
-    if (!checkAdminPageAccess()) {
-        return;
-    }
+    console.log('🔄 TRANG ADMIN ĐÃ LOAD');
     
     // Nếu là trang admin và chưa đăng nhập, hiện form
     if (window.location.pathname.includes('admin.html') && !isAdminLoggedIn()) {
