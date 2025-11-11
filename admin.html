@@ -90,7 +90,7 @@
                 </form>
             </div>
         </div>
-        <!-- Popup chi tiết phiếu nhập -->
+                            <!-- Popup chi tiết phiếu nhập -->
         <div class="popup" id="ImportDetailPopup" style="display:none;">
             <div class="popup-content" style="max-height:90vh;overflow-y:auto;">
                 <h3>Chi tiết phiếu nhập</h3>
@@ -118,7 +118,6 @@
                                 <th>Tên</th>
                                 <th>Hình ảnh</th>
                                 <th>Mô tả</th>
-                                <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
@@ -150,12 +149,6 @@
 
                         <label>Mô tả:</label>
                         <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>
-                        <label>Trạng thái:</label>
-
-                        <select id="prodStatus">
-                            <option value="active">Đang hiển thị</option>
-                            <option value="hidden">Đã ẩn</option>
-                        </select>
 
                         <label>Màu sắc:</label><input type="text" id="prodColor" required>
                         <label>Dung lượng:</label><select id="prodStorage"></select>
@@ -302,7 +295,7 @@
                     <table class="orders-table">
                         <thead>
                             <tr>
-                                <th>Mã đơn</th>
+                                <th>Mã đơn</th> 
                                 <th>Mã khách hàng</th>
                                 <th>Ngày đặt</th>
                                 <th>Trạng thái</th>
@@ -331,12 +324,12 @@
                     </div>
                     <h4>Phương thức thanh toán</h4>
                     <table class="method-table" id="methodtable">
-                        <thead>
-                            <th>Phương thức</th>
-                            <th>Tình trạng</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                            <thead>
+                                <th>Phương thức</th>
+                                <th>Tình trạng</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     <h4>Danh sách sản phẩm</h4>
                     <table class="mini-table" id="list">
                         <thead>
@@ -467,7 +460,7 @@
         <!--Quan ly loai san pham-->
         <section id="category-section" class="admin-section" style="display:none;">
             <div class="cover">
-                <h2>Quản lý loại sản phẩm (Thương hiệu)<span class="close" onclick="closeData1()">X</span></h2>
+                <h2>Quản lý loại sản phẩm<span class="close" onclick="closeData1()">X</span></h2>
                 <button id="add" style="width: 100%; margin-bottom: 15px;">Thêm</button>
                 <div class="wrapper">
                     <table class="table1">
