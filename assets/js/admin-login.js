@@ -264,13 +264,13 @@ function handleAdminLogin(e) {
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
-        const list = JSON.parse(localStorage.getItem('ListUser')) || [];
-        console.log('Danh sách user từ localStorage:', list);
+        // Sử dụng trực tiếp userList từ file user.js
+        console.log('Danh sách user từ user.js:', userList);
 
         // Tìm user với role admin
-        const adminUser = list.find(u => {
+        const adminUser = userList.find(u => {
             const usernameMatch = u.username === username || u.email === username;
-            const passwordMatch = u.pass === password;
+            const passwordMatch = u.password === password;
             const roleMatch = u.role === 'admin';
             
             return usernameMatch && passwordMatch && roleMatch;
@@ -333,32 +333,8 @@ function checkAdminAccess() {
     return true;
 }
 
-// ===== KIỂM TRA VÀ KHỞI TẠO TÀI KHOẢN ADMIN MẪU =====
-function ensureAdminAccount() {
-    const list = JSON.parse(localStorage.getItem('ListUser')) || [];
-    const hasAdmin = list.some(u => u.role === 'admin');
-    
-    if (!hasAdmin) {
-        const adminAccount = {
-            username: 'admin',
-            email: 'admin@saigonphone.com',
-            pass: 'admin123',
-            role: 'admin',
-            fullName: 'Quản Trị Viên'
-        };
-        list.push(adminAccount);
-        localStorage.setItem('ListUser', JSON.stringify(list));
-        console.log('👤 Đã tạo tài khoản admin mẫu: admin / admin123');
-    } else {
-        console.log('✅ Đã có tài khoản admin');
-    }
-}
-
 // ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
-
-// Đảm bảo có tài khoản admin
-ensureAdminAccount();
 
 // Kiểm tra trạng thái đăng nhập khi trang load
 window.addEventListener('load', function() {
