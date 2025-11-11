@@ -127,7 +127,6 @@ if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUs
     localStorage.setItem("ListUser", JSON.stringify(userList));
     console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
 }
-
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
   return JSON.parse(localStorage.getItem("ListUser")) || [];
@@ -188,6 +187,7 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   let confirmPass = document.getElementById("confirmPassword").value;
   let phone = document.getElementById("phone").value.trim();
 
+  // --- kiểm tra định dạng ---
   if (!usernameRegex.test(username))
     return showRegisterError("Tên đăng nhập chỉ gồm chữ, số, gạch dưới (4-20 ký tự)");
 
@@ -205,6 +205,7 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
 
   let list = getListUser();
 
+  // kiểm tra trùng
   for (let u of list) {
     if (u.username === username) return showRegisterError("Tên đăng nhập đã tồn tại!");
     if (u.email === email) return showRegisterError("Email đã tồn tại!");
@@ -212,14 +213,11 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   }
 
   let newUser = {
-    id: "KH" + (list.length + 1).toString().padStart(2, '0'),
     fullName,
     username,
     email,
-    phone,
     pass,
-    status: "active",
-    address: "",
+    phone,
     role: "user"
   };
 
@@ -236,19 +234,23 @@ function showRegisterError(msg) {
     `<div class="alert alert-error">${msg}</div>`;
 }
 
-// ================== ĐĂNG NHẬP (CHỈ CHO USER) ==================
+// ================== ĐĂNG NHẬP ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
   let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
   let pass = document.getElementById("loginPassword").value;
 
-  let list = getListUser();
+  console.log('🔐 Attempting login with:', userInput);
 
-  // CHỈ CHO PHÉP USER THÔNG THƯỜNG ĐĂNG NHẬP
+  let list = getListUser();
+  console.log('👥 Users in storage:', list);
+
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && u.pass === pass && u.role === "user"
+    (u.username === userInput || u.email === userInput) && u.pass === pass
   );
+
+  console.log('🔍 Found user:', found);
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
@@ -259,9 +261,13 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   setCurrentUser(found);
   console.log('✅ User logged in:', found);
 
-  // LUÔN CHUYỂN VỀ TRANG CHỦ
-  window.location.href = "index.html";
+  if (found.role === 'admin') {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "index.html";
+  }
 });
+
 // ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
   let currentUser = getCurrentUser();
@@ -463,19 +469,13 @@ function capNhatMoiThu() {
   console.log("✅ Đồng bộ hoàn tất");
 }
 
+// ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
 window.onload = function () {
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
-  updateUserPageHeader();
-
-  if (currentUser) {
+  if (currentUser && (!query || query === "profile")) {
     showTab("profile");
-    document.querySelectorAll('.tab').forEach(tab => {
-      if (tab.dataset.tab !== 'profile') {
-        tab.style.display = 'none';
-      }
-    });
   } else if (query) {
     showTab(query);
   } else {
@@ -488,7 +488,15 @@ function navigateToCart() {
     
     if (!currentUser) {
         if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-            window.location.href = 'user.html?tab=login';
+            // Kiểm tra xem đang ở trang nào
+            if (window.location.pathname.includes('user.html') || 
+                window.location.href.includes('user.html')) {
+                // Đang ở user.html -> chuyển tab login
+                showTab('login');
+            } else {
+                // Đang ở trang khác -> chuyển đến user.html
+                window.location.href = 'user.html?tab=login';
+            }
         }
         return false;
     }
@@ -496,15 +504,6 @@ function navigateToCart() {
     // Đã đăng nhập -> chuyển đến cart.html
     window.location.href = 'cart.html';
     return true;
-}
-
-// ================== ĐĂNG XUẤT TỪ TRANG CHỦ ==================
-function logoutFromHome() {
-    if (confirm('Bạn có chắc muốn đăng xuất?')) {
-        localStorage.removeItem("CurrentUser");
-        window.location.href = "index.html";
-    }
-    return false;
 }
 
 // ================== CHUYỂN TỪ PROFILE SANG CART ==================
@@ -528,8 +527,8 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHeaderUserStatus();
 });
 
-// ================== CẬP NHẬT HEADER TRONG USER.HTML ==================
-function updateUserPageHeader() {
+// ================== CẬP NHẬT HEADER ==================
+function updateHeaderUserStatus() {
     const currentUser = getCurrentUser();
     const guestLinks = document.getElementById('guest-links');
     const userLinks = document.getElementById('user-links');
@@ -559,86 +558,3 @@ function updateUserPageHeader() {
         if (userLinks) userLinks.style.display = 'none';
     }
 }
-
-// Gọi hàm khi trang user.html load
-document.addEventListener('DOMContentLoaded', function() {
-    updateUserPageHeader();
-});
-// ================== THÊM HÀM BỊ THIẾU ==================
-function updateHeaderUserStatus() {
-    updateUserPageHeader();
-}
-
-// ================== KIỂM TRA VÀ ẨN ADMIN BADGE TRÊN TRANG USER ==================
-function hideAdminElements() {
-    const adminBadge = document.getElementById('admin-badge');
-    const adminMenuLink = document.getElementById('admin-menu-link');
-    
-    if (adminBadge) adminBadge.style.display = 'none';
-    if (adminMenuLink) adminMenuLink.style.display = 'none';
-}
-
-// ================== KIỂM TRA VÀ XỬ LÝ ADMIN SESSION ==================
-function checkAndClearAdminSession() {
-    if (window.location.pathname.includes('user.html')) {
-        const currentUser = getCurrentUser();
-        if (currentUser && currentUser.role === 'admin') {
-            localStorage.removeItem("CurrentUser");
-            console.log('✅ Đã xóa admin session trên trang user');
-        }
-    }
-}
-
-// ================== CẬP NHẬT HEADER - SỬA LẠI ==================
-function updateUserPageHeader() {
-    const currentUser = getCurrentUser();
-    const guestLinks = document.getElementById('guest-links');
-    const userLinks = document.getElementById('user-links');
-    const userNameSpan = document.getElementById('user-name');
-
-    if (currentUser && currentUser.username) {
-        if (guestLinks) guestLinks.style.display = 'none';
-        if (userLinks) userLinks.style.display = 'flex';
-
-        const userName = currentUser.fullName || currentUser.username;
-        if (userNameSpan) userNameSpan.textContent = userName;
-
-        // Ẩn admin elements
-        hideAdminElements();
-        
-    } else {
-        if (guestLinks) guestLinks.style.display = 'flex';
-        if (userLinks) userLinks.style.display = 'none';
-        hideAdminElements();
-    }
-}
-
-// Sửa phần window.onload
-window.onload = function () {
-  let currentUser = getCurrentUser();
-  let query = new URLSearchParams(window.location.search).get('tab');
-
-  // Kiểm tra admin session
-  checkAndClearAdminSession();
-  currentUser = getCurrentUser(); // Cập nhật lại
-
-  updateUserPageHeader();
-
-  if (currentUser) {
-    showTab("profile");
-    document.querySelectorAll('.tab').forEach(tab => {
-      if (tab.dataset.tab !== 'profile') {
-        tab.style.display = 'none';
-      }
-    });
-  } else if (query) {
-    showTab(query);
-  } else {
-    showTab("login");
-  }
-};
-
-// Gọi hàm khi trang user.html load
-document.addEventListener('DOMContentLoaded', function() {
-    updateUserPageHeader();
-});
