@@ -1166,30 +1166,33 @@ function getPriceByProductId(productId) {
 }
 
 // --- RENDER TABLE ---
-function renderProductTable(data = products) {
-  productTbody.innerHTML = data
-    .map(
-      (p) => `
-        <tr>
-        <td>${getCategoryName(p.categoryId)}</td>
-        <td>${p.id}</td>
-        <td>${p.name}</td>
-        <td>
-            <img src="${p.img || "assets/img/logo.png"}"
-                style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-        </td>
-        <td>${p.desc}</td>
-        <td class="action">
-            <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
-            <button class="delete" onclick="deleteProduct(this)">Xóa</button>
-            <button class="view" onclick="viewProductDetail('${
-              p.id
-            }')">Chi tiết</button>
-        </td>
-        </tr>`
-    )
-    .join("");
+function renderImportTable(data = imports) {
+    importTbody.innerHTML = data
+        .map((i) => {
+        const statusText =
+            i.status === "pending"
+            ? "Đang xử lý"
+            : i.status === "completed"
+            ? "Hoàn thành"
+            : i.status;
+
+        return `
+            <tr>
+            <td>${i.id}</td>
+            <td>${i.date}</td>
+            <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
+            <td>${statusText}</td>
+            <td class="action">
+                <button class="view" onclick="viewImportDetail('${i.id}')">👁 Chi tiết</button>
+                <button class="edit" onclick="openImportModal('edit', this)">Sửa</button>
+                <button class="delete" onclick="deleteImport(this)">Xóa</button>
+            </td>
+            </tr>`;
+        })
+        .join("");
 }
+
+
 
 // --- MỞ POPUP THÊM/SỬA ---
 function openProductModal(mode, btn) {
@@ -1269,43 +1272,45 @@ prodImgInput?.addEventListener("change", (e) => {
 
 // --- THÊM / SỬA ---
 productForm?.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const newProd = {
-    id: document.getElementById("prodCode").value.trim(),
-    categoryId: document.getElementById("prodType").value.trim(),
-    name: document.getElementById("prodName").value.trim(),
-    img: previewImg.src || "assets/img/logo.png",
-    desc: document.getElementById("prodDesc").value.trim(),
-    color: document.getElementById("prodColor").value.trim(),
-    storage: document.getElementById("prodStorage").value.trim(),
-    ram: document.getElementById("prodRam").value.trim(),
-    display: document.getElementById("prodDisplay").value.trim(),
-    camera: document.getElementById("prodCamera").value.trim(),
-    battery: document.getElementById("prodBattery").value.trim(),
-    chip: document.getElementById("prodChip").value.trim(),
-    os: document.getElementById("prodOS").value.trim(),
-    status: "active",
-  };
+    const newProd = {
+        id: document.getElementById("prodCode").value.trim(),
+        categoryId: document.getElementById("prodType").value.trim(),
+        name: document.getElementById("prodName").value.trim(),
+        img: previewImg.src || "assets/img/logo.png",
+        desc: document.getElementById("prodDesc").value.trim(),
+        color: document.getElementById("prodColor").value.trim(),
+        storage: document.getElementById("prodStorage").value.trim(),
+        ram: document.getElementById("prodRam").value.trim(),
+        display: document.getElementById("prodDisplay").value.trim(),
+        camera: document.getElementById("prodCamera").value.trim(),
+        battery: document.getElementById("prodBattery").value.trim(),
+        chip: document.getElementById("prodChip").value.trim(),
+        os: document.getElementById("prodOS").value.trim(),
+        status: "active",
+    };
 
-  // --- RÀNG BUỘC DỮ LIỆU ---
-  for (const [key, val] of Object.entries(newProd)) {
-    if (!val && key !== "img") {
-      alert("⚠️ Vui lòng nhập đầy đủ thông tin sản phẩm!");
-      return;
+    // --- RÀNG BUỘC DỮ LIỆU ---
+    for (const [key, val] of Object.entries(newProd)) {
+        if (!val && key !== "img") {
+        alert("Vui lòng nhập đầy đủ thông tin sản phẩm!");
+        return;
+        }
     }
-  }
-  if (!validateProductForm(newProd)) return;
-  if (!checkDuplicateProduct(newProd)) return;
-  if (!businessLogicCheck(newProd)) return;
+    if (!validateProductForm(newProd)) return;
+    if (!checkDuplicateProduct(newProd)) return;
+    if (!businessLogicCheck(newProd)) return;
 
-  const existingIndex = products.findIndex((p) => p.id === newProd.id);
-  if (editingProductRow && existingIndex > -1) {
-    products[existingIndex] = newProd;
-  } else {
-    if (existingIndex !== -1) {
-      alert("⚠️ Mã sản phẩm đã tồn tại!");
-      return;
+    const existingIndex = products.findIndex((p) => p.id === newProd.id);
+    if (editingProductRow && existingIndex > -1) {
+        products[existingIndex] = newProd;
+    } else {
+        if (existingIndex !== -1) {
+        alert("Mã sản phẩm đã tồn tại!");
+        return;
+        }
+        products.unshift(newProd);
     }
     products.unshift(newProd);
   }
@@ -1339,6 +1344,22 @@ document.addEventListener("DOMContentLoaded", () => {
   populateStorageDropdown();
   renderProductTable();
 });
+
+function toggleProductStatus(id) {
+  const index = products.findIndex(p => p.id === id);
+  if (index === -1) return alert("Không tìm thấy sản phẩm!");
+
+  const current = products[index];
+  const newStatus = current.status === "active" ? "hidden" : "active";
+  products[index].status = newStatus;
+
+  setLocal("productList", products);
+  renderProductTable();
+
+  alert(`Sản phẩm "${current.name}" đã được ${newStatus === "hidden" ? "ẩn" : "hiển thị"}!`);
+}
+window.toggleProductStatus = toggleProductStatus;
+
 
 // --- XÓA ---
 function deleteProduct(btn) {
@@ -1436,12 +1457,12 @@ function openImportModal(mode, btn) {
     const idToEdit = row.cells[0].innerText.trim();
     const record = imports.find((i) => i.id === idToEdit);
 
-    if (!record) return;
-    if (record.status === "Hoàn thành") {
-      alert("❌ Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
-      importModal.style.display = "none";
-      return;
-    }
+        if (!record) return;
+        if (record.status === "Hoàn thành") {
+        alert("Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
+        importModal.style.display = "none";
+        return;
+        }
 
     document.getElementById("importCode").value = record.id;
     document.getElementById("importDate").value = record.date;
@@ -1463,55 +1484,56 @@ importCancelBtn?.addEventListener("click", (e) => {
 
 // Submit Form
 importForm?.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const itemRows = document.querySelectorAll("#productItems .item-row");
-  const items = [];
+    const itemRows = document.querySelectorAll("#productItems .item-row");
+    const items = [];
 
-  itemRows.forEach((row) => {
-    const productId = row.querySelector(".item-name").value.trim();
-    const quantity = Number(row.querySelector(".item-qty").value);
-    const price = Number(row.querySelector(".item-price").value);
+    itemRows.forEach((row) => {
+        const productId = row.querySelector(".item-name").value.trim();
+        const quantity = Number(row.querySelector(".item-qty").value);
+        const price = Number(row.querySelector(".item-price").value);
+        if (productId && quantity > 0 && price > 0)
+        items.push({ productId, quantity, price });
+    });
 
-    if (productId && quantity > 0 && price > 0)
-      items.push({ productId, quantity, price });
-  });
+    const total = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
+    const newImport = {
+        id: document.getElementById("importCode").value.trim(),
+        date: document.getElementById("importDate").value,
+        total,
+        status: document.getElementById("importStatus").value,
+        items,
+    };
 
-  const total = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
+    if (!validateImportForm(newImport)) return;
 
-  const newImport = {
-    id: document.getElementById("importCode").value.trim(),
-    date: document.getElementById("importDate").value,
-    total,
-    status: document.getElementById("importStatus").value,
-    items,
-  };
-
-  // === Gọi ràng buộc từ validators.js ===
-  if (!validateImportForm(newImport)) return;
-  if (!checkDuplicateImport(newImport)) return;
-  if (!businessLogicImportCheck(newImport)) return;
-
-  // Nếu đang sửa
-  const existingIdx = imports.findIndex((i) => i.id === newImport.id);
-  if (editingImportRow && existingIdx !== -1) {
-    imports[existingIdx] = newImport;
-  } else {
-    if (existingIdx !== -1) {
-      alert("⚠️ Mã phiếu đã tồn tại!");
-      return;
+    const idOld = editingImportRow ? editingImportRow.cells[0].innerText.trim() : null;
+    const exists = imports.some(i => i.id === newImport.id && i.id !== idOld);
+    if (exists) {
+        alert("⚠️ Mã phiếu nhập đã tồn tại!");
+        return;
     }
-    imports.unshift(newImport);
-    isNewRecord = true;
-  }
 
-  setLocal("importList", imports);
-  if (isNewRecord && typeof processInventoryUpdate === "function") {
-    processInventoryUpdate(newImport, isNewRecord);
-  }
-  renderImportTable();
-  importModal.style.display = "none";
-});
+    const existingIdx = imports.findIndex(i => i.id === idOld);
+    let isNewRecord = false;
+
+    if (editingImportRow && existingIdx !== -1) {
+        imports[existingIdx] = newImport;
+    } else {
+        imports.unshift(newImport);
+        isNewRecord = true;
+    }
+
+    setLocal("importList", imports);
+    if (isNewRecord && typeof processInventoryUpdate === "function") {
+        processInventoryUpdate(newImport, isNewRecord);
+    }
+
+    renderImportTable();
+    importModal.style.display = "none";
+    });
+
 
 // Xóa phiếu nhập
 function deleteImport(btn) {
