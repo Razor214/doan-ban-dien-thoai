@@ -1689,9 +1689,10 @@ closeImportDetail.addEventListener("click", () => {
 
 // --- Khi load trang
 document.addEventListener("DOMContentLoaded", () => renderImportTable());
-// Logout function
+/// Logout function - đồng bộ với admin-login.js
 function logout() {
     if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+        localStorage.removeItem('CurrentUser');
         window.location.href = "index.html";
     }
 }
