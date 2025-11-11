@@ -22,40 +22,35 @@
   </head>
   <body>
     <!-- THANH THÔNG TIN (khu vực riêng) -->
-<div class="top-info-bar">
-  <div class="container">
-    <div class="contact-info">
-      <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
-      <span><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5, TP.HCM</span>
-    </div>
-  </div>
-</div>
-
-
-<header class="modern-header">
-  <div class="container">
-    <div class="logo">
-      <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
-      <h1>SaiGonPhone</h1>
+    <div class="top-info-bar">
+      <div class="container">
+        <div class="contact-info">
+          <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
+          <span><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5, TP.HCM</span>
+        </div>
+      </div>
     </div>
 
-    <div class="search-bar modern-search">
-      <input type="text" id="headerSearch" placeholder="Search" />
-      <button id="headerSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </div>
-<nav class="navbar modern-nav" id="navbar">
-  <div id="userArea"></div>
-  <a href="user/cart.html" class="icon-btn cart-link" title="Giỏ hàng">
-    <i class="fa-solid fa-cart-shopping"></i>
-    <span>Giỏ Hàng</span>
-  </a>
-</nav>
+    <header class="modern-header">
+      <div class="container">
+        <div class="logo">
+          <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
+          <h1>SaiGonPhone</h1>
+        </div>
 
-  </div>
-</header>
-
-
-
+        <div class="search-bar modern-search">
+          <input type="text" id="headerSearch" placeholder="Search" />
+          <button id="headerSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <nav class="navbar modern-nav" id="navbar">
+          <div id="userArea"></div>
+          <a href="user/cart.html" class="icon-btn cart-link" title="Giỏ hàng">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Giỏ Hàng</span>
+          </a>
+        </nav>
+      </div>
+    </header>
 
     <!-- TOP MENU -->
     <div class="topmenu">
@@ -146,23 +141,20 @@
 
     <!-- MAIN -->
     <main>
-<section class="hero-modern">
-  <div class="hero-inner">
-    <div class="hero-content">
-      <h5>Pro.Beyond.</h5>
-      <h1>SAI GON PHONE</h1>
-      <p>Created to change everything for the better. For everyone.</p>
-      <a href="#products" class="hero-btn">Shop Now</a>
-    </div>
+      <section class="hero-modern">
+        <div class="hero-inner">
+          <div class="hero-content">
+            <h5>Absolute cinema</h5>
+            <h1>SAI GON PHONE</h1>
+            <p>Nơi những mẫu điện thoại cao cấp cập bến</p>
+            <a href="#products" class="hero-btn">Mua ngay</a>
+          </div>
 
-    <div class="hero-image">
-      <img src="assets/img/phonehero.png" alt="SaiGonPhone Product">
-    </div>
-  </div>
-</section>
-
-
-
+          <div class="hero-image">
+            <img src="assets/img/phonehero.png" alt="SaiGonPhone Product">
+          </div>
+        </div>
+      </section>
 
       <section class="featured" id="products">
         <h3>Sản phẩm nổi bật</h3>
@@ -291,36 +283,6 @@
       </div>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        const navbar = document.getElementById("navbar");
-
-        if (currentUser) {
-          // Nếu đã đăng nhập
-          const isAdmin =
-            currentUser.role && currentUser.role.toLowerCase() === "admin";
-          navbar.innerHTML = `
-          <a href="index.html" class="bar_right">Trang Chủ</a>
-          <a href="user/cart.html">Giỏ Hàng</a>
-          <a href="user.html?tab=profile" class="bar_right user-profile-link">
-            Xin chào, ${currentUser.fullName || currentUser.username}
-          </a>
-          ${
-            isAdmin
-              ? '<a href="admin.html" class="admin-link" style="display:block;">Quản Trị Viên</a>'
-              : ""
-          }
-          <a href="#" onclick="logoutFromHome()">Đăng xuất</a>
-        `;
-        }
-      });
-
-      function logoutFromHome() {
-        localStorage.removeItem("currentUser");
-        window.location.reload();
-      }
-    </script>
 
     <!-- FOOTER -->
     <footer>
