@@ -188,3 +188,55 @@ function checkAdminAccess() {
     }
     return true;
 }
+function handleAdminLogin(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('adminUsername').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    const errorDiv = document.getElementById('adminLoginError');
+    const button = document.querySelector('.login-btn');
+
+    // Ẩn thông báo lỗi cũ
+    errorDiv.style.display = 'none';
+
+    // Hiển thị loading
+    const originalText = button.innerHTML;
+    button.innerHTML = 'Đang đăng nhập...';
+    button.disabled = true;
+
+    // Kiểm tra đăng nhập
+    const adminUser = adminLogin(username, password);
+
+    if (adminUser) {
+        // Lưu thông tin user
+        localStorage.setItem('CurrentUser', JSON.stringify(adminUser));
+        
+        // === THÊM ĐOẠN NÀY ===
+        // Ẩn form đăng nhập
+        const loginOverlay = document.querySelector('.admin-login-overlay');
+        if (loginOverlay) loginOverlay.remove();
+        
+        // Hiện nội dung admin
+        const adminContent = document.getElementById('adminContent');
+        if (adminContent) adminContent.style.display = 'block';
+        
+        // Thông báo thành công
+        alert('Đăng nhập Admin thành công!');
+        
+        // Ở lại trang admin (không chuyển hướng)
+        button.innerHTML = 'Đăng nhập thành công!';
+        setTimeout(() => {
+            window.location.reload(); // Reload để kích hoạt toàn bộ tính năng admin
+        }, 1000);
+        // === HẾT PHẦN THÊM ===
+        
+    } else {
+        // Hiển thị lỗi
+        errorDiv.style.display = 'block';
+        document.getElementById('adminPassword').value = '';
+        
+        // Khôi phục button
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }
+}
