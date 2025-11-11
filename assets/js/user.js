@@ -109,24 +109,16 @@ const userList = [
         status: "active",
         address: "88 Nguyễn Đình Chiểu, Q.3, TP.HCM",
         role: "user"
-    },
-    {
-        id: "ADMIN01",
-        fullName: "Quản Trị Viên",
-        username: "admin",
-        email: "admin@saigonphone.vn",
-        phone: "0900000000",
-        pass: "admin123",
-        status: "active",
-        address: "SaiGonPhone Headquarters",
-        role: "admin"
     }
+    // 🚨 ĐÃ BỎ TÀI KHOẢN ADMIN Ở ĐÂY
 ];
+
 // Khởi tạo dữ liệu nếu chưa có
 if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
     localStorage.setItem("ListUser", JSON.stringify(userList));
     console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
 }
+
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
   return JSON.parse(localStorage.getItem("ListUser")) || [];
@@ -213,12 +205,15 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   }
 
   let newUser = {
+    id: "KH" + (list.length + 1).toString().padStart(2, '0'),
     fullName,
     username,
     email,
     pass,
     phone,
-    role: "user"
+    status: "active",
+    address: "",
+    role: "user" // 🚨 LUÔN LÀ USER
   };
 
   list.push(newUser);
@@ -246,8 +241,11 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   let list = getListUser();
   console.log('👥 Users in storage:', list);
 
+  // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG CHO ADMIN ĐĂNG NHẬP Ở ĐÂY
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && u.pass === pass
+    (u.username === userInput || u.email === userInput) && 
+    u.pass === pass &&
+    u.role === "user" // 🚨 QUAN TRỌNG: CHỈ CHO USER THƯỜNG
   );
 
   console.log('🔍 Found user:', found);
@@ -261,11 +259,8 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   setCurrentUser(found);
   console.log('✅ User logged in:', found);
 
-  if (found.role === 'admin') {
-    window.location.href = "admin.html";
-  } else {
-    window.location.href = "index.html";
-  }
+  // 🚨 LUÔN CHUYỂN VỀ TRANG CHỦ, KHÔNG VÀO ADMIN
+  window.location.href = "index.html";
 });
 
 // ================== HIỂN THỊ PROFILE ==================
@@ -342,12 +337,15 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   let list = getListUser();
 
   let newData = {
+    id: currentUser.id,
     fullName: document.getElementById("profileFullName").value.trim(),
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
     pass: currentUser.pass,
-    role: currentUser.role
+    status: currentUser.status || "active",
+    address: currentUser.address || "",
+    role: "user" // 🚨 LUÔN LÀ USER
   };
 
   // Lấy thông tin mật khẩu
@@ -369,7 +367,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   // Kiểm tra trùng email và số điện thoại
   for (let u of list) {
-    if (!equalUser(u, currentUser)) {
+    if (u.id !== currentUser.id) { // So sánh bằng ID
       if (u.email === newData.email) {
         showProfileAlert("Email đã tồn tại!", "error");
         return;
@@ -469,13 +467,40 @@ function capNhatMoiThu() {
   console.log("✅ Đồng bộ hoàn tất");
 }
 
+// ================== CẬP NHẬT HEADER ==================
+function updateHeaderUserStatus() {
+  const currentUser = getCurrentUser();
+  const guestLinks = document.getElementById('guest-links');
+  const userLinks = document.getElementById('user-links');
+  const adminBadge = document.getElementById('admin-badge');
+  const adminMenuLink = document.getElementById('admin-menu-link');
+  const userNameSpan = document.getElementById('user-name');
+
+  if (currentUser && currentUser.username) {
+    // Ẩn guest links, hiển thị user links
+    if (guestLinks) guestLinks.style.display = 'none';
+    if (userLinks) userLinks.style.display = 'flex';
+
+    // Hiển thị tên user
+    const userName = currentUser.fullName || currentUser.username;
+    if (userNameSpan) userNameSpan.textContent = userName;
+
+    // 🚨 ẨN BADGE ADMIN VÀ MENU ADMIN (vì chỉ có user thường)
+    if (adminBadge) adminBadge.style.display = 'none';
+    if (adminMenuLink) adminMenuLink.style.display = 'none';
+  } else {
+    if (guestLinks) guestLinks.style.display = 'flex';
+    if (userLinks) userLinks.style.display = 'none';
+  }
+}
+
 // ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
 window.onload = function () {
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
   // Cập nhật header
-  updateUserPageHeader();
+  updateHeaderUserStatus();
 
   if (currentUser) {
     // Nếu đã đăng nhập, luôn hiển thị tab profile
@@ -493,6 +518,7 @@ window.onload = function () {
     showTab("login");
   }
 };
+
 // ================== XỬ LÝ MỞ CART THÔNG MINH ==================
 function navigateToCart() {
     const currentUser = getCurrentUser();
@@ -557,14 +583,9 @@ function updateUserPageHeader() {
         const userName = currentUser.fullName || currentUser.username;
         if (userNameSpan) userNameSpan.textContent = userName;
 
-        // Kiểm tra và hiển thị badge admin + menu item nếu là admin
-        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
-        if (adminBadge) {
-            adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
-        }
-        if (adminMenuLink) {
-            adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
-        }
+        // 🚨 ẨN BADGE ADMIN VÀ MENU ADMIN
+        if (adminBadge) adminBadge.style.display = 'none';
+        if (adminMenuLink) adminMenuLink.style.display = 'none';
     } else {
         if (guestLinks) guestLinks.style.display = 'flex';
         if (userLinks) userLinks.style.display = 'none';
