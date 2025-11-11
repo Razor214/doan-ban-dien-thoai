@@ -552,19 +552,10 @@ function updateHeaderUserStatus() {
     }
 }
 // ================== THÊM HÀM BỊ THIẾU ==================
-function updateHeaderUserStatus() {
-    // Cập nhật trạng thái header
-    const currentUser = getCurrentUser();
-    const guestLinks = document.getElementById('guest-links');
-    const userLinks = document.getElementById('user-links');
-    const userNameSpan = document.getElementById('user-name');
-
-    if (currentUser && currentUser.username) {
-        if (guestLinks) guestLinks.style.display = 'none';
-        if (userLinks) userLinks.style.display = 'flex';
-        if (userNameSpan) userNameSpan.textContent = currentUser.fullName || currentUser.username;
-    } else {
-        if (guestLinks) guestLinks.style.display = 'flex';
-        if (userLinks) userLinks.style.display = 'none';
+function logoutFromHome() {
+    if (confirm('Bạn có chắc muốn đăng xuất?')) {
+        localStorage.removeItem("CurrentUser");
+        window.location.href = "index.html";
     }
+    return false;
 }
