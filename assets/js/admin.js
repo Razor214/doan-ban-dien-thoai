@@ -528,15 +528,12 @@ function displayTon(data) {
             <td>${item.id}</td>
             <td>${item.productId}</td>
             <td>${item.categoryId}</td>
-            <td>${
-              item.slNhap !== undefined ? item.slNhap.toLocaleString() : 0
-            }</td> 
-            <td>${
-              item.slXuat !== undefined ? item.slXuat.toLocaleString() : 0
-            }</td>
-            <td>${
-              item.slTon !== undefined ? item.slTon.toLocaleString() : 0
-            }</td>
+            <td>${item.slNhap !== undefined ? item.slNhap.toLocaleString() : 0
+      }</td> 
+            <td>${item.slXuat !== undefined ? item.slXuat.toLocaleString() : 0
+      }</td>
+            <td>${item.slTon !== undefined ? item.slTon.toLocaleString() : 0
+      }</td>
             <td>${item.ngayCapNhat}</td>
             <td><span class="${statusClass}">${statusText}</span></td>
             <td class="action">
@@ -585,11 +582,10 @@ function openModal(item) {
         const row = document.createElement("tr");
         row.innerHTML = `
                     <td>${hist.ngay}</td>
-                    <td class="${
-                      ["Bán", "Xuất"].includes(hist.hanhDong)
-                        ? "action-xuat"
-                        : "action-nhap"
-                    }">${hist.hanhDong}</td>
+                    <td class="${["Bán", "Xuất"].includes(hist.hanhDong)
+            ? "action-xuat"
+            : "action-nhap"
+          }">${hist.hanhDong}</td>
                     <td>${hist.soLuong.toLocaleString()}</td>
                 `;
         historyBody.appendChild(row);
@@ -921,15 +917,12 @@ function renderCategorys() {
                 <td>${isHidden ? "Đã ẩn" : ct.desc}</td>
                 <td class="status1">${ct.status}</td>
                 <td class="action1">
-                    <button class="toggle">${
-                      ct.status === "active" ? "Ẩn" : "Hiện"
-                    }</button>
-                    <button class="delete" ${
-                      isHidden ? "disabled" : ""
-                    }>Xóa</button>
-                    <button class="edit" ${
-                      isHidden ? "disabled" : ""
-                    }>Sửa</button> 
+                    <button class="toggle">${ct.status === "active" ? "Ẩn" : "Hiện"
+        }</button>
+                    <button class="delete" ${isHidden ? "disabled" : ""
+        }>Xóa</button>
+                    <button class="edit" ${isHidden ? "disabled" : ""
+        }>Sửa</button> 
                 </td>
             </tr>
         `;
@@ -1004,11 +997,30 @@ categoryForm.onsubmit = (e) => {
     desc: categoryForm.elements[3].value.trim(),
     status: categoryForm.elements[4].value,
   };
+  /*
+    if (editingIndex !== null) {
+      categorys_data_local[editingIndex] = newData;
+    } else {
+      categorys_data_local.push(newData);
+    } */
 
-  if (editingIndex !== null) {
-    categorys_data_local[editingIndex] = newData;
-  } else {
+  // Kiểm tra định dạng ID: phải là TH + 2 chữ số
+  const idPattern = /^TH\d{2}$/;
+  if (!idPattern.test(newData.id)) {
+    alert("ID phải có định dạng THXX, trong đó XX là số (ví dụ: TH01, TH99)");
+    return;
+  }
+
+  // Kiểm tra trùng ID nếu đang thêm mới
+  if (editingIndex === null) {
+    const isDuplicate = categorys_data_local.some(item => item.id === newData.id);
+    if (isDuplicate) {
+      alert("ID đã tồn tại! Vui lòng nhập ID khác.");
+      return;
+    }
     categorys_data_local.push(newData);
+  } else {
+    categorys_data_local[editingIndex] = newData;
   }
 
   saveAndRender();
@@ -1061,12 +1073,10 @@ function renderCustomers() {
                 <td>${isBlocked ? "Đã khóa" : cm.sdt}</td> 
                 <td>${cm.status}</td>
                 <td class = "action1">
-                    <div class = "wrapper-button"><button class="unlock">${
-                      cm.status === "active" ? "Khóa" : "Mở khóa"
-                    }</button></div>
-                    <button class="reset" ${
-                      isBlocked ? "disabled" : ""
-                    }>Đặt lại mật khẩu</button>
+                    <div class = "wrapper-button"><button class="unlock">${cm.status === "active" ? "Khóa" : "Mở khóa"
+        }</button></div>
+                    <button class="reset" ${isBlocked ? "disabled" : ""
+        }>Đặt lại mật khẩu</button>
                 </td>
             </tr>
         `;
@@ -1270,46 +1280,46 @@ prodImgInput?.addEventListener("change", (e) => {
 
 // --- THÊM / SỬA ---
 productForm?.addEventListener("submit", (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const newProd = {
-        id: document.getElementById("prodCode").value.trim(),
-        categoryId: document.getElementById("prodType").value.trim(),
-        name: document.getElementById("prodName").value.trim(),
-        img: previewImg.src || "assets/img/logo.png",
-        desc: document.getElementById("prodDesc").value.trim(),
-        color: document.getElementById("prodColor").value.trim(),
-        storage: document.getElementById("prodStorage").value.trim(),
-        ram: document.getElementById("prodRam").value.trim(),
-        display: document.getElementById("prodDisplay").value.trim(),
-        camera: document.getElementById("prodCamera").value.trim(),
-        battery: document.getElementById("prodBattery").value.trim(),
-        chip: document.getElementById("prodChip").value.trim(),
-        os: document.getElementById("prodOS").value.trim(),
-        status: "active",
-    };
+  const newProd = {
+    id: document.getElementById("prodCode").value.trim(),
+    categoryId: document.getElementById("prodType").value.trim(),
+    name: document.getElementById("prodName").value.trim(),
+    img: previewImg.src || "assets/img/logo.png",
+    desc: document.getElementById("prodDesc").value.trim(),
+    color: document.getElementById("prodColor").value.trim(),
+    storage: document.getElementById("prodStorage").value.trim(),
+    ram: document.getElementById("prodRam").value.trim(),
+    display: document.getElementById("prodDisplay").value.trim(),
+    camera: document.getElementById("prodCamera").value.trim(),
+    battery: document.getElementById("prodBattery").value.trim(),
+    chip: document.getElementById("prodChip").value.trim(),
+    os: document.getElementById("prodOS").value.trim(),
+    status: "active",
+  };
 
-    // --- RÀNG BUỘC DỮ LIỆU ---
-    for (const [key, val] of Object.entries(newProd)) {
-        if (!val && key !== "img") {
-        alert("Vui lòng nhập đầy đủ thông tin sản phẩm!");
-        return;
-        }
+  // --- RÀNG BUỘC DỮ LIỆU ---
+  for (const [key, val] of Object.entries(newProd)) {
+    if (!val && key !== "img") {
+      alert("Vui lòng nhập đầy đủ thông tin sản phẩm!");
+      return;
     }
-    if (!validateProductForm(newProd)) return;
-    if (!checkDuplicateProduct(newProd)) return;
-    if (!businessLogicCheck(newProd)) return;
+  }
+  if (!validateProductForm(newProd)) return;
+  if (!checkDuplicateProduct(newProd)) return;
+  if (!businessLogicCheck(newProd)) return;
 
-    const existingIndex = products.findIndex((p) => p.id === newProd.id);
-    if (editingProductRow && existingIndex > -1) {
-        products[existingIndex] = newProd;
-    } else {
-        if (existingIndex !== -1) {
-        alert("Mã sản phẩm đã tồn tại!");
-        return;
-        }
-        products.unshift(newProd);
+  const existingIndex = products.findIndex((p) => p.id === newProd.id);
+  if (editingProductRow && existingIndex > -1) {
+    products[existingIndex] = newProd;
+  } else {
+    if (existingIndex !== -1) {
+      alert("Mã sản phẩm đã tồn tại!");
+      return;
     }
+    products.unshift(newProd);
+  }
 
   setLocal("productList", products);
   renderProductTable();
@@ -1419,9 +1429,8 @@ function renderImportTable(data = imports) {
             <td>${Number(i.total).toLocaleString("vi-VN")} ₫</td>
             <td>${i.status}</td>
             <td class="action">
-            <button class="view" onclick="viewImportDetail('${
-              i.id
-            }')">👁 Chi tiết</button>
+            <button class="view" onclick="viewImportDetail('${i.id
+        }')">👁 Chi tiết</button>
             <button class="edit" onclick="openImportModal('edit', this)">Sửa</button>
             <button class="delete" onclick="deleteImport(this)">Xóa</button>
             </td>
@@ -1451,12 +1460,12 @@ function openImportModal(mode, btn) {
     const idToEdit = row.cells[0].innerText.trim();
     const record = imports.find((i) => i.id === idToEdit);
 
-        if (!record) return;
-        if (record.status === "Hoàn thành") {
-        alert("Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
-        importModal.style.display = "none";
-        return;
-        }
+    if (!record) return;
+    if (record.status === "Hoàn thành") {
+      alert("Phiếu nhập đã hoàn thành, không thể chỉnh sửa!");
+      importModal.style.display = "none";
+      return;
+    }
 
     document.getElementById("importCode").value = record.id;
     document.getElementById("importDate").value = record.date;
@@ -1478,55 +1487,55 @@ importCancelBtn?.addEventListener("click", (e) => {
 
 // Submit Form
 importForm?.addEventListener("submit", (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const itemRows = document.querySelectorAll("#productItems .item-row");
-    const items = [];
+  const itemRows = document.querySelectorAll("#productItems .item-row");
+  const items = [];
 
-    itemRows.forEach((row) => {
-        const productId = row.querySelector(".item-name").value.trim();
-        const quantity = Number(row.querySelector(".item-qty").value);
-        const price = Number(row.querySelector(".item-price").value);
-        if (productId && quantity > 0 && price > 0)
-        items.push({ productId, quantity, price });
-    });
+  itemRows.forEach((row) => {
+    const productId = row.querySelector(".item-name").value.trim();
+    const quantity = Number(row.querySelector(".item-qty").value);
+    const price = Number(row.querySelector(".item-price").value);
+    if (productId && quantity > 0 && price > 0)
+      items.push({ productId, quantity, price });
+  });
 
-    const total = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-    const newImport = {
-        id: document.getElementById("importCode").value.trim(),
-        date: document.getElementById("importDate").value,
-        total,
-        status: document.getElementById("importStatus").value,
-        items,
-    };
+  const total = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
+  const newImport = {
+    id: document.getElementById("importCode").value.trim(),
+    date: document.getElementById("importDate").value,
+    total,
+    status: document.getElementById("importStatus").value,
+    items,
+  };
 
-    if (!validateImportForm(newImport)) return;
+  if (!validateImportForm(newImport)) return;
 
-    const idOld = editingImportRow ? editingImportRow.cells[0].innerText.trim() : null;
-    const exists = imports.some(i => i.id === newImport.id && i.id !== idOld);
-    if (exists) {
-        alert("⚠️ Mã phiếu nhập đã tồn tại!");
-        return;
-    }
+  const idOld = editingImportRow ? editingImportRow.cells[0].innerText.trim() : null;
+  const exists = imports.some(i => i.id === newImport.id && i.id !== idOld);
+  if (exists) {
+    alert("⚠️ Mã phiếu nhập đã tồn tại!");
+    return;
+  }
 
-    const existingIdx = imports.findIndex(i => i.id === idOld);
-    let isNewRecord = false;
+  const existingIdx = imports.findIndex(i => i.id === idOld);
+  let isNewRecord = false;
 
-    if (editingImportRow && existingIdx !== -1) {
-        imports[existingIdx] = newImport;
-    } else {
-        imports.unshift(newImport);
-        isNewRecord = true;
-    }
+  if (editingImportRow && existingIdx !== -1) {
+    imports[existingIdx] = newImport;
+  } else {
+    imports.unshift(newImport);
+    isNewRecord = true;
+  }
 
-    setLocal("importList", imports);
-    if (isNewRecord && typeof processInventoryUpdate === "function") {
-        processInventoryUpdate(newImport, isNewRecord);
-    }
+  setLocal("importList", imports);
+  if (isNewRecord && typeof processInventoryUpdate === "function") {
+    processInventoryUpdate(newImport, isNewRecord);
+  }
 
-    renderImportTable();
-    importModal.style.display = "none";
-    });
+  renderImportTable();
+  importModal.style.display = "none";
+});
 
 
 // Xóa phiếu nhập
@@ -1563,20 +1572,17 @@ function loadProductItems(items) {
     row.innerHTML = `
         <select class="item-name" required>
             ${products
-              .map(
-                (p) =>
-                  `<option value="${p.id}" ${
-                    p.id === item.productId ? "selected" : ""
-                  }>${p.name}</option>`
-              )
-              .join("")}
+        .map(
+          (p) =>
+            `<option value="${p.id}" ${p.id === item.productId ? "selected" : ""
+            }>${p.name}</option>`
+        )
+        .join("")}
         </select>
-        <input type="number" class="item-qty" min="1" value="${
-          item.quantity || 1
-        }" oninput="calculateTotal()">
-        <input type="number" class="item-price" min="0" value="${
-          item.price || 0
-        }" oninput="calculateTotal()">
+        <input type="number" class="item-qty" min="1" value="${item.quantity || 1
+      }" oninput="calculateTotal()">
+        <input type="number" class="item-price" min="0" value="${item.price || 0
+      }" oninput="calculateTotal()">
         <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
         `;
     container.appendChild(row);
@@ -1598,8 +1604,8 @@ function addProductItem() {
     <select class="item-name" required>
       <option value="">-- Chọn sản phẩm --</option>
       ${productData
-        .map((p) => `<option value="${p.id}">${p.name}</option>`)
-        .join("")}
+      .map((p) => `<option value="${p.id}">${p.name}</option>`)
+      .join("")}
     </select>
     <input type="number" class="item-qty" min="1" value="1" oninput="calculateTotal()">
     <input type="number" class="item-price" min="0" placeholder="Giá nhập" oninput="calculateTotal()">
@@ -1639,25 +1645,25 @@ function viewImportDetail(importId) {
         <p><strong>Mã phiếu:</strong> ${record.id}</p>
         <p><strong>Ngày nhập:</strong> ${record.date}</p>
         <p><strong>Tổng giá trị:</strong> ${Number(record.total).toLocaleString(
-          "vi-VN"
-        )} ₫</p>
+    "vi-VN"
+  )} ₫</p>
         <p><strong>Trạng thái:</strong> ${record.status}</p>
         <h4>Danh sách sản phẩm:</h4>
         <table style="width:100%;border-collapse:collapse;">
         <tr><th>Tên sản phẩm</th><th>Số lượng</th><th>Giá nhập</th><th>Thành tiền</th></tr>
         ${record.items
-          .map((it) => {
-            const prod = productData.find((p) => p.id === it.productId);
-            const name = prod ? prod.name : it.productId;
-            const total = it.quantity * it.price;
-            return `<tr>
+      .map((it) => {
+        const prod = productData.find((p) => p.id === it.productId);
+        const name = prod ? prod.name : it.productId;
+        const total = it.quantity * it.price;
+        return `<tr>
                 <td>${name}</td>
                 <td>${it.quantity}</td>
                 <td>${Number(it.price).toLocaleString("vi-VN")} ₫</td>
                 <td>${Number(total).toLocaleString("vi-VN")} ₫</td>
             </tr>`;
-          })
-          .join("")}
+      })
+      .join("")}
         </table>
     `;
 
