@@ -1,10 +1,132 @@
-
+console.log('🚀 Initializing sample data...');
+const userList = [
+    {
+        id: "KH01",
+        fullName: "Lê Thị Bích Ngọc",
+        username: "bichngoc91",
+        email: "bichngoc91@gmail.com",
+        phone: "0938123471",
+        pass: "ngoc2023",
+        status: "active",
+        address: "123 Lê Văn Sỹ, Q.3, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH02",
+        fullName: "Trần Văn Minh",
+        username: "minhtran88",
+        email: "minhtran88@gmail.com",
+        phone: "0902456789",
+        pass: "minhpass88",
+        status: "active",
+        address: "45 Nguyễn Trãi, Q.5, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH03",
+        fullName: "Phạm Quốc Huy",
+        username: "huyphamqk",
+        email: "huyphamqk@gmail.com",
+        phone: "0912345670",
+        pass: "huy123qk",
+        status: "active",
+        address: "78 Cách Mạng Tháng 8, Q.10, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH04",
+        fullName: "Nguyễn Thị Lan Anh",
+        username: "lananh2000",
+        email: "lananh2000@gmail.com",
+        phone: "0978123456",
+        pass: "lananh2000",
+        status: "active",
+        address: "12 Nguyễn Văn Cừ, Q.1, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH05",
+        fullName: "Đặng Văn Tuấn",
+        username: "tuandang96",
+        email: "tuandang96@gmail.com",
+        phone: "0967890123",
+        pass: "tuan96pass",
+        status: "active",
+        address: "56 Trường Chinh, Q.Tân Bình, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH06",
+        fullName: "Hoàng Thị Như Ý",
+        username: "nhuyhoang",
+        email: "nhuyhoang@gmail.com",
+        phone: "0945123789",
+        pass: "nhuy2024",
+        status: "active",
+        address: "89 Lý Thường Kiệt, Q.Tân Phú, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH07",
+        fullName: "Vũ Đức Long",
+        username: "longvuduc",
+        email: "longvuduc@gmail.com",
+        phone: "0934567890",
+        pass: "longpass",
+        status: "active",
+        address: "34 Phan Đăng Lưu, Q.Bình Thạnh, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH08",
+        fullName: "Bùi Thị Hồng",
+        username: "hongbui89",
+        email: "hongbui89@gmail.com",
+        phone: "0923456781",
+        pass: "hongbui89",
+        status: "active",
+        address: "67 Nguyễn Thị Minh Khai, Q.1, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH09",
+        fullName: "Đỗ Văn Quang",
+        username: "quangdo77",
+        email: "quangdo77@gmail.com",
+        phone: "0956781234",
+        pass: "quang77do",
+        status: "active",
+        address: "101 Hoàng Văn Thụ, Q.Phú Nhuận, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "KH10",
+        fullName: "Ngô Thị Mai",
+        username: "maingo92",
+        email: "maingo92@gmail.com",
+        phone: "0901234567",
+        pass: "ngoMai92",
+        status: "active",
+        address: "88 Nguyễn Đình Chiểu, Q.3, TP.HCM",
+        role: "user"
+    },
+    {
+        id: "ADMIN01",
+        fullName: "Quản Trị Viên",
+        username: "admin",
+        email: "admin@saigonphone.vn",
+        phone: "0900000000",
+        pass: "admin123",
+        status: "active",
+        address: "SaiGonPhone Headquarters",
+        role: "admin"
+    }
+];
 // Khởi tạo dữ liệu nếu chưa có
 if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
-  localStorage.setItem("ListUser", JSON.stringify(userList));
-  console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
+    localStorage.setItem("ListUser", JSON.stringify(userList));
+    console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
 }
-
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
   return JSON.parse(localStorage.getItem("ListUser")) || [];
@@ -91,15 +213,12 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   }
 
   let newUser = {
-    id: "KH" + (list.length + 1).toString().padStart(2, '0'),
     fullName,
     username,
     email,
     pass,
     phone,
-    status: "active",
-    address: "",
-    role: "user" // 🚨 LUÔN LÀ USER
+    role: "user"
   };
 
   list.push(newUser);
@@ -127,11 +246,8 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   let list = getListUser();
   console.log('👥 Users in storage:', list);
 
-  // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG CHO ADMIN ĐĂNG NHẬP Ở ĐÂY
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) &&
-    u.pass === pass &&
-    u.role === "user" // 🚨 QUAN TRỌNG: CHỈ CHO USER THƯỜNG
+    (u.username === userInput || u.email === userInput) && u.pass === pass
   );
 
   console.log('🔍 Found user:', found);
@@ -145,8 +261,11 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   setCurrentUser(found);
   console.log('✅ User logged in:', found);
 
-  // 🚨 LUÔN CHUYỂN VỀ TRANG CHỦ, KHÔNG VÀO ADMIN
-  window.location.href = "index.html";
+  if (found.role === 'admin') {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "index.html";
+  }
 });
 
 // ================== HIỂN THỊ PROFILE ==================
@@ -175,7 +294,7 @@ function loadProfile() {
   // ✅ hiển thị lời chào trên header
   let greetingElement = document.getElementById("user-greeting");
   let greetingNameElement = document.getElementById("greeting-name");
-
+  
   if (greetingElement) greetingElement.style.display = "inline";
   if (greetingNameElement) greetingNameElement.innerText = currentUser.fullName;
 }
@@ -223,15 +342,12 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   let list = getListUser();
 
   let newData = {
-    id: currentUser.id,
     fullName: document.getElementById("profileFullName").value.trim(),
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
     pass: currentUser.pass,
-    status: currentUser.status || "active",
-    address: currentUser.address || "",
-    role: "user" // 🚨 LUÔN LÀ USER
+    role: currentUser.role
   };
 
   // Lấy thông tin mật khẩu
@@ -253,7 +369,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   // Kiểm tra trùng email và số điện thoại
   for (let u of list) {
-    if (u.id !== currentUser.id) { // So sánh bằng ID
+    if (!equalUser(u, currentUser)) {
       if (u.email === newData.email) {
         showProfileAlert("Email đã tồn tại!", "error");
         return;
@@ -353,45 +469,18 @@ function capNhatMoiThu() {
   console.log("✅ Đồng bộ hoàn tất");
 }
 
-// ================== CẬP NHẬT HEADER ==================
-function updateHeaderUserStatus() {
-  const currentUser = getCurrentUser();
-  const guestLinks = document.getElementById('guest-links');
-  const userLinks = document.getElementById('user-links');
-  const adminBadge = document.getElementById('admin-badge');
-  const adminMenuLink = document.getElementById('admin-menu-link');
-  const userNameSpan = document.getElementById('user-name');
-
-  if (currentUser && currentUser.username) {
-    // Ẩn guest links, hiển thị user links
-    if (guestLinks) guestLinks.style.display = 'none';
-    if (userLinks) userLinks.style.display = 'flex';
-
-    // Hiển thị tên user
-    const userName = currentUser.fullName || currentUser.username;
-    if (userNameSpan) userNameSpan.textContent = userName;
-
-    // 🚨 ẨN BADGE ADMIN VÀ MENU ADMIN (vì chỉ có user thường)
-    if (adminBadge) adminBadge.style.display = 'none';
-    if (adminMenuLink) adminMenuLink.style.display = 'none';
-  } else {
-    if (guestLinks) guestLinks.style.display = 'flex';
-    if (userLinks) userLinks.style.display = 'none';
-  }
-}
-
 // ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
 window.onload = function () {
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
   // Cập nhật header
-  updateHeaderUserStatus();
+  updateUserPageHeader();
 
   if (currentUser) {
     // Nếu đã đăng nhập, luôn hiển thị tab profile
     showTab("profile");
-
+    
     // Ẩn các tab đăng nhập/đăng ký
     document.querySelectorAll('.tab').forEach(tab => {
       if (tab.dataset.tab !== 'profile') {
@@ -404,81 +493,85 @@ window.onload = function () {
     showTab("login");
   }
 };
-
 // ================== XỬ LÝ MỞ CART THÔNG MINH ==================
 function navigateToCart() {
-  const currentUser = getCurrentUser();
-
-  if (!currentUser) {
-    if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-      window.location.href = 'user.html?tab=login';
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) {
+        if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
+            window.location.href = 'user.html?tab=login';
+        }
+        return false;
     }
-    return false;
-  }
-
-  // Đã đăng nhập -> chuyển đến cart.html
-  window.location.href = 'cart.html';
-  return true;
+    
+    // Đã đăng nhập -> chuyển đến cart.html
+    window.location.href = 'cart.html';
+    return true;
 }
 
 // ================== ĐĂNG XUẤT TỪ TRANG CHỦ ==================
 function logoutFromHome() {
-  if (confirm('Bạn có chắc muốn đăng xuất?')) {
-    localStorage.removeItem("CurrentUser");
-    window.location.href = "index.html";
-  }
-  return false;
+    if (confirm('Bạn có chắc muốn đăng xuất?')) {
+        localStorage.removeItem("CurrentUser");
+        window.location.href = "index.html";
+    }
+    return false;
 }
 
 // ================== CHUYỂN TỪ PROFILE SANG CART ==================
 function navigateToCartFromProfile() {
-  return navigateToCart();
+    return navigateToCart();
 }
 
 // ================== ÁP DỤNG CHO TẤT CẢ NÚT CART ==================
-document.addEventListener('DOMContentLoaded', function () {
-  // Xử lý cho tất cả link cart
-  const cartLinks = document.querySelectorAll('a[href="cart.html"]');
-
-  cartLinks.forEach(link => {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      navigateToCart();
+document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý cho tất cả link cart
+    const cartLinks = document.querySelectorAll('a[href="cart.html"]');
+    
+    cartLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            navigateToCart();
+        });
     });
-  });
-
-  // Cập nhật trạng thái đăng nhập trên header
-  updateHeaderUserStatus();
+    
+    // Cập nhật trạng thái đăng nhập trên header
+    updateHeaderUserStatus();
 });
 
 // ================== CẬP NHẬT HEADER TRONG USER.HTML ==================
 function updateUserPageHeader() {
-  const currentUser = getCurrentUser();
-  const guestLinks = document.getElementById('guest-links');
-  const userLinks = document.getElementById('user-links');
-  const adminBadge = document.getElementById('admin-badge');
-  const adminMenuLink = document.getElementById('admin-menu-link');
-  const userNameSpan = document.getElementById('user-name');
+    const currentUser = getCurrentUser();
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const adminBadge = document.getElementById('admin-badge');
+    const adminMenuLink = document.getElementById('admin-menu-link');
+    const userNameSpan = document.getElementById('user-name');
 
-  if (currentUser && currentUser.username) {
-    // Ẩn guest links, hiển thị user links
-    if (guestLinks) guestLinks.style.display = 'none';
-    if (userLinks) userLinks.style.display = 'flex';
+    if (currentUser && currentUser.username) {
+        // Ẩn guest links, hiển thị user links
+        if (guestLinks) guestLinks.style.display = 'none';
+        if (userLinks) userLinks.style.display = 'flex';
 
-    // Hiển thị tên user
-    const userName = currentUser.fullName || currentUser.username;
-    if (userNameSpan) userNameSpan.textContent = userName;
+        // Hiển thị tên user
+        const userName = currentUser.fullName || currentUser.username;
+        if (userNameSpan) userNameSpan.textContent = userName;
 
-    // 🚨 ẨN BADGE ADMIN VÀ MENU ADMIN
-    if (adminBadge) adminBadge.style.display = 'none';
-    if (adminMenuLink) adminMenuLink.style.display = 'none';
-  } else {
-    if (guestLinks) guestLinks.style.display = 'flex';
-    if (userLinks) userLinks.style.display = 'none';
-  }
+        // Kiểm tra và hiển thị badge admin + menu item nếu là admin
+        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+        if (adminBadge) {
+            adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
+        }
+        if (adminMenuLink) {
+            adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
+        }
+    } else {
+        if (guestLinks) guestLinks.style.display = 'flex';
+        if (userLinks) userLinks.style.display = 'none';
+    }
 }
 
 // Gọi hàm khi trang user.html load
-document.addEventListener('DOMContentLoaded', function () {
-  updateUserPageHeader();
+document.addEventListener('DOMContentLoaded', function() {
+    updateUserPageHeader();
 });
