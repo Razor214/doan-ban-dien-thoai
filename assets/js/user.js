@@ -176,7 +176,7 @@ const phoneRegex = /^0\d{9}$/;
 const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
 const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-// ================== ĐĂNG KÝ ==================
+// ================== ĐĂNG KÝ (SỬA LỖI) ==================
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -212,12 +212,16 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     if (u.phone === phone && phone !== "") return showRegisterError("Số điện thoại đã tồn tại!");
   }
 
+  // SỬA LỖI: Thêm đầy đủ thông tin user
   let newUser = {
+    id: "KH" + (list.length + 1).toString().padStart(2, '0'),
     fullName,
     username,
     email,
-    pass,
     phone,
+    pass,
+    status: "active",
+    address: "",
     role: "user"
   };
 
@@ -229,11 +233,10 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   document.getElementById("registerForm").reset();
 });
 
-function showRegisterError(msg) {
-  document.getElementById("register-alert").innerHTML =
-    `<div class="alert alert-error">${msg}</div>`;
+// ================== THÊM HÀM BỊ THIẾU ==================
+function updateHeaderUserStatus() {
+    updateUserPageHeader();
 }
-
 // ================== ĐĂNG NHẬP ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
