@@ -1,4 +1,60 @@
-//Quản lý giá bán
+
+// ===== KIỂM TRA ĐĂNG NHẬP ADMIN =====
+const ADMIN_SESSION_KEY = 'admin_logged_in';
+
+function checkAdminAuth() {
+    if (window.location.pathname.includes('admin.html') && 
+        localStorage.getItem(ADMIN_SESSION_KEY) !== 'true') {
+        console.log('🚨 CHƯA ĐĂNG NHẬP ADMIN - CHUYỂN VỀ TRANG CHỦ');
+        window.location.href = 'index.html';
+        return false;
+    }
+    return true;
+}
+
+// Kiểm tra ngay khi load
+if (window.location.pathname.includes('admin.html') && !checkAdminAuth()) {
+    throw new Error('Unauthorized admin access');
+}
+
+// ===== HÀM QUẢN LÝ USER TOÀN HỆ THỐNG =====
+function getGlobalUserList() {
+    return JSON.parse(localStorage.getItem("userList")) || [];
+}
+
+function setGlobalUserList(list) {
+    localStorage.setItem("userList", JSON.stringify(list));
+}
+
+// Xuất hàm để các file khác sử dụng
+window.getGlobalUserList = getGlobalUserList;
+window.setGlobalUserList = setGlobalUserList;
+
+// ===== THÊM TÀI KHOẢN ADMIN VÀO USERLIST NẾU CHƯA CÓ =====
+function ensureAdminAccount() {
+    const userList = getGlobalUserList();
+    const adminExists = userList.find(user => user.role === 'admin');
+    
+    if (!adminExists) {
+        const adminUser = {
+            id: "AD01",
+            fullname: "Quản trị viên",
+            username: "admin",
+            email: "admin@example.com",
+            phone: "0123456789",
+            password: "admin123",
+            status: "active",
+            address: "Hà Nội",
+            role: "admin"
+        };
+        userList.push(adminUser);
+        setGlobalUserList(userList);
+        console.log('✅ Đã thêm tài khoản admin vào userList');
+    }
+}
+
+// Gọi hàm khi admin.js load
+ensureAdminAccount();//Quản lý giá bán
 const priceModal = document.getElementById('popup');
 const form = document.getElementById('productadd');
 const cancelBtn = document.getElementById('cancelBtn');
@@ -906,7 +962,7 @@ function saveAndRender() {
 
 renderCategorys();
 
-// Quan ly khach hangg
+// Quan ly khach hang
 function closeData2() {
     document.getElementById("customers-section").style.display = "none";
     document.getElementById("home-section").style.display = "block";
@@ -914,11 +970,7 @@ function closeData2() {
 
 const customersTable = document.getElementById("data2");
 
-let customers_data_local = [];
-let editingIndex2 = null;
-
-const savedCustomers = localStorage.getItem("userList");
-customers_data_local = savedCustomers ? JSON.parse(savedCustomers) : userList;
+let customers_data_local = getGlobalUserList(); // DÙNG CHUNG USERLIST
 
 function renderCustomers() {
     customersTable.innerHTML = customers_data_local.map((cm, index2) => {
@@ -930,7 +982,7 @@ function renderCustomers() {
                 <td>${isBlocked ? "Đã khóa" : cm.fullname}</td>
                 <td>${isBlocked ? "Đã khóa" : cm.username}</td>
                 <td>${isBlocked ? "Đã khóa" : cm.email}</td>
-                <td>${isBlocked ? "Đã khóa" : cm.sdt}</td> 
+                <td>${isBlocked ? "Đã khóa" : cm.phone}</td> 
                 <td>${cm.status}</td>
                 <td class = "action1">
                     <div class = "wrapper-button"><button class="unlock">${cm.status === "active" ? "Khóa" : "Mở khóa"}</button></div>
@@ -953,16 +1005,17 @@ function attachEventHandlers2() {
 
         unlockBtn.addEventListener("click", () => {
             const isActive = customers_data_local[index2].status === "active";
-            if (isActive)
+            if (isActive) {
                 if (confirm("Bạn có muốn khóa tài khoản người dùng này không?")) {
                     customers_data_local[index2].status = "blocked";
                     saveAndRender2();
                 }
-            if (!isActive)
+            } else {
                 if (confirm("Bạn có muốn mở khóa tài khoản người dùng này không?")) {
                     customers_data_local[index2].status = "active";
                     saveAndRender2();
                 }
+            }
         });
 
         resetBtn.addEventListener("click", () => {
@@ -972,12 +1025,11 @@ function attachEventHandlers2() {
                 alert("Đã đặt lại mật khẩu mặc định: '12345'");
             }
         });
-
     });
 }
 
 function saveAndRender2() {
-    localStorage.setItem("userList", JSON.stringify(customers_data_local));
+    setGlobalUserList(customers_data_local); // DÙNG HÀM CHUNG
     renderCustomers();
 }
 
