@@ -384,3 +384,39 @@ setTimeout(() => {
         showAdminLogin();
     }
 }, 2000);
+// ===== TẠO NÚT ĐĂNG XUẤT TRÊN GIAO DIỆN ADMIN =====
+function addLogoutButton() {
+    // Kiểm tra xem đã có nút đăng xuất chưa
+    if (document.getElementById('adminLogoutBtn')) return;
+    
+    // Tạo nút đăng xuất
+    const logoutBtn = document.createElement('button');
+    logoutBtn.id = 'adminLogoutBtn';
+    logoutBtn.innerHTML = '🚪 Đăng xuất';
+    logoutBtn.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 8px 15px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 9999;
+        font-size: 14px;
+    `;
+    logoutBtn.onclick = function() {
+        if (confirm('Bạn có chắc muốn đăng xuất?')) {
+            clearAdminSession();
+            window.location.reload();
+        }
+    };
+    
+    document.body.appendChild(logoutBtn);
+}
+
+// Thêm nút đăng xuất khi đã đăng nhập
+if (isAdminLoggedIn()) {
+    setTimeout(addLogoutButton, 1000);
+}
