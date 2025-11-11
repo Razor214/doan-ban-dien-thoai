@@ -325,20 +325,50 @@ function handleAdminLogin(e) {
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
     try {
-        const list = JSON.parse(localStorage.getItem('ListUser')) || [];
-        console.log('Danh sách user từ localStorage:', list);
+        // Thử lấy từ cả ListUser và userList để đồng bộ
+        const listUser = JSON.parse(localStorage.getItem('ListUser')) || [];
+        const userList = JSON.parse(localStorage.getItem('userList')) || [];
+        
+        console.log('Danh sách user từ ListUser:', listUser);
+        console.log('Danh sách user từ userList:', userList);
 
-        // Tìm user với role admin
-        const adminUser = list.find(u => {
+        // Kết hợp cả hai danh sách, ưu tiên ListUser
+        const allUsers = [...listUser, ...userList];
+        
+        // Tìm user với role admin - HỖ TRỢ CẢ HAI ĐỊNH DẠNG
+        const adminUser = allUsers.find(u => {
             const usernameMatch = u.username === username || u.email === username;
-            const passwordMatch = u.pass === password;
+            
+            // Hỗ trợ cả pass và password
+            const passwordMatch = u.pass === password || u.password === password;
+            
+            // Kiểm tra role
             const roleMatch = u.role === 'admin';
             
-            return usernameMatch && passwordMatch && roleMatch;
+            // Kiểm tra trạng thái tài khoản
+            const statusActive = u.status === 'active' || u.status === undefined;
+            
+            return usernameMatch && passwordMatch && roleMatch && statusActive;
         });
 
         console.log('User tìm thấy:', adminUser);
-        return adminUser || null;
+        
+        if (adminUser) {
+            // Chuẩn hóa đối tượng admin trả về
+            return {
+                id: adminUser.id,
+                fullName: adminUser.fullname || adminUser.fullName,
+                username: adminUser.username,
+                email: adminUser.email,
+                phone: adminUser.phone,
+                password: adminUser.password || adminUser.pass,
+                status: adminUser.status || 'active',
+                address: adminUser.address || '',
+                role: 'admin'
+            };
+        }
+        
+        return null;
     } catch (error) {
         console.error('Lỗi khi đăng nhập:', error);
         return null;
@@ -396,27 +426,99 @@ function checkAdminAccess() {
 
 // ===== KIỂM TRA VÀ KHỞI TẠO TÀI KHOẢN ADMIN MẪU =====
 function ensureAdminAccount() {
-    const list = JSON.parse(localStorage.getItem('ListUser')) || [];
-    const hasAdmin = list.some(u => u.role === 'admin');
+    const listUser = JSON.parse(localStorage.getItem('ListUser')) || [];
+    const userList = JSON.parse(localStorage.getItem('userList')) || [];
     
-    if (!hasAdmin) {
+    const hasAdminInListUser = listUser.some(u => u.role === 'admin');
+    const hasAdminInUserList = userList.some(u => u.role === 'admin');
+    
+    if (!hasAdminInListUser && !hasAdminInUserList) {
         const adminAccount = {
+            id: "AD01",
             username: 'admin',
             email: 'admin@saigonphone.com',
-            pass: 'admin123',
-            role: 'admin',
-            fullName: 'Quản Trị Viên'
+            password: 'admin123',
+            fullname: 'Quản Trị Viên',
+            phone: '0123456789',
+            status: 'active',
+            address: '',
+            role: 'admin'
         };
-        list.push(adminAccount);
-        localStorage.setItem('ListUser', JSON.stringify(list));
+        
+        // Thêm vào cả hai danh sách để đồng bộ
+        listUser.push(adminAccount);
+        userList.push(adminAccount);
+        
+        localStorage.setItem('ListUser', JSON.stringify(listUser));
+        localStorage.setItem('userList', JSON.stringify(userList));
+        
         console.log('👤 Đã tạo tài khoản admin mẫu: admin / admin123');
     } else {
         console.log('✅ Đã có tài khoản admin');
     }
 }
 
+// ===== ĐỒNG BỘ DỮ LIỆU USER =====
+function syncUserData() {
+    try {
+        const listUser = JSON.parse(localStorage.getItem('ListUser')) || [];
+        const userList = JSON.parse(localStorage.getItem('userList')) || [];
+        
+        // Nếu một trong hai rỗng, sao chép từ cái kia
+        if (listUser.length === 0 && userList.length > 0) {
+            localStorage.setItem('ListUser', JSON.stringify(userList));
+            console.log('✅ Đã đồng bộ ListUser từ userList');
+        } else if (userList.length === 0 && listUser.length > 0) {
+            localStorage.setItem('userList', JSON.stringify(listUser));
+            console.log('✅ Đã đồng bộ userList từ ListUser');
+        } else if (listUser.length > 0 && userList.length > 0) {
+            // Merge dữ liệu từ cả hai
+            const mergedUsers = [];
+            const allUsersMap = new Map();
+            
+            // Thêm từ ListUser trước
+            listUser.forEach(user => {
+                allUsersMap.set(user.id, user);
+            });
+            
+            // Thêm từ userList, không ghi đè nếu đã có
+            userList.forEach(user => {
+                if (!allUsersMap.has(user.id)) {
+                    allUsersMap.set(user.id, user);
+                }
+            });
+            
+            // Chuyển Map thành mảng
+            const mergedArray = Array.from(allUsersMap.values());
+            
+            // Cập nhật cả hai
+            localStorage.setItem('ListUser', JSON.stringify(mergedArray));
+            localStorage.setItem('userList', JSON.stringify(mergedArray));
+            
+            console.log('✅ Đã merge và đồng bộ dữ liệu user');
+        }
+    } catch (error) {
+        console.error('❌ Lỗi khi đồng bộ dữ liệu user:', error);
+    }
+}
+
+// ===== NGĂN XUNG ĐỘT VỚI USER.JS =====
+function clearUserSessionIfNeeded() {
+    // Nếu đang ở trang admin và có user session thường, xóa nó
+    if (window.location.pathname.includes('admin.html')) {
+        const currentUser = JSON.parse(localStorage.getItem('CurrentUser') || 'null');
+        if (currentUser && currentUser.role === 'user') {
+            localStorage.removeItem('CurrentUser');
+            console.log('✅ Đã xóa user session trên trang admin');
+        }
+    }
+}
+
 // ===== TỰ ĐỘNG CHẠY KHI TRANG LOAD =====
 console.log('=== ADMIN LOGIN JS ĐÃ LOAD ===');
+
+// Đồng bộ dữ liệu user trước
+syncUserData();
 
 // Đảm bảo có tài khoản admin
 ensureAdminAccount();
@@ -424,6 +526,9 @@ ensureAdminAccount();
 // Kiểm tra trạng thái đăng nhập khi trang load
 window.addEventListener('load', function() {
     console.log('🔄 TRANG ĐÃ LOAD HOÀN TOÀN');
+    
+    // Xóa session user nếu cần
+    clearUserSessionIfNeeded();
     
     setTimeout(() => {
         console.log('🔍 KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP...');
@@ -446,17 +551,3 @@ setTimeout(() => {
         showAdminLogin();
     }
 }, 2000);
-// ===== NGĂN XUNG ĐỘT VỚI USER.JS =====
-function clearUserSessionIfNeeded() {
-    // Nếu đang ở trang admin và có user session thường, xóa nó
-    if (window.location.pathname.includes('admin.html')) {
-        const currentUser = JSON.parse(localStorage.getItem('CurrentUser') || 'null');
-        if (currentUser && currentUser.role === 'user') {
-            localStorage.removeItem('CurrentUser');
-            console.log('✅ Đã xóa user session trên trang admin');
-        }
-    }
-}
-
-// Gọi hàm clear khi trang admin load
-clearUserSessionIfNeeded();
