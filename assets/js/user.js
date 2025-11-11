@@ -604,3 +604,29 @@ function updateHeaderUserStatus() {
         if (userLinks) userLinks.style.display = 'none';
     }
 }
+// Trong hàm xử lý đăng nhập
+function handleLogin(username, password) {
+    const users = JSON.parse(localStorage.getItem("userList")) || [];
+    
+    // Tìm user theo username và password
+    const user = users.find(u => 
+        u.username === username && 
+        u.password === password
+    );
+    
+    if (user) {
+        // KIỂM TRA TRẠNG THÁI TÀI KHOẢN
+        if (user.status === "blocked") {
+            alert("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+            return false;
+        }
+        
+        // Đăng nhập thành công
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        window.location.href = "index.html"; // hoặc trang chủ
+        return true;
+    } else {
+        alert("Sai tên đăng nhập hoặc mật khẩu!");
+        return false;
+    }
+}
