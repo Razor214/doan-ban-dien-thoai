@@ -1,9 +1,11 @@
-
 // Khởi tạo dữ liệu nếu chưa có
 if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
-    localStorage.setItem("ListUser", JSON.stringify(userList));
-    console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
+    // Sử dụng userList từ admin.js nếu có, nếu không thì dùng mảng rỗng
+    const adminUserList = typeof userList !== 'undefined' ? userList : [];
+    localStorage.setItem("ListUser", JSON.stringify(adminUserList));
+    console.log('✅ Đã khởi tạo dữ liệu mẫu với', adminUserList.length, 'users');
 }
+
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
   return JSON.parse(localStorage.getItem("ListUser")) || [];
@@ -91,11 +93,11 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
 
   let newUser = {
     id: "KH" + (list.length + 1).toString().padStart(2, '0'), // THÊM ID
-    fullName,
-    username,
-    email,
-    phone,
-    pass,
+    fullname: fullName, // Sửa thành fullname để đồng bộ với admin
+    username: username,
+    email: email,
+    phone: phone,
+    password: pass, // Sửa thành password để đồng bộ với admin
     status: "active", // THÊM STATUS
     address: "", // THÊM ADDRESS
     role: "user"
@@ -103,6 +105,9 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
 
   list.push(newUser);
   setListUser(list);
+
+  // Đồng bộ với admin userList nếu có
+  syncWithAdminUserList();
 
   document.getElementById("register-alert").innerHTML =
     `<div class="alert alert-success">Đăng ký thành công! Hãy đăng nhập.</div>`;
@@ -121,18 +126,32 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   // 🚨 CHỈ TÌM USER THƯỜNG, KHÔNG TÌM ADMIN
   let found = list.find(u =>
     (u.username === userInput || u.email === userInput) && 
-    u.pass === pass && 
-    u.role === "user"  // QUAN TRỌNG: CHỈ user thường
+    (u.pass === pass || u.password === pass) && // Hỗ trợ cả pass và password
+    u.role === "user" && // QUAN TRỌNG: CHỈ user thường
+    u.status === "active" // CHỈ cho phép tài khoản active
   );
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
-      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu!</div>`;
+      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu, hoặc tài khoản bị khóa!</div>`;
     return;
   }
 
-  setCurrentUser(found);
-  console.log('✅ User logged in:', found);
+  // Chuẩn hóa đối tượng user để đảm bảo tính nhất quán
+  const normalizedUser = {
+    id: found.id,
+    fullName: found.fullname || found.fullName,
+    username: found.username,
+    email: found.email,
+    phone: found.phone,
+    pass: found.password || found.pass,
+    status: found.status,
+    address: found.address || "",
+    role: found.role
+  };
+
+  setCurrentUser(normalizedUser);
+  console.log('✅ User logged in:', normalizedUser);
 
   // 🚨 LUÔN CHUYỂN VỀ TRANG CHỦ
   window.location.href = "index.html";
@@ -156,6 +175,7 @@ function loadProfile() {
         <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
         <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
         <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone}</span></div>
+        <div class="info-item"><span class="info-label">Trạng thái:</span> <span class="info-value">${currentUser.status === "active" ? "Đang hoạt động" : "Bị khóa"}</span></div>
     `;
 
   if (actionsBox) actionsBox.style.display = "flex";
@@ -173,6 +193,12 @@ function loadProfile() {
 function toggleEditProfile() {
   let currentUser = getCurrentUser();
   if (!currentUser) return;
+
+  // Kiểm tra xem tài khoản có bị khóa không
+  if (currentUser.status === "blocked") {
+    alert("Tài khoản của bạn đã bị khóa. Không thể chỉnh sửa thông tin.");
+    return;
+  }
 
   // Ẩn thông tin và nút hành động
   document.getElementById("profile-info").style.display = "none";
@@ -212,11 +238,14 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   let list = getListUser();
 
   let newData = {
-    fullName: document.getElementById("profileFullName").value.trim(),
+    id: currentUser.id,
+    fullname: document.getElementById("profileFullName").value.trim(), // Sử dụng fullname để đồng bộ
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
-    pass: currentUser.pass,
+    password: currentUser.pass, // Sử dụng password để đồng bộ
+    status: currentUser.status,
+    address: currentUser.address || "",
     role: currentUser.role
   };
 
@@ -239,7 +268,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   // Kiểm tra trùng email và số điện thoại
   for (let u of list) {
-    if (!equalUser(u, currentUser)) {
+    if (u.id !== currentUser.id) { // So sánh bằng ID thay vì equalUser
       if (u.email === newData.email) {
         showProfileAlert("Email đã tồn tại!", "error");
         return;
@@ -275,13 +304,41 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
     }
 
     // Cập nhật mật khẩu mới
-    newData.pass = newPassword;
+    newData.password = newPassword;
     passwordChanged = true;
   }
 
+  // Chuẩn hóa đối tượng user để cả hai hệ thống
+  const normalizedCurrentUser = {
+    id: currentUser.id,
+    fullname: currentUser.fullName,
+    username: currentUser.username,
+    email: currentUser.email,
+    phone: currentUser.phone,
+    password: currentUser.pass,
+    status: currentUser.status,
+    address: currentUser.address || "",
+    role: currentUser.role
+  };
+
+  const normalizedNewData = {
+    id: newData.id,
+    fullname: newData.fullname,
+    username: newData.username,
+    email: newData.email,
+    phone: newData.phone,
+    password: newData.password,
+    status: newData.status,
+    address: newData.address,
+    role: newData.role
+  };
+
   // Cập nhật dữ liệu
-  setCurrentUser(newData);
-  updateListUser(currentUser, newData);
+  setCurrentUser(normalizedNewData);
+  updateListUser(normalizedCurrentUser, normalizedNewData);
+
+  // Đồng bộ với admin
+  syncWithAdminUserList();
 
   let successMsg = "Cập nhật thông tin thành công!";
   if (passwordChanged) {
@@ -327,6 +384,57 @@ function logout() {
   return false;
 }
 
+// ================== ĐỒNG BỘ VỚI ADMIN USERLIST ==================
+function syncWithAdminUserList() {
+  try {
+    // Lấy dữ liệu từ cả hai nguồn
+    const listUser = getListUser();
+    const adminUserList = JSON.parse(localStorage.getItem("userList")) || [];
+    
+    // Tạo map để dễ dàng tìm kiếm
+    const listUserMap = new Map(listUser.map(user => [user.id, user]));
+    const adminUserMap = new Map(adminUserList.map(user => [user.id, user]));
+    
+    // Merge dữ liệu - ưu tiên dữ liệu mới hơn
+    const mergedUsers = [];
+    const allUserIds = new Set([...listUserMap.keys(), ...adminUserMap.keys()]);
+    
+    allUserIds.forEach(id => {
+      const listUserData = listUserMap.get(id);
+      const adminUserData = adminUserMap.get(id);
+      
+      if (listUserData && adminUserData) {
+        // Nếu có ở cả hai, ưu tiên dữ liệu từ ListUser (user trang chủ)
+        mergedUsers.push(listUserData);
+      } else if (listUserData) {
+        mergedUsers.push(listUserData);
+      } else if (adminUserData) {
+        mergedUsers.push(adminUserData);
+      }
+    });
+    
+    // Cập nhật cả hai localStorage
+    setListUser(mergedUsers);
+    localStorage.setItem("userList", JSON.stringify(mergedUsers));
+    
+    console.log('✅ Đã đồng bộ dữ liệu user giữa trang chủ và admin');
+  } catch (error) {
+    console.error('❌ Lỗi khi đồng bộ dữ liệu user:', error);
+  }
+}
+
+// ================== KIỂM TRA TRẠNG THÁI TÀI KHOẢN ==================
+function checkUserStatus() {
+  const currentUser = getCurrentUser();
+  if (currentUser && currentUser.status === "blocked") {
+    alert("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+    localStorage.removeItem("CurrentUser");
+    window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+
 // ================== ĐỒNG BỘ MỌI THỨ ==================
 function capNhatMoiThu() {
   let currentUser = getCurrentUser();
@@ -334,6 +442,7 @@ function capNhatMoiThu() {
 
   setCurrentUser(currentUser);
   updateListUser(currentUser);
+  syncWithAdminUserList();
   loadProfile();
 
   console.log("✅ Đồng bộ hoàn tất");
@@ -344,6 +453,9 @@ window.onload = function () {
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
+  // Kiểm tra trạng thái tài khoản
+  if (!checkUserStatus()) return;
+
   if (currentUser && (!query || query === "profile")) {
     showTab("profile");
   } else if (query) {
@@ -352,6 +464,7 @@ window.onload = function () {
     showTab("login");
   }
 };
+
 // ================== XỬ LÝ MỞ CART THÔNG MINH ==================
 function navigateToCart() {
     const currentUser = getCurrentUser();
@@ -368,6 +481,12 @@ function navigateToCart() {
                 window.location.href = 'user.html?tab=login';
             }
         }
+        return false;
+    }
+    
+    // Kiểm tra trạng thái tài khoản
+    if (currentUser.status === "blocked") {
+        alert("Tài khoản của bạn đã bị khóa. Không thể truy cập giỏ hàng.");
         return false;
     }
     
@@ -412,7 +531,7 @@ function updateHeaderUserStatus() {
         if (userLinks) userLinks.style.display = 'flex';
 
         // Hiển thị tên user
-        const userName = currentUser.fullName || currentUser.username;
+        const userName = currentUser.fullName || currentUser.fullname || currentUser.username;
         if (userNameSpan) userNameSpan.textContent = userName;
 
         // Kiểm tra và hiển thị badge admin + menu item nếu là admin
@@ -428,6 +547,7 @@ function updateHeaderUserStatus() {
         if (userLinks) userLinks.style.display = 'none';
     }
 }
+
 // ================== THÊM HÀM BỊ THIẾU ==================
 function logoutFromHome() {
     if (confirm('Bạn có chắc muốn đăng xuất?')) {
@@ -435,4 +555,14 @@ function logoutFromHome() {
         window.location.href = "index.html";
     }
     return false;
+}
+
+// ================== HIỂN THỊ LỖI ĐĂNG KÝ ==================
+function showRegisterError(message) {
+  const alertDiv = document.getElementById("register-alert");
+  alertDiv.innerHTML = `<div class="alert alert-error">${message}</div>`;
+  
+  setTimeout(() => {
+    alertDiv.innerHTML = "";
+  }, 3000);
 }
