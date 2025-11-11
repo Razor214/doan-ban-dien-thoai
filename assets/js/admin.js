@@ -1312,8 +1312,6 @@ productForm?.addEventListener("submit", (e) => {
         }
         products.unshift(newProd);
     }
-    products.unshift(newProd);
-  }
 
   setLocal("productList", products);
   renderProductTable();
