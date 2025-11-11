@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giỏ hàng - SaiGonPhone</title>
-  <link rel="stylesheet" href="assets/css/cart.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <header>
     🛒 Giỏ hàng của bạn
@@ -14,8 +13,10 @@
   </header>
 
   <main>
-    <!-- Danh sách sản phẩm -->
-    <section class="product-list">
+  <h2 style="text-align:center; color:red; margin-top:20px;">🔥 SẢN PHẨM HOT 🔥</h2>
+  <!-- Danh sách sản phẩm -->
+  <section class="product-list">
+
       <div class="product" data-id="1" data-name="iPhone 15 Pro" data-price="32000000">
         <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro" onerror="this.src='https://via.placeholder.com/200'">
         <h3>iPhone 15 Pro</h3>
@@ -73,6 +74,13 @@
           <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
         </select>
 
+        <div id="bankInfo" style="display:none; margin-top:10px;">
+          <p><strong>🏦 Thông tin chuyển khoản:</strong></p>
+          <p>Ngân hàng Agribank</p>
+          <p>Số TK: <b>123456789</b></p>
+          <p>Chủ TK: <b>Công ty SaiGonPhone</b></p>
+        </div>
+
         <button class="btn btn-checkout">Đặt hàng</button>
       </div>
 
@@ -91,10 +99,11 @@
       <div id="ordersList"></div>
     </div>
   </div>
-<script>
- 
-});
-</script>
-  <script src="assets/js/cart.js"></script>
+
+  <script src="script.js"></script>
+  <script src="data/product.js"></script>
+  <script src="data/price.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/modal-product.js"></script>
 </body>
 </html>

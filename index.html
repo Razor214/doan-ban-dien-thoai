@@ -73,13 +73,8 @@
               <a href="user.html?tab=profile" class="icon-profile"
                 >Hồ sơ cá nhân</a
               >
-              <a
-                href="#"
-                onclick="navigateToCart(); return false;"
-                class="icon-cart"
-                >🛒 Giỏ hàng</a
-              >
-              <a
+              <a href="giohang.html" class="icon-cart">🛒 Giỏ hàng</a>
+
                 href="admin.html"
                 class="icon-admin admin-menu-item"
                 id="admin-menu-link"
@@ -112,6 +107,12 @@
           >
         </div>
       </div>
+<div id="bankInfo" style="display:none; margin-top:10px;">
+  <p><strong>🏦 Thông tin chuyển khoản:</strong></p>
+  <p>Ngân hàng Agribank</p>
+  <p>Số TK: <b>123456789</b></p>
+  <p>Chủ TK: <b>Công ty SaiGonPhone</b></p>
+</div>
 
       <div class="dropdown">
         <span>Samsung</span>
@@ -401,3 +402,40 @@
     <script src="assets/js/modal-product.js"></script>
   </body>
 </html>
+<script>
+  // Khi người dùng nhấn nút "Thêm vào giỏ hàng" trong modal
+  document.getElementById("modalAddToCartBtn").addEventListener("click", function () {
+    // Lấy thông tin sản phẩm đang hiển thị trong modal
+    const productName = document.getElementById("modalProductName").textContent;
+    const priceText = document.getElementById("modalCurrentPrice").textContent;
+    const price = parseInt(priceText.replace(/[^\d]/g, "")); // Lọc chỉ lấy số
+    const productId = document
+      .querySelector(".product-modal-trigger.active")
+      ?.getAttribute("data-product-id") || Date.now(); // fallback ID
+
+    // Tạo object sản phẩm
+    const product = {
+      id: productId,
+      name: productName,
+      price: price,
+      qty: 1
+    };
+
+    // Lấy giỏ hàng hiện tại từ localStorage (nếu có)
+    let cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+    // Nếu sản phẩm đã tồn tại → tăng số lượng
+    if (cart[product.id]) {
+      cart[product.id].qty += 1;
+    } else {
+      cart[product.id] = product;
+    }
+
+    // Lưu lại giỏ hàng
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Chuyển sang trang giỏ hàng
+    window.location.href = "giohang.html";
+  });
+</script>
+
