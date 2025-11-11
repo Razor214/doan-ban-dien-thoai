@@ -5,7 +5,7 @@ const adminLoginStyles = `
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .admin-login-overlay {
@@ -14,7 +14,7 @@ const adminLoginStyles = `
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: rgba(0, 0, 0, 0.9) !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -22,87 +22,98 @@ const adminLoginStyles = `
 }
 
 .admin-login-form {
-    background: white !important;
-    padding: 2rem !important;
-    border-radius: 10px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    padding: 2.5rem !important;
+    border-radius: 15px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
     width: 90% !important;
-    max-width: 400px !important;
+    max-width: 420px !important;
     position: relative !important;
     z-index: 10001 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .admin-login-form h2 {
     text-align: center !important;
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 2rem !important;
     color: #2c3e50 !important;
-    font-size: 1.5rem !important;
-    font-weight: bold !important;
+    font-size: 1.8rem !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, #3498db, #2c3e50) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
 
 .form-group {
-    margin-bottom: 1rem !important;
+    margin-bottom: 1.5rem !important;
     width: 100% !important;
 }
 
 .form-group input {
     width: 100% !important;
-    padding: 12px !important;
-    border: 2px solid #ddd !important;
-    border-radius: 5px !important;
+    padding: 15px !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 8px !important;
     font-size: 16px !important;
     box-sizing: border-box !important;
     display: block !important;
+    transition: all 0.3s ease !important;
+    background: #f8f9fa !important;
 }
 
 .form-group input:focus {
     border-color: #3498db !important;
     outline: none !important;
+    background: white !important;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
+    transform: translateY(-2px) !important;
 }
 
 .login-btn {
     width: 100% !important;
-    padding: 14px !important;
-    background: #3498db !important;
+    padding: 15px !important;
+    background: linear-gradient(135deg, #3498db, #2980b9) !important;
     color: white !important;
     border: none !important;
-    border-radius: 5px !important;
+    border-radius: 8px !important;
     font-size: 16px !important;
     cursor: pointer !important;
     margin-top: 10px !important;
-    font-weight: bold !important;
+    font-weight: 600 !important;
     display: block !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3) !important;
 }
 
 .login-btn:hover {
-    background: #2980b9 !important;
+    background: linear-gradient(135deg, #2980b9, #2573a7) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4) !important;
+}
+
+.login-btn:active {
+    transform: translateY(0) !important;
 }
 
 .login-btn:disabled {
     background: #95a5a6 !important;
     cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .login-error {
     color: #e74c3c !important;
     text-align: center !important;
-    margin: 10px 0 !important;
-    padding: 10px !important;
+    margin: 15px 0 !important;
+    padding: 12px !important;
     background: #fde8e6 !important;
-    border-radius: 5px !important;
+    border-radius: 8px !important;
     display: none !important;
     border: 1px solid #e74c3c !important;
-}
-
-/* === ĐẢM BẢO HIỂN THỊ === */
-#adminLoginForm {
-    display: block !important;
-    width: 100% !important;
-}
-
-.admin-login-form form {
-    display: block !important;
-    width: 100% !important;
+    font-weight: 500 !important;
 }
 `;
 
@@ -215,10 +226,36 @@ function handleAdminLogin(e) {
     // Ẩn thông báo lỗi cũ
     errorDiv.style.display = 'none';
 
-    // Hiển thị loading
+    // Hiển thị loading với hiệu ứng đẹp
     const originalText = button.innerHTML;
-    button.innerHTML = 'Đang đăng nhập...';
+    button.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <div class="loading-spinner" style="
+                width: 18px;
+                height: 18px;
+                border: 2px solid rgba(255,255,255,0.3);
+                border-radius: 50%;
+                border-top: 2px solid white;
+                animation: spin 1s linear infinite;
+            "></div>
+            Đang đăng nhập...
+        </div>
+    `;
     button.disabled = true;
+
+    // Thêm CSS animation cho loading
+    if (!document.querySelector('#loading-styles')) {
+        const style = document.createElement('style');
+        style.id = 'loading-styles';
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
 
     // Kiểm tra đăng nhập
     const adminUser = adminLogin(username, password);
@@ -258,7 +295,6 @@ function handleAdminLogin(e) {
         button.disabled = false;
         console.log('❌ Đăng nhập thất bại');
     }
-}
 
 // ===== HÀM KIỂM TRA ĐĂNG NHẬP =====
 function adminLogin(username, password) {
@@ -395,17 +431,33 @@ function addLogoutButton() {
     logoutBtn.innerHTML = '🚪 Đăng xuất';
     logoutBtn.style.cssText = `
         position: fixed;
-        top: 10px;
-        right: 10px;
-        padding: 8px 15px;
-        background: #e74c3c;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
         color: white;
         border: none;
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
         z-index: 9999;
         font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.1);
     `;
+    
+    // Hiệu ứng hover
+    logoutBtn.onmouseover = function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 6px 20px rgba(231, 76, 60, 0.4)';
+    };
+    
+    logoutBtn.onmouseout = function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.3)';
+    };
+    
     logoutBtn.onclick = function() {
         if (confirm('Bạn có chắc muốn đăng xuất?')) {
             clearAdminSession();
@@ -414,9 +466,4 @@ function addLogoutButton() {
     };
     
     document.body.appendChild(logoutBtn);
-}
-
-// Thêm nút đăng xuất khi đã đăng nhập
-if (isAdminLoggedIn()) {
-    setTimeout(addLogoutButton, 1000);
 }
