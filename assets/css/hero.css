@@ -1,0 +1,310 @@
+/* ===== FONT & RESET ===== */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===== MODERN HEADER STYLE ===== */
+.modern-header {
+  background-color: #00bfff;
+  color: #fff;
+  width: 100%;
+  padding: 18px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: 'Inter', sans-serif;
+}
+
+.modern-header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+/* Logo */
+.modern-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modern-header .logo img {
+  width: 48px;
+  border-radius: 50%;
+  background-color: #fff;
+  padding: 5px;
+}
+.modern-header .logo h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; /* giảm độ đậm */
+  color: white;
+  font-size: 1.4em;
+  margin: 0;
+}
+
+/* Search bar */
+.modern-search {
+  flex: 1;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+  padding-right: 10px;
+}
+.modern-search input {
+  flex: 1;
+  border: none;
+  padding: 10px 20px;
+  font-size: 15px;
+  outline: none;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+.modern-search button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 16px;
+}
+
+/* Navbar icons (user + cart) */
+.modern-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ====== FIX HEADER COLORS + DROPDOWN HOVER ====== */
+
+/* Icon buttons (Giỏ hàng, Đăng nhập) - luôn nền trắng, chữ đen */
+.icon-btn,
+.user-dropdown .user-trigger {
+  background: white;
+  color: black !important; /* luôn đen, bất kể đăng nhập hay chưa */
+  border: 2px solid #ccc;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.icon-btn i,
+.user-dropdown .user-trigger i {
+  color: black !important;
+  transition: color 0.3s;
+}
+
+.icon-btn:hover,
+.user-dropdown .user-trigger:hover {
+  background: #f9f9f9;
+  border-color: #888;
+}
+
+/* ===== FIX DROP DOWN SÁT NÚT, KHÔNG CÒN KHOẢNG TRỐNG ===== */
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 999;
+}
+
+/* Khi hover trigger hoặc menu -> luôn hiển thị */
+.user-dropdown:hover .dropdown-content,
+.user-dropdown:has(.dropdown-content:hover) .dropdown-content {
+  display: block;
+}
+
+.user-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* đặt sát ngay phía dưới .user-trigger */
+  right: 0;
+  margin-top: 0; /* bỏ hoàn toàn khoảng cách */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 180px;
+  overflow: hidden;
+  z-index: 1000;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(-5px); /* hiệu ứng xuất hiện mượt */
+}
+
+/* Khi hover thì hiển thị dropdown */
+.user-dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Menu item */
+.user-dropdown .dropdown-content a {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.3s;
+}
+
+.user-dropdown .dropdown-content a:hover {
+  background: #f5f5f5;
+  color: #0055ff;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modern-header .container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .modern-search {
+    order: 3;
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+/* ===== HERO CHỮ GIỮA, KHÔNG LỆCH DÙ PHÓNG TO ===== */
+.hero-modern {
+  background: #1c1b1f;
+  color: white;
+  padding: 70px 0 0 0;
+  display: flex;
+  justify-content: center; /* canh hero-inner giữa toàn màn */
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+}
+
+/* Container trung tâm hero */
+.hero-inner {
+  max-width: 1200px; /* giới hạn chiều ngang hero */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px; /* khoảng cách giữa chữ và hình */
+  padding: 0 50px;
+}
+
+/* Hero content */
+.hero-content {
+  flex: 1 1 45%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.hero-content h5 {
+  font-size: 1.3em;
+  color: #9a9a9a;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+
+.hero-content h1 {
+  font-size: 4.2em;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.hero-content p {
+  color: #ccc;
+  font-size: 1.2em;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 480px;
+}
+
+/* ===== FIX CHO NÚT "SHOP NOW" ===== */
+.hero-btn {
+  all: unset; /* reset toàn bộ kế thừa CSS khác */
+  display: inline-block;
+  padding: 12px 28px;
+  border: 2px solid #fff;       /* viền mảnh chuẩn */
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05em;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;       /* giữ kích thước ổn định */
+  text-align: center;
+}
+
+.hero-btn:hover {
+  background: white;
+  color: #1c1b1f;
+  border-color: white;
+}
+
+
+/* HÌNH ẢNH HERO */
+.hero-image {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: -5px;
+}
+
+.hero-image img {
+  max-width: 430px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 50px 20px 0 20px;
+    gap: 30px;
+  }
+
+  .hero-content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 3em;
+  }
+
+  .hero-content p {
+    font-size: 1em;
+    margin: 0 auto 25px auto;
+  }
+
+  .hero-image img {
+    max-width: 320px;
+  }
+}
+
+
+

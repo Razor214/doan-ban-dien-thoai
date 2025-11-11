@@ -6,44 +6,56 @@
     <title>SaiGonPhone - Website Bán Điện Thoại</title>
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/homepage.css" />
+    <link rel="stylesheet" href="assets/css/hero.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+
   </head>
   <body>
-    <!-- HEADER -->
-    <header>
-      <div class="logo">
-        <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
-        <h1>SaiGonPhone</h1>
-      </div>
+    <!-- THANH THÔNG TIN (khu vực riêng) -->
+<div class="top-info-bar">
+  <div class="container">
+    <div class="contact-info">
+      <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
+      <span><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5, TP.HCM</span>
+    </div>
+  </div>
+</div>
 
-      <!-- THANH TÌM KIẾM -->
-      <div class="search-bar">
-        <input
-          type="text"
-          id="headerSearch"
-          placeholder="Bạn muốn tìm kiếm gì?"
-        />
-        <button id="headerSearchBtn">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </svg>
-        </button>
-      </div>
 
-      <nav class="navbar" id="navbar">
-        <a href="index.html" class="bar_right">Trang Chủ</a>
-        <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-        <a href="user.html?tab=register">Đăng ký</a>
-        <a href="admin.html" class="admin-link" style="display: none">Admin</a>
-      </nav>
-    </header>
+<header class="modern-header">
+  <div class="container">
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
+      <h1>SaiGonPhone</h1>
+    </div>
+
+    <div class="search-bar modern-search">
+      <input type="text" id="headerSearch" placeholder="Search" />
+      <button id="headerSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+<nav class="navbar modern-nav" id="navbar">
+  <div id="userArea"></div>
+  <a href="user/cart.html" class="icon-btn cart-link" title="Giỏ hàng">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span>Giỏ Hàng</span>
+  </a>
+</nav>
+
+  </div>
+</header>
+
+
+
 
     <!-- TOP MENU -->
     <div class="topmenu">
@@ -134,11 +146,23 @@
 
     <!-- MAIN -->
     <main>
-      <section class="hero">
-        <h2>Chào mừng bạn đến với SaiGonPhone!</h2>
-        <p>Khám phá những chiếc điện thoại mới nhất với giá cực hấp dẫn.</p>
-        <a href="#products" class="btn">Mua ngay</a>
-      </section>
+<section class="hero-modern">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h5>Pro.Beyond.</h5>
+      <h1>SAI GON PHONE</h1>
+      <p>Created to change everything for the better. For everyone.</p>
+      <a href="#products" class="hero-btn">Shop Now</a>
+    </div>
+
+    <div class="hero-image">
+      <img src="assets/img/phonehero.png" alt="SaiGonPhone Product">
+    </div>
+  </div>
+</section>
+
+
+
 
       <section class="featured" id="products">
         <h3>Sản phẩm nổi bật</h3>
@@ -308,7 +332,7 @@
         <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
       </p>
     </footer>
-
+    <script src="assets/js/hero.js"></script>
     <script src="data/product.js"></script>
     <script src="data/price.js"></script>
     <script src="assets/js/products.js"></script>
