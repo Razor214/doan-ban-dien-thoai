@@ -580,7 +580,6 @@ const tableBody = document.querySelector("#Table tbody");
 const tonkhoModal = document.getElementById("detailModal");
 const summaryModal = document.getElementById("popup-modal");
 const btnSearch = document.getElementById("Btnsearch");
-const exportBtn = document.getElementById("exportBtn");
 const viewDetails = document.querySelector(".view-details");
 const closeBtns = document.querySelectorAll(".close-modal, .close-popup");
 const nameSearch = document.getElementById("Namesearch");
@@ -752,11 +751,6 @@ if (btnSearch) {
     });
     displayTon(filterData);
     renderSummary(filterData);
-  });
-}
-if (exportBtn) {
-  exportBtn.addEventListener("click", () => {
-    alert("Đã xuất báo cáo thành công!");
   });
 }
 
