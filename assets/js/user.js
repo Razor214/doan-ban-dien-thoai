@@ -1,4 +1,3 @@
-//File 2
 console.log('🚀 Initializing sample data...');
 const userList = [
     {
@@ -123,19 +122,11 @@ const userList = [
         role: "admin"
     }
 ];
-
 // Khởi tạo dữ liệu nếu chưa có
 if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
-    // Đảm bảo tất cả user có trường status
-    const usersWithStatus = userList.map(user => ({
-        ...user,
-        status: user.status || 'active' // Mặc định là active nếu chưa có
-    }));
-    
-    localStorage.setItem("ListUser", JSON.stringify(usersWithStatus));
-    console.log('✅ Đã khởi tạo dữ liệu mẫu với', usersWithStatus.length, 'users');
+    localStorage.setItem("ListUser", JSON.stringify(userList));
+    console.log('✅ Đã khởi tạo dữ liệu mẫu với', userList.length, 'users');
 }
-
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
   return JSON.parse(localStorage.getItem("ListUser")) || [];
@@ -168,20 +159,6 @@ function updateListUser(user, newData) {
   setListUser(list);
 }
 
-// ================== KIỂM TRA TRẠNG THÁI TÀI KHOẢN ==================
-// 🔴 KHÁC BIỆT: File 1 không có hàm này
-function checkAccountStatus(username) {
-    let list = getListUser();
-    const user = list.find(u => 
-        u.username === username || u.email === username
-    );
-    
-    if (user) {
-        return user.status; // 'active' hoặc 'blocked'
-    }
-    return 'active'; // Mặc định nếu không tìm thấy
-}
-
 // ================== TAB CONTROL ==================
 function showTab(tab) {
   document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
@@ -199,7 +176,7 @@ const phoneRegex = /^0\d{9}$/;
 const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
 const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-// ================== ĐĂNG KÝ (ĐÃ CẬP NHẬT VỚI HIỂN THỊ MẬT KHẨU) ==================
+// ================== ĐĂNG KÝ ==================
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -236,13 +213,11 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   }
 
   let newUser = {
-    id: "KH" + String(list.length + 1).padStart(2, '0'), // 🔴 KHÁC BIỆT: File 1 không có dòng này
     fullName,
     username,
     email,
     pass,
     phone,
-    status: "active", // 🔴 KHÁC BIỆT: File 1 không có trường status trong đăng ký
     role: "user"
   };
 
@@ -254,7 +229,12 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   document.getElementById("registerForm").reset();
 });
 
-// ================== ĐĂNG NHẬP (ĐÃ CẬP NHẬT) ==================
+function showRegisterError(msg) {
+  document.getElementById("register-alert").innerHTML =
+    `<div class="alert alert-error">${msg}</div>`;
+}
+
+// ================== ĐĂNG NHẬP ==================
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -266,46 +246,29 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   let list = getListUser();
   console.log('👥 Users in storage:', list);
 
-  // KIỂM TRA TRẠNG THÁI TÀI KHOẢN TRƯỚC
-  // 🔴 KHÁC BIỆT: File 1 không có phần kiểm tra trạng thái tài khoản này
-  const accountStatus = checkAccountStatus(userInput);
-  if (accountStatus === 'blocked') {
-      document.getElementById("login-alert").innerHTML =
-          `<div class="alert alert-error">Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!</div>`;
-      return;
-  }
-
   let found = list.find(u =>
-      (u.username === userInput || u.email === userInput) && u.pass === pass
+    (u.username === userInput || u.email === userInput) && u.pass === pass
   );
 
   console.log('🔍 Found user:', found);
 
   if (!found) {
-      document.getElementById("login-alert").innerHTML =
-          `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu!</div>`;
-      return;
-  }
-
-  // KIỂM TRA LẦN CUỐI TRƯỚC KHI ĐĂNG NHẬP
-  // 🔴 KHÁC BIỆT: File 1 không có kiểm tra trạng thái tài khoản lần cuối
-  if (found.status === 'blocked') {
-      document.getElementById("login-alert").innerHTML =
-          `<div class="alert alert-error">Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!</div>`;
-      return;
+    document.getElementById("login-alert").innerHTML =
+      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu!</div>`;
+    return;
   }
 
   setCurrentUser(found);
   console.log('✅ User logged in:', found);
 
   if (found.role === 'admin') {
-      window.location.href = "admin.html";
+    window.location.href = "admin.html";
   } else {
-      window.location.href = "index.html";
+    window.location.href = "index.html";
   }
 });
 
-// ================== HIỂN THỊ PROFILE (ĐÃ CẬP NHẬT) ==================
+// ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
   let currentUser = getCurrentUser();
   let infoBox = document.getElementById("profile-info");
@@ -318,17 +281,11 @@ function loadProfile() {
     return;
   }
 
-  // 🔴 KHÁC BIỆT: File 1 không có phần hiển thị trạng thái và vai trò
-  const statusText = currentUser.status === 'blocked' ? 'Đã khóa' : 'Đang hoạt động';
-  const statusClass = currentUser.status === 'blocked' ? 'status-blocked' : 'status-active';
-
   infoBox.innerHTML = `
         <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${currentUser.fullName}</span></div>
         <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
         <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
         <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone}</span></div>
-        <div class="info-item"><span class="info-label">Trạng thái:</span> <span class="info-value ${statusClass}">${statusText}</span></div>
-        <div class="info-item"><span class="info-label">Vai trò:</span> <span class="info-value">${currentUser.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}</span></div>
     `;
 
   if (actionsBox) actionsBox.style.display = "flex";
@@ -385,14 +342,12 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   let list = getListUser();
 
   let newData = {
-    id: currentUser.id, // 🔴 KHÁC BIỆT: File 1 không có id
     fullName: document.getElementById("profileFullName").value.trim(),
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
     pass: currentUser.pass,
-    role: currentUser.role,
-    status: currentUser.status // 🔴 KHÁC BIỆT: File 1 không có status
+    role: currentUser.role
   };
 
   // Lấy thông tin mật khẩu
@@ -527,7 +482,6 @@ window.onload = function () {
     showTab("login");
   }
 };
-
 // ================== XỬ LÝ MỞ CART THÔNG MINH ==================
 function navigateToCart() {
     const currentUser = getCurrentUser();
@@ -602,33 +556,5 @@ function updateHeaderUserStatus() {
     } else {
         if (guestLinks) guestLinks.style.display = 'flex';
         if (userLinks) userLinks.style.display = 'none';
-    }
-}
-
-// 🔴 KHÁC BIỆT: File 1 không có hàm handleLogin này
-// Trong hàm xử lý đăng nhập
-function handleLogin(username, password) {
-    const users = JSON.parse(localStorage.getItem("userList")) || [];
-    
-    // Tìm user theo username và password
-    const user = users.find(u => 
-        u.username === username && 
-        u.password === password
-    );
-    
-    if (user) {
-        // KIỂM TRA TRẠNG THÁI TÀI KHOẢN
-        if (user.status === "blocked") {
-            alert("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
-            return false;
-        }
-        
-        // Đăng nhập thành công
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        window.location.href = "index.html"; // hoặc trang chủ
-        return true;
-    } else {
-        alert("Sai tên đăng nhập hoặc mật khẩu!");
-        return false;
     }
 }
