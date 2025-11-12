@@ -1,3 +1,4 @@
+//File 2
 //Quản lý giá bán
 const priceModal = document.getElementById("popup");
 const form = document.getElementById("productadd");

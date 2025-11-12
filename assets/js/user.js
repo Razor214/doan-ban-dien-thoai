@@ -1,3 +1,4 @@
+//File 2
 console.log('🚀 Initializing sample data...');
 const userList = [
     {
