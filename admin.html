@@ -6,12 +6,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaiGonPhone - Website Bán Điện Thoại</title>
     <link rel="stylesheet" href="assets/css/admin.css">
+    <style>
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-locked {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-lock {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-unlock {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-lock:hover {
+            background: #c82333;
+        }
+
+        .btn-unlock:hover {
+            background: #218838;
+        }
+
+        .admin-badge {
+            background: #ff4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        .fade-out {
+            opacity: 0.6;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 
 <body>
     <header class="headerbar">
         <nav class="navbar">
             <a href="user.html?tab=profile">Quản Trị Viên</a>
+            <button id="logoutBtn" style="margin-left: auto; background: none; border: none; padding: 8px 15px; cursor: pointer; margin-right: 20px; color: inherit; font-size: inherit; font-family: inherit; text-decoration: none;">Đăng xuất</button>
         </nav>
     </header>
     <!-- SIDEBAR -->
@@ -75,8 +129,8 @@
 
                     <label>Trạng thái:</label>
                     <select id="importStatus">
-                        <option value="pending">pending</option>
-                        <option value="completed">completed</option>
+                        <option value="Đang xử lý">Đang xử lý</option>
+                        <option value="Hoàn thành">Hoàn thành</option>
                     </select>
 
                     <label>Chi tiết sản phẩm:</label>
@@ -135,7 +189,6 @@
                         <select id="prodType" required>
                             <option value="">-- Chọn loại --</option>
                         </select>
-
 
                         <label>Mã:</label>
                         <input type="text" id="prodCode" required>
@@ -486,7 +539,6 @@
                 </div>
             </div>
 
-
             <div class="popup" id="category-popup">
                 <div class="popup-content">
                     <form id="category-form">
@@ -517,7 +569,6 @@
             </div>
         </section>
 
-
         <!--Quan ly khach hang-->
         <section id="customers-section" class="admin-section" style="display: none">
             <div class="cover">
@@ -544,17 +595,16 @@
         </section>
 
     </div>
+
     <script src="data/price.js"></script>
     <script src="data/order.js"></script>
     <script src="data/inventory.js"></script>
     <script src="data/category.js"></script>
     <script src="data/product.js"></script>
     <script src="data/import.js"></script>
-    <script src="data/user.js"></script>
     <script src="assets/js/validators.js"></script>
     <script src="assets/js/admin.js"></script>
-
-
+    <script src="assets/js/admin-login.js"></script>
 
     <!-- FOOTER -->
     <footer>
