@@ -7,44 +7,7 @@
     <title>SaiGonPhone - Tài Khoản</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/user.css">
-    <!-- DIFFERENCE: File 2 có thêm CSS inline và không có user2.css -->
-    <style>
-        .status-active {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .status-locked {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        
-        .password-box {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        
-        .password-box .form-input {
-            padding-right: 40px;
-            width: 100%;
-        }
-        
-        .toggle-pass {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
-            user-select: none;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        
-        .toggle-pass:hover {
-            opacity: 1;
-        }
-    </style>
-    <!-- DIFFERENCE: File 1 có thêm link đến user2.css -->
-    <!-- <link rel="stylesheet" href="assets/css/user2.css"> -->
+    <link rel="stylesheet" href="assets/css/user2.css">
 </head>
 
 <body>
@@ -55,47 +18,15 @@
             <h1>SaiGonPhone</h1>
         </div>
 
-        <!-- DIFFERENCE: File 2 có navbar với cơ chế hiển thị khác cho guest/user -->
-        <nav class="navbar" id="navbar">
-            <a href="index.html" class="bar_right">Trang Chủ</a>
-
-            <!-- Hiển thị khi chưa đăng nhập -->
-            <div id="guest-links" class="navbar-links">
-                <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-                <a href="user.html?tab=register">Đăng ký</a>
-            </div>
-
-            <!-- Hiển thị khi đã đăng nhập -->
-            <div id="user-links" style="display: none;" class="navbar-links">
-                <div class="user-dropdown">
-                    <a href="user.html?tab=profile" class="user-profile-link">
-                        Xin chào, <span id="user-name"></span>
-                        <span class="admin-badge" id="admin-badge" style="display: none;">Admin</span>
-                    </a>
-                    <div class="dropdown-content">
-                        <a href="index.html" class="icon-home">Về trang chủ</a>
-                        <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
-                        <a href="#" onclick="navigateToCart(); return false;" class="icon-cart">🛒 Giỏ hàng</a>
-                        <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link"
-                            style="display: none;">
-                            Quản Trị Viên
-                        </a>
-                        <a href="#" onclick="logout(); return false;" class="icon-logout">Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <!-- DIFFERENCE: File 1 có navbar đơn giản hơn -->
-        <!--
         <nav class="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
             <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
             <a href="user.html?tab=register">Đăng ký</a>
             <a href="user.html?tab=profile">Hồ sơ</a>
             <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
+
         </nav>
-        -->
+
     </header>
 
     <!------------------ PHẦN TÀI KHOẢN ------------------->
@@ -124,17 +55,8 @@
 
                         <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
-                            <!-- DIFFERENCE: File 2 có password-box với toggle password -->
-                            <div class="password-box">
-                                <input type="password" id="loginPassword" class="form-input" required>
-                                <span class="toggle-pass" onclick="togglePassword('loginPassword', this)">👁️</span>
-                            </div>
+                            <input type="password" id="loginPassword" class="form-input" required>
                         </div>
-
-                        <!-- DIFFERENCE: File 1 không có password-box và toggle password -->
-                        <!--
-                        <input type="password" id="loginPassword" class="form-input" required>
-                        -->
 
                         <button type="submit" class="btn-primary">Đăng Nhập</button>
 
@@ -171,36 +93,15 @@
 
                         <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
-                            <!-- DIFFERENCE: File 2 có password-box với toggle password -->
-                            <div class="password-box">
-                                <input type="password" id="password" class="form-input" required minlength="8">
-                                <span class="toggle-pass" onclick="togglePassword('password', this)">👁️</span>
-                            </div>
-                            <!-- DIFFERENCE: File 2 có hướng dẫn mật khẩu -->
-                            <small id="passwordError" class="error-text" style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số
-                            </small>
+                            <input type="password" id="password" class="form-input" required minlength="8">
+                            <small id="passwordError" class="error-text"></small>
                         </div>
-
-                        <!-- DIFFERENCE: File 1 chỉ có input password đơn giản -->
-                        <!--
-                        <input type="password" id="password" class="form-input" required minlength="8">
-                        <small id="passwordError" class="error-text"></small>
-                        -->
 
                         <div class="form-group">
                             <label class="form-label">Xác nhận mật khẩu</label>
-                            <!-- DIFFERENCE: File 2 có password-box với toggle password -->
-                            <div class="password-box">
-                                <input type="password" id="confirmPassword" class="form-input" required>
-                                <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">👁️</span>
-                            </div>
+                            <input type="password" id="confirmPassword" class="form-input" required>
+                            <small id="confirmPasswordError" class="error-text"></small>
                         </div>
-
-                        <!-- DIFFERENCE: File 1 có thêm error text cho confirm password -->
-                        <!--
-                        <small id="confirmPasswordError" class="error-text"></small>
-                        -->
 
                         <div class="form-group">
                             <label class="form-label">Số điện thoại</label>
@@ -309,6 +210,7 @@
     </div>
 
     <script src="assets/js/user.js"></script>
+
 </body>
 
 </html>
