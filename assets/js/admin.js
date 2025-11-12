@@ -849,7 +849,7 @@ function generateInventoryCode() {
 function updateInventoryFromImport(newSlip, oldSlip) {
     const inventoryList = getInventory();
     let hasChanges = false; 
-    if (oldSlip && oldSlip.status === 'Hoàn thành') {
+    if (oldSlip && oldSlip.status === 'completed') {
         oldSlip.items.forEach(item => {
             const inventoryItem = inventoryList.find(inv => inv.productId === item.productId);
             if (inventoryItem) {
@@ -864,7 +864,7 @@ function updateInventoryFromImport(newSlip, oldSlip) {
             }
         });
     }
-    if (newSlip && newSlip.status === 'Hoàn thành') {
+    if (newSlip && newSlip.status === 'completed') {
 
         const ngayCapNhatTonKho = newSlip.date;
 
@@ -878,11 +878,13 @@ function updateInventoryFromImport(newSlip, oldSlip) {
                 soLuong: item.quantity,
                 importId: newSlip.id // Rất quan trọng để theo dõi
             };
-
+            const itemQuantity = parseInt(item.quantity) || 0;
             if (inventoryItem) {
                 // --- Cập nhật cho mục tồn kho đã có ---
-                inventoryItem.slNhap += item.quantity;
-                inventoryItem.slTon += item.quantity;
+                const currentSlNhap = parseInt(inventoryItem.slNhap) || 0;
+                const currentSlTon = parseInt(inventoryItem.slTon) || 0;
+                inventoryItem.slNhap = currentSlNhap + itemQuantity;
+                inventoryItem.slTon = currentSlTon + itemQuantity;
                 inventoryItem.ngayCapNhat = ngayCapNhatTonKho;
                 // Thêm vào đầu mảng lịch sử (để hiện 5 cái gần nhất)
                 inventoryItem.trangThai = inventoryItem.slTon <= (window.MIN_TON || 10) ? 'Sắp hết' : 'Còn hàng';
@@ -1624,11 +1626,12 @@ importForm?.addEventListener("submit", (e) => {
     alert("⚠️ Mã phiếu nhập đã tồn tại!");
     return;
   }
-
+ let oldImport = null;
   const existingIdx = imports.findIndex(i => i.id === idOld);
-  let isNewRecord = false;
+  
 
   if (editingImportRow && existingIdx !== -1) {
+    oldImport = { ...imports[existingIdx] };
     imports[existingIdx] = newImport;
   } else {
     imports.unshift(newImport);
@@ -1636,9 +1639,9 @@ importForm?.addEventListener("submit", (e) => {
   }
 
   setLocal("importList", imports);
-  if (isNewRecord && typeof processInventoryUpdate === "function") {
-    processInventoryUpdate(newImport, isNewRecord);
-  }
+  if (typeof updateInventoryFromImport === 'function') {
+        updateInventoryFromImport(newImport, oldImport);
+    }
 
   renderImportTable();
   importModal.style.display = "none";
@@ -1650,7 +1653,13 @@ function deleteImport(btn) {
   if (!confirm("Xóa phiếu nhập này?")) return;
   const row = btn.closest("tr");
   const id = row.cells[0].innerText.trim();
-  imports = imports.filter((i) => i.id !== id);
+  const oldImportIndex = imports.findIndex(i => i.id === id);
+    if (oldImportIndex === -1) return;
+    const oldImport = imports[oldImportIndex]; // Lấy dữ liệu CŨ trước khi xóa
+    imports.splice(oldImportIndex, 1);
+    if (typeof updateInventoryFromImport === 'function') {
+        updateInventoryFromImport(null, oldImport); 
+    }
   setLocal("importList", imports);
   renderImportTable();
 }
