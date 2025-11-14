@@ -161,13 +161,28 @@ function updateListUser(user, newData) {
 
 // ================== TAB CONTROL ==================
 function showTab(tab) {
-  document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  console.log('🔄 Switching to tab:', tab);
+  
+  // Ẩn tất cả các trang form
+  document.querySelectorAll('.form-page').forEach(p => {
+    p.classList.remove('active');
+    console.log('📄 Hidden page:', p.id);
+  });
 
-  document.getElementById(tab).classList.add('active');
-  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  // Hiển thị trang được chọn
+  const targetPage = document.getElementById(tab);
+  if (targetPage) {
+    targetPage.classList.add('active');
+    console.log('✅ Activated page:', tab);
+  } else {
+    console.log('❌ Page not found:', tab);
+  }
 
-  if (tab === "profile") loadProfile();
+  // Xử lý riêng cho tab profile
+  if (tab === "profile") {
+    console.log('👤 Loading profile...');
+    loadProfile();
+  }
 }
 
 // ================== REGEX CHECKS ==================
@@ -273,30 +288,42 @@ function loadProfile() {
   let currentUser = getCurrentUser();
   let infoBox = document.getElementById("profile-info");
   let actionsBox = document.getElementById("profileActions");
+  let profileForm = document.getElementById("profileForm");
+
+  console.log('👤 Current user:', currentUser);
 
   if (!currentUser) {
     infoBox.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
     if (actionsBox) actionsBox.style.display = "none";
-    document.getElementById("profileForm").style.display = "none";
+    if (profileForm) profileForm.style.display = "none";
+    console.log('❌ No user logged in');
     return;
   }
 
+  // Hiển thị thông tin user
   infoBox.innerHTML = `
-        <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${currentUser.fullName}</span></div>
-        <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
-        <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
-        <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone}</span></div>
-    `;
+    <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${currentUser.fullName}</span></div>
+    <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
+    <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
+    <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone || 'Chưa cập nhật'}</span></div>
+  `;
 
-  if (actionsBox) actionsBox.style.display = "flex";
-  document.getElementById("profileForm").style.display = "none";
-
-  // ✅ hiển thị lời chào trên header
-  let greetingElement = document.getElementById("user-greeting");
-  let greetingNameElement = document.getElementById("greeting-name");
+  // Hiển thị nút hành động
+  if (actionsBox) {
+    actionsBox.style.display = "flex";
+    console.log('✅ Showed profile actions');
+  }
   
-  if (greetingElement) greetingElement.style.display = "inline";
-  if (greetingNameElement) greetingNameElement.innerText = currentUser.fullName;
+  // Ẩn form chỉnh sửa
+  if (profileForm) {
+    profileForm.style.display = "none";
+    console.log('✅ Hid profile form');
+  }
+
+  // Hiển thị thông tin profile
+  infoBox.style.display = "block";
+
+  console.log('✅ Profile loaded successfully');
 }
 
 // ================== TOGGLE EDIT PROFILE ==================
@@ -471,17 +498,26 @@ function capNhatMoiThu() {
 
 // ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
 window.onload = function () {
+  console.log('🚀 Page loaded');
+  
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
+  
+  console.log('🔍 URL query tab:', query);
+  console.log('👤 Current user:', currentUser);
 
   if (currentUser && (!query || query === "profile")) {
+    console.log('➡️ Auto-switching to profile tab');
     showTab("profile");
   } else if (query) {
+    console.log('➡️ Switching to query tab:', query);
     showTab(query);
   } else {
+    console.log('➡️ Defaulting to login tab');
     showTab("login");
   }
 };
+
 // ================== XỬ LÝ MỞ CART THÔNG MINH ==================
 function navigateToCart() {
     const currentUser = getCurrentUser();
