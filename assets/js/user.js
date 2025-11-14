@@ -137,14 +137,26 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   
   // Tìm user với cả 2 trường password và pass (để tương thích với dữ liệu cũ)
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && 
-    (u.password === pass || u.pass === pass) && 
-    u.status === "active"
+    (u.username === userInput || u.email === userInput)
   );
 
   if (!found) {
-    document.getElementById("login-alert").innerHTML =
-      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu, hoặc tài khoản đã bị khóa!</div>`;
+    showLoginError("Sai tài khoản hoặc mật khẩu!");
+    clearAndFocusLogin();
+    return;
+  }
+
+  // Kiểm tra tài khoản bị khóa - SỬA LỖI Ở ĐÂY
+  if (found.status && found.status !== "active") {
+    showLoginError("Tài khoản bị khoá, vui lòng liên hệ với quản trị viên.");
+    clearAndFocusLogin();
+    return;
+  }
+
+  // Kiểm tra mật khẩu
+  if (found.password !== pass && found.pass !== pass) {
+    showLoginError("Sai tài khoản hoặc mật khẩu!");
+    clearAndFocusLogin();
     return;
   }
 
@@ -157,7 +169,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     pass: found.password || found.pass, // Chuẩn hóa thành pass
     phone: found.phone || found.sdt,
     address: found.address,
-    status: found.status,
+    status: found.status || "active", // Đảm bảo có status
     role: found.role || "user"
   };
 
@@ -169,6 +181,22 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     window.location.href = "index.html";
   }
 });
+
+// ================== XỬ LÝ LỖI ĐĂNG NHẬP ==================
+function showLoginError(msg) {
+  document.getElementById("login-alert").innerHTML =
+    `<div class="alert alert-error">${msg}</div>`;
+}
+
+function clearAndFocusLogin() {
+  // Xóa mật khẩu
+  document.getElementById("loginPassword").value = "";
+  
+  // Focus vào trường tên đăng nhập/email
+  setTimeout(() => {
+    document.getElementById("loginUsername").focus();
+  }, 100);
+}
 
 // ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
@@ -352,15 +380,24 @@ function showProfileAlert(msg, type) {
 }
 
 // ================== HIỆN / ẨN MẬT KHẨU ==================
-function togglePassword(inputId, icon) {
-  let input = document.getElementById(inputId);
-  if (input.type === "password") {
-    input.type = "text";
-    icon.style.opacity = "0.5";
-  } else {
-    input.type = "password";
-    icon.style.opacity = "1";
-  }
+function togglePassword(inputId, iconElement) {
+    const passwordInput = document.getElementById(inputId);
+    const eyeIcon = iconElement.querySelector('i');
+    
+    if (passwordInput.type === "password") {
+        // Hiện mật khẩu
+        passwordInput.type = "text";
+        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        iconElement.classList.add('active');
+    } else {
+        // Ẩn mật khẩu
+        passwordInput.type = "password";
+        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        iconElement.classList.remove('active');
+    }
+    
+    // Giữ focus trên input
+    passwordInput.focus();
 }
 
 // ================== ĐĂNG XUẤT ==================
