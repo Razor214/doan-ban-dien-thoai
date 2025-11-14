@@ -1,9 +1,18 @@
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
-  // Luôn lấy từ userList của admin, không tạo mới
-  const adminUserList = JSON.parse(localStorage.getItem("userList")) || [];
-  console.log('📊 UserList từ admin:', adminUserList);
-  return adminUserList;
+  // Ưu tiên lấy từ userList, nếu không có thì lấy từ users
+  let userList = JSON.parse(localStorage.getItem("userList"));
+  
+  if (!userList || userList.length === 0) {
+    userList = JSON.parse(localStorage.getItem("users")) || [];
+    // Nếu tìm thấy từ users, đồng bộ lại vào userList
+    if (userList.length > 0) {
+      localStorage.setItem("userList", JSON.stringify(userList));
+    }
+  }
+  
+  console.log('📊 UserList hiện tại:', userList);
+  return userList;
 }
 
 function setListUser(list) {
