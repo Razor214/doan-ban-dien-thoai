@@ -1,10 +1,15 @@
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
-  return JSON.parse(localStorage.getItem("userList")) || [];
+  // Luôn lấy từ userList của admin, không tạo mới
+  const adminUserList = JSON.parse(localStorage.getItem("userList")) || [];
+  console.log('📊 UserList từ admin:', adminUserList);
+  return adminUserList;
 }
 
 function setListUser(list) {
+  // Luôn cập nhật vào userList của admin
   localStorage.setItem("userList", JSON.stringify(list));
+  console.log('💾 Đã cập nhật userList:', list);
 }
 
 function getCurrentUser() {
@@ -37,21 +42,16 @@ function showTab(tab) {
   // Ẩn tất cả các trang form
   document.querySelectorAll('.form-page').forEach(p => {
     p.classList.remove('active');
-    console.log('📄 Hidden page:', p.id);
   });
 
   // Hiển thị trang được chọn
   const targetPage = document.getElementById(tab);
   if (targetPage) {
     targetPage.classList.add('active');
-    console.log('✅ Activated page:', tab);
-  } else {
-    console.log('❌ Page not found:', tab);
   }
 
   // Xử lý riêng cho tab profile
   if (tab === "profile") {
-    console.log('👤 Loading profile...');
     loadProfile();
   }
 }
@@ -72,7 +72,7 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   let pass = document.getElementById("password").value;
   let confirmPass = document.getElementById("confirmPassword").value;
   let phone = document.getElementById("phone").value.trim();
-  let address = document.getElementById("address").value.trim(); // Thêm địa chỉ
+  let address = document.getElementById("address").value.trim();
 
   // --- kiểm tra định dạng ---
   if (!usernameRegex.test(username))
@@ -91,6 +91,7 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     return showRegisterError("Mật khẩu xác nhận không khớp!");
 
   let list = getListUser();
+  console.log('👥 Danh sách user hiện tại:', list);
 
   // kiểm tra trùng
   for (let u of list) {
@@ -99,9 +100,10 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     if (u.phone === phone && phone !== "") return showRegisterError("Số điện thoại đã tồn tại!");
   }
 
-  // Tạo ID mới cho user
-  const userCount = list.filter(u => u.id.startsWith("KH")).length;
-  const newId = "KH" + String(userCount + 1).padStart(2, "0");
+  // Tạo ID mới cho user - tìm ID lớn nhất hiện có
+  const userIDs = list.filter(u => u.id && u.id.startsWith("KH")).map(u => parseInt(u.id.replace("KH", "")));
+  const maxID = userIDs.length > 0 ? Math.max(...userIDs) : 0;
+  const newId = "KH" + String(maxID + 1).padStart(2, "0");
 
   let newUser = {
     id: newId,
@@ -110,11 +112,12 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     email: email,
     pass: pass,
     phone: phone,
-    address: address, // Thêm địa chỉ
+    address: address,
     status: "active",
     role: "user"
   };
 
+  console.log('➕ Thêm user mới:', newUser);
   list.push(newUser);
   setListUser(list);
 
@@ -135,16 +138,13 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
   let pass = document.getElementById("loginPassword").value;
 
-  console.log('🔐 Attempting login with:', userInput);
-
   let list = getListUser();
-  console.log('👥 Users in storage:', list);
+  console.log('🔐 Đăng nhập với:', userInput);
+  console.log('👥 Users trong hệ thống:', list);
 
   let found = list.find(u =>
     (u.username === userInput || u.email === userInput) && u.pass === pass && u.status === "active"
   );
-
-  console.log('🔍 Found user:', found);
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
@@ -153,7 +153,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   }
 
   setCurrentUser(found);
-  console.log('✅ User logged in:', found);
+  console.log('✅ Đăng nhập thành công:', found);
 
   if (found.role === 'admin') {
     window.location.href = "admin.html";
@@ -169,13 +169,10 @@ function loadProfile() {
   let actionsBox = document.getElementById("profileActions");
   let profileForm = document.getElementById("profileForm");
 
-  console.log('👤 Current user:', currentUser);
-
   if (!currentUser) {
     infoBox.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
     if (actionsBox) actionsBox.style.display = "none";
     if (profileForm) profileForm.style.display = "none";
-    console.log('❌ No user logged in');
     return;
   }
 
@@ -191,19 +188,12 @@ function loadProfile() {
   // Hiển thị nút hành động
   if (actionsBox) {
     actionsBox.style.display = "flex";
-    console.log('✅ Showed profile actions');
   }
   
   // Ẩn form chỉnh sửa
   if (profileForm) {
     profileForm.style.display = "none";
-    console.log('✅ Hid profile form');
   }
-
-  // Hiển thị thông tin profile
-  infoBox.style.display = "block";
-
-  console.log('✅ Profile loaded successfully');
 }
 
 // ================== TOGGLE EDIT PROFILE ==================
@@ -222,7 +212,7 @@ function toggleEditProfile() {
   document.getElementById("profileFullName").value = currentUser.fullName;
   document.getElementById("profileEmail").value = currentUser.email;
   document.getElementById("profilePhone").value = currentUser.phone;
-  document.getElementById("profileAddress").value = currentUser.address || ""; // Thêm địa chỉ
+  document.getElementById("profileAddress").value = currentUser.address || "";
 
   // Reset các field mật khẩu
   document.getElementById("currentPassword").value = "";
@@ -255,7 +245,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
-    address: document.getElementById("profileAddress").value.trim(), // Thêm địa chỉ
+    address: document.getElementById("profileAddress").value.trim(),
     pass: currentUser.pass,
     status: currentUser.status,
     role: currentUser.role
@@ -368,36 +358,20 @@ function logout() {
   return false;
 }
 
-// ================== ĐỒNG BỘ MỌI THỨ ==================
-function capNhatMoiThu() {
-  let currentUser = getCurrentUser();
-  if (!currentUser) return;
-
-  setCurrentUser(currentUser);
-  updateListUser(currentUser);
-  loadProfile();
-
-  console.log("✅ Đồng bộ hoàn tất");
-}
-
 // ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
 window.onload = function () {
-  console.log('🚀 Page loaded');
+  console.log('🔍 Kiểm tra localStorage...');
+  console.log('👥 UserList:', JSON.parse(localStorage.getItem('userList')));
+  console.log('👤 CurrentUser:', JSON.parse(localStorage.getItem('CurrentUser')));
   
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
-  
-  console.log('🔍 URL query tab:', query);
-  console.log('👤 Current user:', currentUser);
 
   if (currentUser && (!query || query === "profile")) {
-    console.log('➡️ Auto-switching to profile tab');
     showTab("profile");
   } else if (query) {
-    console.log('➡️ Switching to query tab:', query);
     showTab(query);
   } else {
-    console.log('➡️ Defaulting to login tab');
     showTab("login");
   }
 };
@@ -408,32 +382,22 @@ function navigateToCart() {
     
     if (!currentUser) {
         if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-            // Kiểm tra xem đang ở trang nào
             if (window.location.pathname.includes('user.html') || 
                 window.location.href.includes('user.html')) {
-                // Đang ở user.html -> chuyển tab login
                 showTab('login');
             } else {
-                // Đang ở trang khác -> chuyển đến user.html
                 window.location.href = 'user.html?tab=login';
             }
         }
         return false;
     }
     
-    // Đã đăng nhập -> chuyển đến cart.html
     window.location.href = 'cart.html';
     return true;
 }
 
-// ================== CHUYỂN TỪ PROFILE SANG CART ==================
-function navigateToCartFromProfile() {
-    return navigateToCart();
-}
-
 // ================== ÁP DỤNG CHO TẤT CẢ NÚT CART ==================
 document.addEventListener('DOMContentLoaded', function() {
-    // Xử lý cho tất cả link cart
     const cartLinks = document.querySelectorAll('a[href="cart.html"]');
     
     cartLinks.forEach(link => {
@@ -443,7 +407,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Cập nhật trạng thái đăng nhập trên header
     updateHeaderUserStatus();
 });
 
@@ -457,15 +420,12 @@ function updateHeaderUserStatus() {
     const userNameSpan = document.getElementById('user-name');
 
     if (currentUser && currentUser.username) {
-        // Ẩn guest links, hiển thị user links
         if (guestLinks) guestLinks.style.display = 'none';
         if (userLinks) userLinks.style.display = 'flex';
 
-        // Hiển thị tên user
         const userName = currentUser.fullName || currentUser.username;
         if (userNameSpan) userNameSpan.textContent = userName;
 
-        // Kiểm tra và hiển thị badge admin + menu item nếu là admin
         const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
         if (adminBadge) {
             adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
