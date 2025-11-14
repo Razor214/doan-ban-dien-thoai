@@ -1,404 +1,333 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SaiGonPhone - Website Bán Điện Thoại</title>
-    <link rel="stylesheet" href="./assets/css/style.css" />
-    <link rel="stylesheet" href="./assets/css/homepage.css" />
-    <link rel="stylesheet" href="./assets/css/hero.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <!-- HEADER -->
-    <header>
-      <div class="logo">
-        <img src="./assets/img/logo.png" alt="SaiGonPhone Logo" />
-        <h1>SaiGonPhone</h1>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaiGonPhone - Website Bán Điện Thoại</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/homepage.css" />
+  <link rel="stylesheet" href="assets/css/hero.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
+      <h1>SaiGonPhone</h1>
+    </div>
+
+    <!-- THANH TÌM KIẾM -->
+    <div class="search-bar">
+      <input type="text" id="headerSearch" placeholder="Bạn muốn tìm kiếm gì?" />
+      <button id="headerSearchBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="navbar" id="navbar">
+      <a href="index.html" class="bar_right">Trang Chủ</a>
+
+      <!-- Hiển thị khi chưa đăng nhập -->
+      <div id="guest-links" class="navbar-links">
+        <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+        <a href="user.html?tab=register">Đăng ký</a>
       </div>
 
-      <!-- THANH TÌM KIẾM -->
-      <div class="search-bar">
-        <input
-          type="text"
-          id="headerSearch"
-          placeholder="Bạn muốn tìm kiếm gì?"
-        />
-        <button id="headerSearchBtn">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </svg>
-        </button>
-      </div>
-
-      <nav class="navbar" id="navbar">
-        <a href="index.html" class="bar_right">Trang Chủ</a>
-
-        <!-- Hiển thị khi chưa đăng nhập -->
-        <div id="guest-links" class="navbar-links">
-          <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-          <a href="user.html?tab=register">Đăng ký</a>
-        </div>
-
-        <!-- Hiển thị khi đã đăng nhập -->
-        <div id="user-links" style="display: none" class="navbar-links">
-          <div class="user-dropdown">
-            <a href="user.html?tab=profile" class="user-profile-link">
-              Xin chào, <span id="user-name"></span>
-              <span class="admin-badge" id="admin-badge" style="display: none"
-                >Admin</span
-              >
+      <!-- Hiển thị khi đã đăng nhập -->
+      <div id="user-links" style="display: none" class="navbar-links">
+        <div class="user-dropdown">
+          <a href="user.html?tab=profile" class="user-profile-link">
+            Xin chào, <span id="user-name"></span>
+            <span class="admin-badge" id="admin-badge" style="display: none">Admin</span>
+          </a>
+          <div class="dropdown-content">
+            <a href="index.html" class="icon-home">Về trang chủ</a>
+            <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
+            <a href="#" onclick="navigateToCart(); return false;" class="icon-cart">🛒 Giỏ hàng</a>
+            <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link" style="display: none">
+              Quản Trị Viên
             </a>
-            <div class="dropdown-content">
-              <a href="index.html" class="icon-home">Về trang chủ</a>
-              <a href="user.html?tab=profile" class="icon-profile"
-                >Hồ sơ cá nhân</a
-              >
-              <a
-                href="#"
-                onclick="navigateToCart(); return false;"
-                class="icon-cart"
-                >🛒 Giỏ hàng</a
-              >
-              <a
-                href="admin.html"
-                class="icon-admin admin-menu-item"
-                id="admin-menu-link"
-                style="display: none"
-              >
-                Quản Trị Viên
-              </a>
-              <a
-                href="#"
-                onclick="logoutFromHome(); return false;"
-                class="icon-logout"
-                >Đăng xuất</a
-              >
-            </div>
+            <a href="#" onclick="logoutFromHome(); return false;" class="icon-logout">Đăng xuất</a>
           </div>
         </div>
-      </nav>
-    </header>
-
-    <!-- TOP MENU -->
-    <div class="topmenu">
-      <div class="dropdown">
-        <span>iPhone</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP01"
-            >iPhone 15 Pro Max 256GB
-          </a>
-          <a href="#" class="product-modal-trigger" data-product-id="SP02"
-            >iPhone 16 Pro Max 512GB</a
-          >
-        </div>
       </div>
+    </nav>
+  </header>
 
-      <div class="dropdown">
-        <span>Samsung</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP03"
-            >Samsung Galaxy S23 Ultra 12GB|512GB</a
-          >
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>Xiaomi</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP04"
-            >Xiaomi 13 Pro 12GB|256GB</a
-          >
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>Huawei</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP05"
-            >Huawei P60 Pro 12GB|256GB</a
-          >
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>Sony</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP06"
-            >Sony Xperia 1 V 12GB|256GB</a
-          >
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>LG</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP07"
-            >LG Velvet 2 6GB|128GB</a
-          >
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>Nokia</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP08"
-            >Nokia X30 5G 8GB|128GB</a
-          >
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>OnePlus</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP09"
-            >OnePlus 11 16GB|256GB
-          </a>
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <span>Google</span>
-        <div class="dropdown-content">
-          <a href="#" class="product-modal-trigger" data-product-id="SP10"
-            >Google Pixel 8 Pro 12GB|512GB</a
-          >
-        </div>
+  <!-- TOP MENU -->
+  <div class="topmenu">
+    <div class="dropdown">
+      <span>iPhone</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP01">iPhone 15 Pro Max 256GB
+        </a>
+        <a href="#" class="product-modal-trigger" data-product-id="SP02">iPhone 16 Pro Max 512GB</a>
       </div>
     </div>
 
-    <!-- MAIN -->
-    <main>
-      <section class="hero-modern">
-        <div class="hero-inner">
-          <div class="hero-content">
-            <h5>Absolute cinema</h5>
-            <h1>SAI GON PHONE</h1>
-            <p>Nơi những mẫu điện thoại cao cấp cập bến</p>
-            <a href="#products" class="hero-btn">Mua ngay</a>
-          </div>
+    <div class="dropdown">
+      <span>Samsung</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP03">Samsung Galaxy S23 Ultra 12GB|512GB</a>
+      </div>
+    </div>
 
+    <div class="dropdown">
+      <span>Xiaomi</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP04">Xiaomi 13 Pro 12GB|256GB</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <span>Huawei</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP05">Huawei P60 Pro 12GB|256GB</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <span>Sony</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP06">Sony Xperia 1 V 12GB|256GB</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <span>LG</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP07">LG Velvet 2 6GB|128GB</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <span>Nokia</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP08">Nokia X30 5G 8GB|128GB</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <span>OnePlus</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP09">OnePlus 11 16GB|256GB
+        </a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <span>Google</span>
+      <div class="dropdown-content">
+        <a href="#" class="product-modal-trigger" data-product-id="SP10">Google Pixel 8 Pro 12GB|512GB</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+    <section class="hero-modern">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <h5>Absolute cinema</h5>
+          <h1>SAI GON PHONE</h1>
+          <p>Nơi những mẫu điện thoại cao cấp cập bến</p>
+          <a href="#products" class="hero-btn">Mua ngay</a>
+        </div>
+
+        <div class="hero-image">
+          <img src="assets/img/phonehero.png" alt="SaiGonPhone Product" />
+        </div>
+      </div>
+    </section>
+
+    <section class="featured" id="products">
+      <h3>Sản phẩm nổi bật</h3>
+
+      <!-- Bộ lọc sản phẩm -->
+      <div class="filter-container">
+        <select id="brandFilter">
+          <option value="all">Thương hiệu</option>
+          <option value="Apple">Apple</option>
+          <option value="Samsung">Samsung</option>
+          <option value="Xiaomi">Xiaomi</option>
+          <option value="Huawei">Huawei</option>
+          <option value="Sony">Sony</option>
+          <option value="LG">LG</option>
+          <option value="Nokia">Nokia</option>
+          <option value="OnePlus">OnePlus</option>
+          <option value="Google">Google</option>
+        </select>
+
+        <select id="ramFilter">
+          <option value="all">RAM</option>
+          <option value="4">4GB</option>
+          <option value="6">6GB</option>
+          <option value="8">8GB</option>
+          <option value="12">12GB</option>
+          <option value="16">16GB</option>
+        </select>
+
+        <select id="storageFilter">
+          <option value="all">Bộ nhớ trong</option>
+          <option value="32">32GB</option>
+          <option value="64">64GB</option>
+          <option value="128">128GB</option>
+          <option value="256">256GB</option>
+          <option value="512">512GB</option>
+          <option value="1024">1TB</option>
+        </select>
+
+        <select id="priceRangeFilter">
+          <option value="all">Khoảng giá</option>
+          <option value="0-10000000">Dưới 10 triệu</option>
+          <option value="10000000-20000000">10 - 20 triệu</option>
+          <option value="20000000-25000000">20 - 25 triệu</option>
+          <option value="25000000-999999999">Trên 25 triệu</option>
+        </select>
+
+        <select id="sortFilter">
+          <option value="default">Giá</option>
+          <option value="price-asc">Thấp đến cao</option>
+          <option value="price-desc">Cao đến thấp</option>
+        </select>
+
+        <button id="resetFilters" class="reset-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          Thiết lập lại
+        </button>
+      </div>
+
+      <!-- Hiển thị sản phẩm -->
+      <div class="product-grid" id="productGrid"></div>
+
+      <!-- Phân trang -->
+      <div class="pagination" id="pagination"></div>
+    </section>
+  </main>
+
+  <!-- chi tiết sản phẩm -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+
+      <div class="product-details">
+        <div class="product-image-section">
+          <div class="main-image">
+            <img id="modalProductMainImage" src="" alt="Product Image" />
           <div class="hero-image">
             <img src="./assets/img/phonehero.png" alt="SaiGonPhone Product" />
           </div>
         </div>
-      </section>
 
-      <section class="featured" id="products">
-        <h3>Sản phẩm nổi bật</h3>
-
-        <!-- Bộ lọc sản phẩm -->
-        <div class="filter-container">
-          <select id="brandFilter">
-            <option value="all">Thương hiệu</option>
-            <option value="Apple">Apple</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Xiaomi">Xiaomi</option>
-            <option value="Huawei">Huawei</option>
-            <option value="Sony">Sony</option>
-            <option value="LG">LG</option>
-            <option value="Nokia">Nokia</option>
-            <option value="OnePlus">OnePlus</option>
-            <option value="Google">Google</option>
-          </select>
-
-          <select id="ramFilter">
-            <option value="all">RAM</option>
-            <option value="4">4GB</option>
-            <option value="6">6GB</option>
-            <option value="8">8GB</option>
-            <option value="12">12GB</option>
-            <option value="16">16GB</option>
-          </select>
-
-          <select id="storageFilter">
-            <option value="all">Bộ nhớ trong</option>
-            <option value="32">32GB</option>
-            <option value="64">64GB</option>
-            <option value="128">128GB</option>
-            <option value="256">256GB</option>
-            <option value="512">512GB</option>
-            <option value="1024">1TB</option>
-          </select>
-
-          <select id="priceRangeFilter">
-            <option value="all">Khoảng giá</option>
-            <option value="0-10000000">Dưới 10 triệu</option>
-            <option value="10000000-20000000">10 - 20 triệu</option>
-            <option value="20000000-25000000">20 - 25 triệu</option>
-            <option value="25000000-999999999">Trên 25 triệu</option>
-          </select>
-
-          <select id="sortFilter">
-            <option value="default">Giá</option>
-            <option value="price-asc">Thấp đến cao</option>
-            <option value="price-desc">Cao đến thấp</option>
-          </select>
-
-          <button id="resetFilters" class="reset-btn">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
-              ></path>
-              <path d="M3 3v5h5"></path>
-            </svg>
-            Thiết lập lại
-          </button>
-        </div>
-
-        <!-- Hiển thị sản phẩm -->
-        <div class="product-grid" id="productGrid"></div>
-
-        <!-- Phân trang -->
-        <div class="pagination" id="pagination"></div>
-      </section>
-    </main>
-
-    <!-- chi tiết sản phẩm -->
-    <div id="productModal" class="modal">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-
-        <div class="product-details">
-          <div class="product-image-section">
-            <div class="main-image">
-              <img id="modalProductMainImage" src="" alt="Product Image" />
-            </div>
+        <div class="product-info-section">
+          <div class="product-header">
+            <h1 id="modalProductName">Tên sản phẩm</h1>
           </div>
 
-          <div class="product-info-section">
-            <div class="product-header">
-              <h1 id="modalProductName">Tên sản phẩm</h1>
-            </div>
+          <div class="product-price">
+            <span class="current-price" id="modalCurrentPrice">0đ</span>
+          </div>
 
-            <div class="product-price">
-              <span class="current-price" id="modalCurrentPrice">0đ</span>
-            </div>
+          <div class="product-specs">
+            <h3>Thông số kỹ thuật:</h3>
+            <div class="specs-list" id="modalSpecsList"></div>
+          </div>
 
-            <div class="product-specs">
-              <h3>Thông số kỹ thuật:</h3>
-              <div class="specs-list" id="modalSpecsList"></div>
-            </div>
-
-            <div class="product-actions">
-              <button class="add-to-cart-btn" id="modalAddToCartBtn">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="9" cy="21" r="1"></circle>
-                  <circle cx="20" cy="21" r="1"></circle>
-                  <path
-                    d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-                  ></path>
-                </svg>
-                Thêm vào giỏ hàng
-              </button>
-            </div>
+          <div class="product-actions">
+            <button class="add-to-cart-btn" id="modalAddToCartBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              Thêm vào giỏ hàng
+            </button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- FOOTER -->
-    <footer>
-      <p>
-        © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
-      </p>
-      <p>
-        Liên hệ:
-        <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
-      </p>
-      <p>
-        <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
-        <span
-          ><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5,
-          TP.HCM</span
-        >
-      </p>
-    </footer>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const userData =
-          localStorage.getItem("currentUser") ||
-          localStorage.getItem("CurrentUser");
-        const currentUser = userData ? JSON.parse(userData) : null;
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      © 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn
+    </p>
+    <p>
+      Liên hệ:
+      <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a>
+    </p>
+    <p>
+      <span><i class="fa-solid fa-phone"></i> 0909 123 456</span>
+      <span><i class="fa-solid fa-location-dot"></i> 273 An Dương Vương, Q.5,
+        TP.HCM</span>
+    </p>
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const userData =
+        localStorage.getItem("currentUser") ||
+        localStorage.getItem("CurrentUser");
+      const currentUser = userData ? JSON.parse(userData) : null;
 
-        const guestLinks = document.getElementById("guest-links");
-        const userLinks = document.getElementById("user-links");
-        const adminBadge = document.getElementById("admin-badge");
-        const adminMenuLink = document.getElementById("admin-menu-link");
-        const userNameSpan = document.getElementById("user-name");
+      const guestLinks = document.getElementById("guest-links");
+      const userLinks = document.getElementById("user-links");
+      const adminBadge = document.getElementById("admin-badge");
+      const adminMenuLink = document.getElementById("admin-menu-link");
+      const userNameSpan = document.getElementById("user-name");
 
-        if (currentUser && currentUser.username) {
-          // Ẩn guest links, hiển thị user links
-          guestLinks.style.display = "none";
-          userLinks.style.display = "flex";
+      if (currentUser && currentUser.username) {
+        // Ẩn guest links, hiển thị user links
+        guestLinks.style.display = "none";
+        userLinks.style.display = "flex";
 
-          // Hiển thị tên user
-          const userName = currentUser.fullName || currentUser.username;
-          userNameSpan.textContent = userName;
+        // Hiển thị tên user
+        const userName = currentUser.fullName || currentUser.username;
+        userNameSpan.textContent = userName;
 
-          // Kiểm tra và hiển thị badge admin + menu item nếu là admin
-          const isAdmin =
-            currentUser.role && currentUser.role.toLowerCase() === "admin";
-          if (isAdmin) {
-            adminBadge.style.display = "inline-block";
-            adminMenuLink.style.display = "flex";
-          } else {
-            adminBadge.style.display = "none";
-            adminMenuLink.style.display = "none";
-          }
+        // Kiểm tra và hiển thị badge admin + menu item nếu là admin
+        const isAdmin =
+          currentUser.role && currentUser.role.toLowerCase() === "admin";
+        if (isAdmin) {
+          adminBadge.style.display = "inline-block";
+          adminMenuLink.style.display = "flex";
         } else {
-          guestLinks.style.display = "flex";
-          userLinks.style.display = "none";
+          adminBadge.style.display = "none";
+          adminMenuLink.style.display = "none";
         }
-      });
-
-      function logoutFromHome() {
-        if (confirm("Bạn có chắc muốn đăng xuất?")) {
-          // Xóa cả 2 key để chắc chắn
-          localStorage.removeItem("CurrentUser");
-          localStorage.removeItem("currentUser");
-          window.location.href = "index.html";
-        }
-        return false;
+      } else {
+        guestLinks.style.display = "flex";
+        userLinks.style.display = "none";
       }
-    </script>
-    <script src="./data/category.js"></script>
-    <script src="./data/product.js"></script>
-    <script src="./data/price.js"></script>
-    <script src="./assets/js/products.js"></script>
-    <script src="./assets/js/modal-product.js"></script>
-  </body>
+    });
+
+    function logoutFromHome() {
+      if (confirm("Bạn có chắc muốn đăng xuất?")) {
+        // Xóa cả 2 key để chắc chắn
+        localStorage.removeItem("CurrentUser");
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+      }
+      return false;
+    }
+  </script>
+  <script src="data/product.js"></script>
+  <script src="data/price.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/modal-product.js"></script>
+  <script src="assets/js/user.js"></script>
+
+</body>
+
 </html>

@@ -24,25 +24,16 @@
             <a href="user.html?tab=register">Đăng ký</a>
             <a href="user.html?tab=profile">Hồ sơ</a>
             <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
-
         </nav>
-
     </header>
 
-    <!------------------ PHẦN TÀI KHOẢN ------------------->
+    <!------------------ PHẦN TÀI KHOẢN ĐƠN GIẢN ------------------->
     <div class="auth-container">
         <div class="container">
-            <!-- Tabs Navigation -->
-            <div class="tabs">
-                <button class="tab active" data-tab="login" onclick="showTab('login')">Đăng Nhập</button>
-                <button class="tab" data-tab="register" onclick="showTab('register')">Đăng Ký</button>
-                <button class="tab" data-tab="profile" onclick="showTab('profile')">Hồ Sơ</button>
-            </div>
-
-            <!-- Tab Content -->
+            <!-- Chỉ hiển thị form tương ứng với tab được chọn -->
             <div class="tab-content">
                 <!-- LOGIN PAGE -->
-                <div id="login" class="form-page active">
+                <div id="login" class="form-page">
                     <h2 class="form-title">Đăng Nhập</h2>
 
                     <div id="login-alert"></div>
@@ -92,20 +83,30 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="phone" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea id="address" class="form-input" rows="3"
+                                placeholder="Nhập địa chỉ đầy đủ"></textarea>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" id="password" class="form-input" required minlength="8">
+                            <div class="password-box">
+                                <input type="password" id="password" class="form-input" required minlength="8">
+                                <span class="toggle-pass" onclick="togglePassword('password', this)">👁️</span>
+                            </div>
                             <small id="passwordError" class="error-text"></small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Xác nhận mật khẩu</label>
-                            <input type="password" id="confirmPassword" class="form-input" required>
+                            <div class="password-box">
+                                <input type="password" id="confirmPassword" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">👁️</span>
+                            </div>
                             <small id="confirmPasswordError" class="error-text"></small>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Số điện thoại</label>
-                            <input type="tel" id="phone" class="form-input">
                         </div>
 
                         <button type="submit" class="btn-primary">Đăng Ký</button>
@@ -157,7 +158,11 @@
                             <label class="form-label">Số điện thoại</label>
                             <input type="tel" id="profilePhone" class="form-input" placeholder="Nhập số điện thoại">
                         </div>
-
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea id="profileAddress" class="form-input" rows="3"
+                                placeholder="Nhập địa chỉ đầy đủ"></textarea>
+                        </div>
                         <h3
                             style="margin: 30px 0 20px 0; color: #333; border-bottom: 2px solid #2196F3; padding-bottom: 10px;">
                             Đổi mật khẩu
