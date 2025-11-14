@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaiGonPhone - Tài Khoản</title>
     <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="assets/css/user.css">
-
+    <link rel="stylesheet" href="assets/css/user.css">
     <link rel="stylesheet" href="assets/css/user2.css">
 </head>
 
@@ -24,13 +23,13 @@
             <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
             <a href="user.html?tab=register">Đăng ký</a>
             <a href="user.html?tab=profile">Hồ sơ</a>
-            <a href="user/cart.html">Giỏ Hàng</a>
-            <a href="admin.html" class="admin-link">Admin</a>
+            <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
+
         </nav>
 
     </header>
 
-    <!------------------ PHẦN TÀI KHOẢN ------------------>
+    <!------------------ PHẦN TÀI KHOẢN ------------------->
     <div class="auth-container">
         <div class="container">
             <!-- Tabs Navigation -->
@@ -127,26 +126,80 @@
                         <p>Vui lòng đăng nhập để xem thông tin</p>
                     </div>
 
+                    <!-- Nút hành động -->
+                    <div class="profile-actions" id="profileActions" style="display: none;">
+                        <button class="btn-primary" onclick="toggleEditProfile()" id="editProfileBtn">
+                            Chỉnh sửa thông tin
+                        </button>
+                        <button class="btn-primary logout-btn" onclick="logout()">
+                            Đăng Xuất
+                        </button>
+                    </div>
+
+                    <!-- Form chỉnh sửa thông tin và đổi mật khẩu -->
                     <form id="profileForm" style="display: none;">
+                        <h3
+                            style="margin-bottom: 20px; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">
+                            Chỉnh sửa thông tin cá nhân
+                        </h3>
+
                         <div class="form-group">
                             <label class="form-label">Họ và Tên</label>
-                            <input type="text" id="profileFullName" class="form-input">
+                            <input type="text" id="profileFullName" class="form-input" placeholder="Nhập họ và tên">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" id="profileEmail" class="form-input">
+                            <input type="email" id="profileEmail" class="form-input" placeholder="Nhập email">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Số điện thoại</label>
-                            <input type="tel" id="profilePhone" class="form-input">
+                            <input type="tel" id="profilePhone" class="form-input" placeholder="Nhập số điện thoại">
                         </div>
 
-                        <button type="submit" class="btn-primary">Cập Nhật</button>
-                    </form>
+                        <h3
+                            style="margin: 30px 0 20px 0; color: #333; border-bottom: 2px solid #2196F3; padding-bottom: 10px;">
+                            Đổi mật khẩu
+                        </h3>
 
-                    <button class="btn-primary logout-btn" onclick="logout()" style="display: none;">Đăng Xuất</button>
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu hiện tại</label>
+                            <div class="password-box">
+                                <input type="password" id="currentPassword" class="form-input"
+                                    placeholder="Nhập mật khẩu hiện tại">
+                                <span class="toggle-pass" onclick="togglePassword('currentPassword', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <div class="password-box">
+                                <input type="password" id="newPassword" class="form-input"
+                                    placeholder="Nhập mật khẩu mới">
+                                <span class="toggle-pass" onclick="togglePassword('newPassword', this)">👁️</span>
+                            </div>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                            <div class="password-box">
+                                <input type="password" id="confirmNewPassword" class="form-input"
+                                    placeholder="Xác nhận mật khẩu mới">
+                                <span class="toggle-pass"
+                                    onclick="togglePassword('confirmNewPassword', this)">👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" style="margin-right: 10px;">Cập nhật thông
+                                tin</button>
+                            <button type="button" class="btn-secondary" onclick="cancelEdit()">Hủy bỏ</button>
+                        </div>
+                    </form>
 
                     <div class="form-footer">
                         <p>Quay lại <span class="form-link" onclick="showTab('login')">Đăng nhập</span></p>
@@ -155,12 +208,6 @@
             </div>
         </div>
     </div>
-
-    <!-- FOOTER -->
-    <footer>
-        <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn</p>
-        <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
-    </footer>
 
     <script src="assets/js/user.js"></script>
 
