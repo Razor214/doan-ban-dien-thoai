@@ -1,16 +1,22 @@
 // ================== LOCALSTORAGE HELPER ==================
-// Đồng bộ dữ liệu ban đầu từ file data vào LocalStorage nếu chưa tồn tại
-if (!localStorage.getItem("userList") && typeof userList !== "undefined") {
-    const syncedUsers = userList.map(u => ({
-        ...u,
-        password: u.password || u.pass || "",
-        fullname: u.fullname || u.fullName || "",
-        sdt: u.sdt || u.phone || "",
-        role: u.role || "user",
-        status: u.status || "active"
-    }));
-    localStorage.setItem("userList", JSON.stringify(syncedUsers));
+// ====== KHỞI TẠO DỮ LIỆU USER VÀO LOCALSTORAGE ======
+if (!localStorage.getItem("userList")) {
+    if (typeof userList !== "undefined") { 
+        const syncedUsers = userList.map(u => ({
+            ...u,
+            password: u.password || u.pass || "",
+            fullname: u.fullname || u.fullName || "",
+            sdt: u.sdt || u.phone || "",
+            role: u.role || "user",
+            status: u.status || "active"
+        }));
+        localStorage.setItem("userList", JSON.stringify(syncedUsers));
+        console.log("Đã sync dữ liệu user từ data/user.js vào LocalStorage!");
+    } else {
+        localStorage.setItem("userList", JSON.stringify([]));
+    }
 }
+
 
 function getListUser() {
   return JSON.parse(localStorage.getItem("userList")) || [];
