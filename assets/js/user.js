@@ -157,9 +157,9 @@ function loadProfile() {
     return;
   }
 
-  // Hiển thị thông tin user
+  // Hiển thị thông tin user - SỬA LẠI ĐỂ HIỂN THỊ ĐÚNG DỮ LIỆU
   infoBox.innerHTML = `
-    <div class="info-item"><span class="info-label">Họ tên:</span> ${currentUser.fullname}</div>
+    <div class="info-item"><span class="info-label">Họ tên:</span> ${currentUser.fullname || 'Chưa cập nhật'}</div>
     <div class="info-item"><span class="info-label">Tên đăng nhập:</span> ${currentUser.username}</div>
     <div class="info-item"><span class="info-label">Email:</span> ${currentUser.email}</div>
     <div class="info-item"><span class="info-label">Số điện thoại:</span> ${currentUser.sdt || 'Chưa cập nhật'}</div>
@@ -181,8 +181,8 @@ function toggleEditProfile() {
   let form = document.getElementById("profileForm");
   form.style.display = "block";
 
-  document.getElementById("profileFullName").value = user.fullname;
-  document.getElementById("profileEmail").value = user.email;
+  document.getElementById("profileFullName").value = user.fullname || "";
+  document.getElementById("profileEmail").value = user.email || "";
   document.getElementById("profilePhone").value = user.sdt || "";
   document.getElementById("profileAddress").value = user.address || "";
   
@@ -301,25 +301,51 @@ function logout() {
 // ================== HIỂN THỊ TÊN NGƯỜI DÙNG TRONG HEADER ==================
 function updateHeaderUserStatus() {
   const currentUser = getCurrentUser();
-  const guestLinks = document.querySelector('.navbar a[href="user.html?tab=login"]');
-  const registerLinks = document.querySelector('.navbar a[href="user.html?tab=register"]');
+  const guestLinks = document.querySelectorAll('.navbar a[href="user.html?tab=login"], .navbar a[href="user.html?tab=register"]');
   const profileLinks = document.querySelector('.navbar a[href="user.html?tab=profile"]');
   const adminLinks = document.querySelector('.admin-link');
+  
+  // Tạo hoặc cập nhật user info trong header
+  let userInfo = document.querySelector('.user-info');
+  if (!userInfo) {
+    userInfo = document.createElement('div');
+    userInfo.className = 'user-info';
+    // Chèn vào sau logo hoặc trước navbar
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      navbar.parentNode.insertBefore(userInfo, navbar);
+    }
+  }
 
   if (currentUser) {
+    // Hiển thị thông tin user
+    userInfo.innerHTML = `
+      <div class="user-welcome">
+        <span>Xin chào, ${currentUser.fullname || currentUser.username}</span>
+        <div class="user-menu">
+          <a href="index.html">Về trang chủ</a>
+          <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
+          <a href="cart.html">Giỏ hàng</a>
+          <a href="#" onclick="logout()">Đăng xuất</a>
+        </div>
+      </div>
+    `;
+    userInfo.style.display = 'block';
+
     // Ẩn đăng nhập, đăng ký - hiển thị profile
-    if (guestLinks) guestLinks.style.display = 'none';
-    if (registerLinks) registerLinks.style.display = 'none';
-    if (profileLinks) profileLinks.style.display = 'inline-block';
+    guestLinks.forEach(link => link.style.display = 'none');
+    if (profileLinks) profileLinks.style.display = 'none';
     
     // Hiển thị admin link nếu là admin
     if (adminLinks) {
       adminLinks.style.display = currentUser.role === 'admin' ? 'inline-block' : 'none';
     }
   } else {
+    // Ẩn user info
+    userInfo.style.display = 'none';
+    
     // Hiển thị đăng nhập, đăng ký - ẩn profile
-    if (guestLinks) guestLinks.style.display = 'inline-block';
-    if (registerLinks) registerLinks.style.display = 'inline-block';
+    guestLinks.forEach(link => link.style.display = 'inline-block');
     if (profileLinks) profileLinks.style.display = 'none';
     if (adminLinks) adminLinks.style.display = 'none';
   }
@@ -365,4 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
       navigateToCart();
     });
   });
+  
+  // Cập nhật header ngay khi DOM loaded
+  updateHeaderUserStatus();
 });
