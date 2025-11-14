@@ -24,6 +24,13 @@ function getListUser() {
   console.log('📊 UserList từ localStorage:', userListFromStorage);
   return userListFromStorage;
 }
+
+// THÊM HÀM NÀY VÀO - ĐÂY LÀ NGUYÊN NHÂN LỖI
+function setListUser(list) {
+  // LUÔN lưu vào userList
+  localStorage.setItem("userList", JSON.stringify(list));
+  console.log('💾 Đã cập nhật userList:', list);
+}
 function getCurrentUser() {
   return JSON.parse(localStorage.getItem("CurrentUser"));
 }
@@ -50,7 +57,7 @@ function updateListUser(user, newData) {
 // ================== TAB CONTROL ==================
 function showTab(tab) {
   console.log('🔄 Switching to tab:', tab);
-  
+
   // Ẩn tất cả các trang form
   document.querySelectorAll('.form-page').forEach(p => {
     p.classList.remove('active');
@@ -201,7 +208,7 @@ function loadProfile() {
   if (actionsBox) {
     actionsBox.style.display = "flex";
   }
-  
+
   // Ẩn form chỉnh sửa
   if (profileForm) {
     profileForm.style.display = "none";
@@ -375,7 +382,7 @@ window.onload = function () {
   console.log('🔍 Kiểm tra localStorage...');
   console.log('👥 UserList:', JSON.parse(localStorage.getItem('userList')));
   console.log('👤 CurrentUser:', JSON.parse(localStorage.getItem('CurrentUser')));
-  
+
   let currentUser = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get('tab');
 
@@ -390,63 +397,63 @@ window.onload = function () {
 
 // ================== XỬ LÝ MỞ CART THÔNG MINH ==================
 function navigateToCart() {
-    const currentUser = getCurrentUser();
-    
-    if (!currentUser) {
-        if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-            if (window.location.pathname.includes('user.html') || 
-                window.location.href.includes('user.html')) {
-                showTab('login');
-            } else {
-                window.location.href = 'user.html?tab=login';
-            }
-        }
-        return false;
+  const currentUser = getCurrentUser();
+
+  if (!currentUser) {
+    if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
+      if (window.location.pathname.includes('user.html') ||
+        window.location.href.includes('user.html')) {
+        showTab('login');
+      } else {
+        window.location.href = 'user.html?tab=login';
+      }
     }
-    
-    window.location.href = 'cart.html';
-    return true;
+    return false;
+  }
+
+  window.location.href = 'cart.html';
+  return true;
 }
 
 // ================== ÁP DỤNG CHO TẤT CẢ NÚT CART ==================
-document.addEventListener('DOMContentLoaded', function() {
-    const cartLinks = document.querySelectorAll('a[href="cart.html"]');
-    
-    cartLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToCart();
-        });
+document.addEventListener('DOMContentLoaded', function () {
+  const cartLinks = document.querySelectorAll('a[href="cart.html"]');
+
+  cartLinks.forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      navigateToCart();
     });
-    
-    updateHeaderUserStatus();
+  });
+
+  updateHeaderUserStatus();
 });
 
 // ================== CẬP NHẬT HEADER ==================
 function updateHeaderUserStatus() {
-    const currentUser = getCurrentUser();
-    const guestLinks = document.getElementById('guest-links');
-    const userLinks = document.getElementById('user-links');
-    const adminBadge = document.getElementById('admin-badge');
-    const adminMenuLink = document.getElementById('admin-menu-link');
-    const userNameSpan = document.getElementById('user-name');
+  const currentUser = getCurrentUser();
+  const guestLinks = document.getElementById('guest-links');
+  const userLinks = document.getElementById('user-links');
+  const adminBadge = document.getElementById('admin-badge');
+  const adminMenuLink = document.getElementById('admin-menu-link');
+  const userNameSpan = document.getElementById('user-name');
 
-    if (currentUser && currentUser.username) {
-        if (guestLinks) guestLinks.style.display = 'none';
-        if (userLinks) userLinks.style.display = 'flex';
+  if (currentUser && currentUser.username) {
+    if (guestLinks) guestLinks.style.display = 'none';
+    if (userLinks) userLinks.style.display = 'flex';
 
-        const userName = currentUser.fullName || currentUser.username;
-        if (userNameSpan) userNameSpan.textContent = userName;
+    const userName = currentUser.fullName || currentUser.username;
+    if (userNameSpan) userNameSpan.textContent = userName;
 
-        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
-        if (adminBadge) {
-            adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
-        }
-        if (adminMenuLink) {
-            adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
-        }
-    } else {
-        if (guestLinks) guestLinks.style.display = 'flex';
-        if (userLinks) userLinks.style.display = 'none';
+    const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+    if (adminBadge) {
+      adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
     }
+    if (adminMenuLink) {
+      adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
+    }
+  } else {
+    if (guestLinks) guestLinks.style.display = 'flex';
+    if (userLinks) userLinks.style.display = 'none';
+  }
 }
