@@ -17,7 +17,6 @@ if (!localStorage.getItem("userList")) {
     }
 }
 
-
 function getListUser() {
   return JSON.parse(localStorage.getItem("userList")) || [];
 }
