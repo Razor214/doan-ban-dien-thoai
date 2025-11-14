@@ -148,15 +148,28 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
 // ================== PROFILE ==================
 function loadProfile() {
   let currentUser = getCurrentUser();
-  if (!currentUser) return;
+  let infoBox = document.getElementById("profile-info");
+  let actionsBox = document.getElementById("profileActions");
 
-  document.getElementById("profile-info").innerHTML = `
+  if (!currentUser) {
+    infoBox.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
+    if (actionsBox) actionsBox.style.display = "none";
+    return;
+  }
+
+  // Hiển thị thông tin user
+  infoBox.innerHTML = `
     <div class="info-item"><span class="info-label">Họ tên:</span> ${currentUser.fullname}</div>
     <div class="info-item"><span class="info-label">Tên đăng nhập:</span> ${currentUser.username}</div>
     <div class="info-item"><span class="info-label">Email:</span> ${currentUser.email}</div>
     <div class="info-item"><span class="info-label">Số điện thoại:</span> ${currentUser.sdt || 'Chưa cập nhật'}</div>
     <div class="info-item"><span class="info-label">Địa chỉ:</span> ${currentUser.address || 'Chưa cập nhật'}</div>
   `;
+
+  // Hiển thị nút hành động
+  if (actionsBox) {
+    actionsBox.style.display = "flex";
+  }
 }
 
 function toggleEditProfile() {
@@ -168,13 +181,18 @@ function toggleEditProfile() {
   let form = document.getElementById("profileForm");
   form.style.display = "block";
 
-  form.profileFullName.value = user.fullname;
-  form.profileEmail.value = user.email;
-  form.profilePhone.value = user.sdt || "";
-  form.profileAddress.value = user.address || "";
+  document.getElementById("profileFullName").value = user.fullname;
+  document.getElementById("profileEmail").value = user.email;
+  document.getElementById("profilePhone").value = user.sdt || "";
+  document.getElementById("profileAddress").value = user.address || "";
+  
+  // Reset password fields
+  document.getElementById("currentPassword").value = "";
+  document.getElementById("newPassword").value = "";
+  document.getElementById("confirmNewPassword").value = "";
 }
 
-function cancelEditProfile() {
+function cancelEdit() {
   document.getElementById("profileForm").style.display = "none";
   document.getElementById("profile-info").style.display = "block";
   document.getElementById("profileActions").style.display = "flex";
@@ -248,7 +266,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
   showProfileAlert("Cập nhật thành công!", "success");
 
   setTimeout(() => {
-    cancelEditProfile();
+    cancelEdit();
     loadProfile();
   }, 1500);
 });
@@ -258,6 +276,19 @@ function showProfileAlert(msg, type) {
   alertDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
 }
 
+// ================== HIỆN / ẨN MẬT KHẨU ==================
+function togglePassword(inputId, icon) {
+  let input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    icon.style.opacity = "0.5";
+  } else {
+    input.type = "password";
+    icon.style.opacity = "1";
+  }
+}
+
+// ================== ĐĂNG XUẤT ==================
 function logout() {
   if (confirm('Bạn có chắc muốn đăng xuất?')) {
     localStorage.removeItem("CurrentUser");
@@ -270,34 +301,27 @@ function logout() {
 // ================== HIỂN THỊ TÊN NGƯỜI DÙNG TRONG HEADER ==================
 function updateHeaderUserStatus() {
   const currentUser = getCurrentUser();
-  const guestLinks = document.getElementById('guest-links');
-  const userLinks = document.getElementById('user-links');
-  const userNameSpan = document.getElementById('user-name');
-  const adminBadge = document.getElementById('admin-badge');
-  const adminMenuLink = document.getElementById('admin-menu-link');
+  const guestLinks = document.querySelector('.navbar a[href="user.html?tab=login"]');
+  const registerLinks = document.querySelector('.navbar a[href="user.html?tab=register"]');
+  const profileLinks = document.querySelector('.navbar a[href="user.html?tab=profile"]');
+  const adminLinks = document.querySelector('.admin-link');
 
   if (currentUser) {
-    // Hiển thị menu người dùng đã đăng nhập
+    // Ẩn đăng nhập, đăng ký - hiển thị profile
     if (guestLinks) guestLinks.style.display = 'none';
-    if (userLinks) userLinks.style.display = 'flex';
+    if (registerLinks) registerLinks.style.display = 'none';
+    if (profileLinks) profileLinks.style.display = 'inline-block';
     
-    // Hiển thị tên người dùng
-    if (userNameSpan) {
-      userNameSpan.textContent = currentUser.fullname || currentUser.username;
-    }
-    
-    // Hiển thị badge admin nếu là admin
-    if (adminBadge) {
-      adminBadge.style.display = currentUser.role === 'admin' ? 'inline-block' : 'none';
-    }
-    
-    if (adminMenuLink) {
-      adminMenuLink.style.display = currentUser.role === 'admin' ? 'flex' : 'none';
+    // Hiển thị admin link nếu là admin
+    if (adminLinks) {
+      adminLinks.style.display = currentUser.role === 'admin' ? 'inline-block' : 'none';
     }
   } else {
-    // Hiển thị menu khách
-    if (guestLinks) guestLinks.style.display = 'flex';
-    if (userLinks) userLinks.style.display = 'none';
+    // Hiển thị đăng nhập, đăng ký - ẩn profile
+    if (guestLinks) guestLinks.style.display = 'inline-block';
+    if (registerLinks) registerLinks.style.display = 'inline-block';
+    if (profileLinks) profileLinks.style.display = 'none';
+    if (adminLinks) adminLinks.style.display = 'none';
   }
 }
 
@@ -317,15 +341,18 @@ function navigateToCart() {
 }
 
 // Load khi mở trang
-window.onload = () => {
+window.onload = function() {
   let user = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get("tab");
   
   // Cập nhật header
   updateHeaderUserStatus();
   
-  if (user) showTab(query || "profile");
-  else showTab(query || "login");
+  if (user) {
+    showTab(query || "profile");
+  } else {
+    showTab(query || "login");
+  }
 };
 
 // Thêm event listener cho các nút giỏ hàng
