@@ -125,12 +125,12 @@
                     <input type="date" id="importDate" required>
 
                     <label>Tổng giá trị:</label>
-                    <input type="number" id="importTotal" required>
+                    <input type="text" id="importTotal" required>
 
                     <label>Trạng thái:</label>
                     <select id="importStatus">
-                        <option value="Đang xử lý">Đang xử lý</option>
-                        <option value="Hoàn thành">Hoàn thành</option>
+                        <option value="pending">pending</option>
+                        <option value="completed">completed</option>
                     </select>
 
                     <label>Chi tiết sản phẩm:</label>
@@ -483,9 +483,6 @@
                         </thead>
                         <tbody id="modalHistoryBody"></tbody>
                     </table>
-                    <div class="hanhdong">
-                        <button id="exportBtn">Xuất báo cáo</button>
-                    </div>
                 </div>
             </div>
             <div id="popup-modal" class="popup-modal">
