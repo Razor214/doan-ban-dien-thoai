@@ -18,29 +18,50 @@ class ProductManager {
     this.applyFilters();
   }
   loadProducts() {
-    // 1️⃣ Lấy dữ liệu từ LocalStorage nếu có
+    console.log("=== BẮT ĐẦU LOAD PRODUCTS ===");
+
+    // Kiểm tra dữ liệu từ các nguồn
     const storedProducts = JSON.parse(localStorage.getItem("productList"));
     const storedPrices = JSON.parse(localStorage.getItem("priceList"));
 
-    // 2️⃣ Nếu LocalStorage chưa có, dùng file tĩnh để khởi tạo
+    console.log("Stored products:", storedProducts);
+    console.log("Stored prices:", storedPrices);
+    console.log(
+      "Global productList:",
+      typeof productList !== "undefined" ? productList : "UNDEFINED"
+    );
+    console.log(
+      "Global priceList:",
+      typeof priceList !== "undefined" ? priceList : "UNDEFINED"
+    );
+    console.log(
+      "Global categoryList:",
+      typeof categoryList !== "undefined" ? categoryList : "UNDEFINED"
+    );
+
     const productsData =
       storedProducts || (typeof productList !== "undefined" ? productList : []);
     const pricesData =
       storedPrices || (typeof priceList !== "undefined" ? priceList : []);
 
-    // 3️⃣ Gán dữ liệu
+    console.log("Products data to use:", productsData);
+    console.log("Prices data to use:", pricesData);
+
+    // Gán dữ liệu
     this.products = productsData.map((product) => {
       const priceInfo = pricesData.find(
         (price) => price.productId === product.id
       );
+      console.log(`Product ${product.id} - Price info:`, priceInfo);
+
       return {
         id: product.id,
         name: product.name,
         brand: this.getBrandFromCategory(product.categoryId),
         price: priceInfo ? priceInfo.price : 0,
         image: product.img,
-        ram: parseInt(product.ram),
-        storage: parseInt(product.storage),
+        ram: parseInt(product.ram) || 0,
+        storage: parseInt(product.storage) || 0,
         cpu: product.chip,
         display: product.display,
         camera: product.camera,
@@ -50,11 +71,21 @@ class ProductManager {
       };
     });
 
-    // 4️⃣ Cập nhật lại nếu LocalStorage chưa có dữ liệu
-    if (!storedProducts)
-      localStorage.setItem("productList", JSON.stringify(this.products));
-    if (!storedPrices)
+    console.log("Final products:", this.products);
+
+    // Cập nhật localStorage nếu chưa có
+    if (!storedProducts && productsData.length > 0) {
+      localStorage.setItem("productList", JSON.stringify(productsData));
+    }
+    if (!storedPrices && pricesData.length > 0) {
       localStorage.setItem("priceList", JSON.stringify(pricesData));
+    }
+    if (
+      !localStorage.getItem("categoryList") &&
+      typeof categoryList !== "undefined"
+    ) {
+      localStorage.setItem("categoryList", JSON.stringify(categoryList));
+    }
 
     this.filteredProducts = [...this.products];
   }
@@ -63,6 +94,7 @@ class ProductManager {
     const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
     const category = categories.find((c) => c.id === categoryId);
 
+    if (category) return category.brand;
     const brandMap = {
       TH01: "Apple",
       TH02: "Samsung",
@@ -74,7 +106,7 @@ class ProductManager {
       TH08: "OnePlus",
       TH09: "Google",
     };
-    if (category) return category.brand;
+
     return brandMap[categoryId] || "Unknown";
   }
   setupEventListeners() {
