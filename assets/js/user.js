@@ -17,6 +17,7 @@ if (!localStorage.getItem("userList")) {
     }
 }
 
+
 function getListUser() {
   return JSON.parse(localStorage.getItem("userList")) || [];
 }
@@ -137,9 +138,6 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   }
 
   setCurrentUser(found);
-  
-  // Cập nhật header sau khi đăng nhập
-  updateHeaderUserStatus();
 
   if (found.role === "admin") window.location.href = "admin.html";
   else window.location.href = "index.html";
@@ -148,28 +146,15 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
 // ================== PROFILE ==================
 function loadProfile() {
   let currentUser = getCurrentUser();
-  let infoBox = document.getElementById("profile-info");
-  let actionsBox = document.getElementById("profileActions");
+  if (!currentUser) return;
 
-  if (!currentUser) {
-    infoBox.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
-    if (actionsBox) actionsBox.style.display = "none";
-    return;
-  }
-
-  // Hiển thị thông tin user - SỬA LẠI ĐỂ HIỂN THỊ ĐÚNG DỮ LIỆU
-  infoBox.innerHTML = `
-    <div class="info-item"><span class="info-label">Họ tên:</span> ${currentUser.fullname || 'Chưa cập nhật'}</div>
+  document.getElementById("profile-info").innerHTML = `
+    <div class="info-item"><span class="info-label">Họ tên:</span> ${currentUser.fullname}</div>
     <div class="info-item"><span class="info-label">Tên đăng nhập:</span> ${currentUser.username}</div>
     <div class="info-item"><span class="info-label">Email:</span> ${currentUser.email}</div>
     <div class="info-item"><span class="info-label">Số điện thoại:</span> ${currentUser.sdt || 'Chưa cập nhật'}</div>
     <div class="info-item"><span class="info-label">Địa chỉ:</span> ${currentUser.address || 'Chưa cập nhật'}</div>
   `;
-
-  // Hiển thị nút hành động
-  if (actionsBox) {
-    actionsBox.style.display = "flex";
-  }
 }
 
 function toggleEditProfile() {
@@ -181,22 +166,10 @@ function toggleEditProfile() {
   let form = document.getElementById("profileForm");
   form.style.display = "block";
 
-  document.getElementById("profileFullName").value = user.fullname || "";
-  document.getElementById("profileEmail").value = user.email || "";
-  document.getElementById("profilePhone").value = user.sdt || "";
-  document.getElementById("profileAddress").value = user.address || "";
-  
-  // Reset password fields
-  document.getElementById("currentPassword").value = "";
-  document.getElementById("newPassword").value = "";
-  document.getElementById("confirmNewPassword").value = "";
-}
-
-function cancelEdit() {
-  document.getElementById("profileForm").style.display = "none";
-  document.getElementById("profile-info").style.display = "block";
-  document.getElementById("profileActions").style.display = "flex";
-  document.getElementById("profile-alert").innerHTML = "";
+  form.profileFullName.value = user.fullname;
+  form.profileEmail.value = user.email;
+  form.profilePhone.value = user.sdt || "";
+  form.profileAddress.value = user.address || "";
 }
 
 document.getElementById("profileForm")?.addEventListener("submit", function (e) {
@@ -207,43 +180,16 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   let newData = {
     ...user,
-    fullname: document.getElementById("profileFullName").value.trim(),
-    email: document.getElementById("profileEmail").value.trim().toLowerCase(),
-    sdt: document.getElementById("profilePhone").value.trim(),
-    address: document.getElementById("profileAddress").value.trim()
+    fullname: profileFullName.value.trim(),
+    email: profileEmail.value.trim().toLowerCase(),
+    sdt: profilePhone.value.trim(),
+    address: profileAddress.value.trim()
   };
 
-  let currentPass = document.getElementById("currentPassword").value;
-  let newPass = document.getElementById("newPassword").value;
-  let confirmNewPass = document.getElementById("confirmNewPassword").value;
+  let currentPass = currentPassword.value;
+  let newPass = newPassword.value;
+  let confirmNewPass = confirmNewPassword.value;
 
-  // Kiểm tra email
-  if (!emailRegex.test(newData.email)) {
-    showProfileAlert("Email không hợp lệ!", "error");
-    return;
-  }
-
-  // Kiểm tra số điện thoại
-  if (newData.sdt && !phoneRegex.test(newData.sdt)) {
-    showProfileAlert("Số điện thoại phải gồm 10 số và bắt đầu bằng 0", "error");
-    return;
-  }
-
-  // Kiểm tra trùng email và số điện thoại
-  for (let u of list) {
-    if (!equalUser(u, user)) {
-      if (u.email === newData.email) {
-        showProfileAlert("Email đã tồn tại!", "error");
-        return;
-      }
-      if (u.sdt === newData.sdt && newData.sdt !== "") {
-        showProfileAlert("Số điện thoại đã tồn tại!", "error");
-        return;
-      }
-    }
-  }
-
-  // Xử lý đổi mật khẩu
   if (newPass) {
     if (!passRegex.test(newPass))
       return showProfileAlert("Mật khẩu mới ≥ 8 ký tự gồm chữ + số!", "error");
@@ -259,16 +205,9 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   setCurrentUser(newData);
   updateListUser(user, newData);
-  
-  // Cập nhật header sau khi chỉnh sửa
-  updateHeaderUserStatus();
-  
   showProfileAlert("Cập nhật thành công!", "success");
 
-  setTimeout(() => {
-    cancelEdit();
-    loadProfile();
-  }, 1500);
+  setTimeout(() => window.location.reload(), 1000);
 });
 
 function showProfileAlert(msg, type) {
@@ -276,122 +215,15 @@ function showProfileAlert(msg, type) {
   alertDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
 }
 
-// ================== HIỆN / ẨN MẬT KHẨU ==================
-function togglePassword(inputId, icon) {
-  let input = document.getElementById(inputId);
-  if (input.type === "password") {
-    input.type = "text";
-    icon.style.opacity = "0.5";
-  } else {
-    input.type = "password";
-    icon.style.opacity = "1";
-  }
-}
-
-// ================== ĐĂNG XUẤT ==================
 function logout() {
-  if (confirm('Bạn có chắc muốn đăng xuất?')) {
-    localStorage.removeItem("CurrentUser");
-    // Cập nhật header sau khi đăng xuất
-    updateHeaderUserStatus();
-    window.location.href = "index.html";
-  }
-}
-
-// ================== HIỂN THỊ TÊN NGƯỜI DÙNG TRONG HEADER ==================
-function updateHeaderUserStatus() {
-  const currentUser = getCurrentUser();
-  const guestLinks = document.querySelectorAll('.navbar a[href="user.html?tab=login"], .navbar a[href="user.html?tab=register"]');
-  const profileLinks = document.querySelector('.navbar a[href="user.html?tab=profile"]');
-  const adminLinks = document.querySelector('.admin-link');
-  
-  // Tạo hoặc cập nhật user info trong header
-  let userInfo = document.querySelector('.user-info');
-  if (!userInfo) {
-    userInfo = document.createElement('div');
-    userInfo.className = 'user-info';
-    // Chèn vào sau logo hoặc trước navbar
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-      navbar.parentNode.insertBefore(userInfo, navbar);
-    }
-  }
-
-  if (currentUser) {
-    // Hiển thị thông tin user
-    userInfo.innerHTML = `
-      <div class="user-welcome">
-        <span>Xin chào, ${currentUser.fullname || currentUser.username}</span>
-        <div class="user-menu">
-          <a href="index.html">Về trang chủ</a>
-          <a href="user.html?tab=profile">Hồ sơ cá nhân</a>
-          <a href="cart.html">Giỏ hàng</a>
-          <a href="#" onclick="logout()">Đăng xuất</a>
-        </div>
-      </div>
-    `;
-    userInfo.style.display = 'block';
-
-    // Ẩn đăng nhập, đăng ký - hiển thị profile
-    guestLinks.forEach(link => link.style.display = 'none');
-    if (profileLinks) profileLinks.style.display = 'none';
-    
-    // Hiển thị admin link nếu là admin
-    if (adminLinks) {
-      adminLinks.style.display = currentUser.role === 'admin' ? 'inline-block' : 'none';
-    }
-  } else {
-    // Ẩn user info
-    userInfo.style.display = 'none';
-    
-    // Hiển thị đăng nhập, đăng ký - ẩn profile
-    guestLinks.forEach(link => link.style.display = 'inline-block');
-    if (profileLinks) profileLinks.style.display = 'none';
-    if (adminLinks) adminLinks.style.display = 'none';
-  }
-}
-
-// ================== XỬ LÝ CHUYỂN TRANG GIỎ HÀNG ==================
-function navigateToCart() {
-  const currentUser = getCurrentUser();
-  
-  if (!currentUser) {
-    if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-      showTab('login');
-    }
-    return false;
-  }
-  
-  window.location.href = 'cart.html';
-  return true;
+  localStorage.removeItem("CurrentUser");
+  window.location.href = "index.html";
 }
 
 // Load khi mở trang
-window.onload = function() {
+window.onload = () => {
   let user = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get("tab");
-  
-  // Cập nhật header
-  updateHeaderUserStatus();
-  
-  if (user) {
-    showTab(query || "profile");
-  } else {
-    showTab(query || "login");
-  }
+  if (user) showTab(query || "profile");
+  else showTab(query || "login");
 };
-
-// Thêm event listener cho các nút giỏ hàng
-document.addEventListener('DOMContentLoaded', function() {
-  const cartLinks = document.querySelectorAll('a[href="cart.html"]');
-  
-  cartLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      navigateToCart();
-    });
-  });
-  
-  // Cập nhật header ngay khi DOM loaded
-  updateHeaderUserStatus();
-});
