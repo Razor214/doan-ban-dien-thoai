@@ -518,51 +518,6 @@ window.onload = function () {
   }
 };
 
-// ================== XỬ LÝ MỞ CART THÔNG MINH ==================
-function navigateToCart() {
-    const currentUser = getCurrentUser();
-    
-    if (!currentUser) {
-        if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-            // Kiểm tra xem đang ở trang nào
-            if (window.location.pathname.includes('user.html') || 
-                window.location.href.includes('user.html')) {
-                // Đang ở user.html -> chuyển tab login
-                showTab('login');
-            } else {
-                // Đang ở trang khác -> chuyển đến user.html
-                window.location.href = 'user.html?tab=login';
-            }
-        }
-        return false;
-    }
-    
-    // Đã đăng nhập -> chuyển đến cart.html
-    window.location.href = 'cart.html';
-    return true;
-}
-
-// ================== CHUYỂN TỪ PROFILE SANG CART ==================
-function navigateToCartFromProfile() {
-    return navigateToCart();
-}
-
-// ================== ÁP DỤNG CHO TẤT CẢ NÚT CART ==================
-document.addEventListener('DOMContentLoaded', function() {
-    // Xử lý cho tất cả link cart
-    const cartLinks = document.querySelectorAll('a[href="cart.html"]');
-    
-    cartLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToCart();
-        });
-    });
-    
-    // Cập nhật trạng thái đăng nhập trên header
-    updateHeaderUserStatus();
-});
-
 // ================== CẬP NHẬT HEADER ==================
 function updateHeaderUserStatus() {
     const currentUser = getCurrentUser();
