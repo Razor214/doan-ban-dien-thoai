@@ -51,9 +51,28 @@ function updateListUser(user, newData) {
 
 // ================== TAB CONTROL ==================
 function showTab(tab) {
-  document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
-  document.getElementById(tab)?.classList.add('active');
-  if (tab === "profile") loadProfile();
+  console.log('🔄 Switching to tab:', tab);
+  
+  // Ẩn tất cả các trang form
+  document.querySelectorAll('.form-page').forEach(p => {
+    p.classList.remove('active');
+    console.log('📄 Hidden page:', p.id);
+  });
+
+  // Hiển thị trang được chọn
+  const targetPage = document.getElementById(tab);
+  if (targetPage) {
+    targetPage.classList.add('active');
+    console.log('✅ Activated page:', tab);
+  } else {
+    console.log('❌ Page not found:', tab);
+  }
+
+  // Xử lý riêng cho tab profile
+  if (tab === "profile") {
+    console.log('👤 Loading profile...');
+    loadProfile();
+  }
 }
 
 // ================== REGEX CHECKS ==================
@@ -66,40 +85,51 @@ const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  let fullname = document.getElementById("fullName").value.trim();
+  let fullName = document.getElementById("fullName").value.trim();
   let username = document.getElementById("username").value.trim().toLowerCase();
   let email = document.getElementById("email").value.trim().toLowerCase();
-  let password = document.getElementById("password").value;
+  let pass = document.getElementById("password").value;
   let confirmPass = document.getElementById("confirmPassword").value;
-  let sdt = document.getElementById("phone").value.trim();
-  let address = document.getElementById("address").value.trim();
+  let phone = document.getElementById("phone").value.trim();
+  let address = document.getElementById("address").value.trim(); // Thêm địa chỉ
 
-  if (!usernameRegex.test(username)) return showRegisterError("Tên đăng nhập chỉ gồm chữ, số, gạch dưới (4-20 ký tự)");
-  if (!emailRegex.test(email)) return showRegisterError("Email không hợp lệ!");
-  if (sdt && !phoneRegex.test(sdt)) return showRegisterError("Số điện thoại phải gồm 10 số và bắt đầu bằng 0");
-  if (!passRegex.test(password)) return showRegisterError("Mật khẩu ≥ 8 ký tự, gồm chữ và số");
-  if (password !== confirmPass) return showRegisterError("Mật khẩu xác nhận không khớp!");
+  // --- kiểm tra định dạng ---
+  if (!usernameRegex.test(username))
+    return showRegisterError("Tên đăng nhập chỉ gồm chữ, số, gạch dưới (4-20 ký tự)");
+
+  if (!emailRegex.test(email))
+    return showRegisterError("Email không hợp lệ!");
+
+  if (phone && !phoneRegex.test(phone))
+    return showRegisterError("Số điện thoại phải gồm 10 số và bắt đầu bằng 0");
+
+  if (!passRegex.test(pass))
+    return showRegisterError("Mật khẩu ≥ 8 ký tự, gồm chữ và số");
+
+  if (pass !== confirmPass)
+    return showRegisterError("Mật khẩu xác nhận không khớp!");
 
   let list = getListUser();
 
+  // kiểm tra trùng
   for (let u of list) {
     if (u.username === username) return showRegisterError("Tên đăng nhập đã tồn tại!");
     if (u.email === email) return showRegisterError("Email đã tồn tại!");
-    if (u.sdt === sdt && sdt !== "") return showRegisterError("Số điện thoại đã tồn tại!");
+    if (u.phone === phone && phone !== "") return showRegisterError("Số điện thoại đã tồn tại!");
   }
 
-  const userIDs = list.filter(u => u.id?.startsWith("KH"))
-    .map(u => parseInt(u.id.replace("KH", "")));
-  const newId = "KH" + String((userIDs.length ? Math.max(...userIDs) + 1 : 1)).padStart(2, "0");
+  // Tạo ID mới cho user
+  const userCount = list.filter(u => u.id.startsWith("KH")).length;
+  const newId = "KH" + String(userCount + 1).padStart(2, "0");
 
   let newUser = {
     id: newId,
-    fullname,
-    username,
-    email,
-    password,
-    sdt,
-    address,
+    fullName: fullName,
+    username: username,
+    email: email,
+    pass: pass,
+    phone: phone,
+    address: address, // Thêm địa chỉ
     status: "active",
     role: "user"
   };
@@ -124,106 +154,346 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
   let pass = document.getElementById("loginPassword").value;
 
+  console.log('🔐 Attempting login with:', userInput);
+
   let list = getListUser();
+  console.log('👥 Users in storage:', list);
+
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) &&
-    u.password === pass &&
-    u.status === "active"
+    (u.username === userInput || u.email === userInput) && u.pass === pass && u.status === "active"
   );
+
+  console.log('🔍 Found user:', found);
 
   if (!found) {
     document.getElementById("login-alert").innerHTML =
-      `<div class="alert alert-error">Sai thông tin hoặc tài khoản đã khóa!</div>`;
+      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu, hoặc tài khoản đã bị khóa!</div>`;
     return;
   }
 
   setCurrentUser(found);
+  console.log('✅ User logged in:', found);
 
-  if (found.role === "admin") window.location.href = "admin.html";
-  else window.location.href = "index.html";
+  if (found.role === 'admin') {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "index.html";
+  }
 });
 
-// ================== PROFILE ==================
+// ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
+  let currentUser = getCurrentUser();
+  let infoBox = document.getElementById("profile-info");
+  let actionsBox = document.getElementById("profileActions");
+  let profileForm = document.getElementById("profileForm");
+
+  console.log('👤 Current user:', currentUser);
+
+  if (!currentUser) {
+    infoBox.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
+    if (actionsBox) actionsBox.style.display = "none";
+    if (profileForm) profileForm.style.display = "none";
+    console.log('❌ No user logged in');
+    return;
+  }
+
+  // Hiển thị thông tin user
+  infoBox.innerHTML = `
+    <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${currentUser.fullName}</span></div>
+    <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
+    <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
+    <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone || 'Chưa cập nhật'}</span></div>
+    <div class="info-item"><span class="info-label">Địa chỉ:</span> <span class="info-value">${currentUser.address || 'Chưa cập nhật'}</span></div>
+  `;
+
+  // Hiển thị nút hành động
+  if (actionsBox) {
+    actionsBox.style.display = "flex";
+    console.log('✅ Showed profile actions');
+  }
+  
+  // Ẩn form chỉnh sửa
+  if (profileForm) {
+    profileForm.style.display = "none";
+    console.log('✅ Hid profile form');
+  }
+
+  // Hiển thị thông tin profile
+  infoBox.style.display = "block";
+
+  console.log('✅ Profile loaded successfully');
+}
+
+// ================== TOGGLE EDIT PROFILE ==================
+function toggleEditProfile() {
   let currentUser = getCurrentUser();
   if (!currentUser) return;
 
-  document.getElementById("profile-info").innerHTML = `
-    <div class="info-item"><span class="info-label">Họ tên:</span> ${currentUser.fullname}</div>
-    <div class="info-item"><span class="info-label">Tên đăng nhập:</span> ${currentUser.username}</div>
-    <div class="info-item"><span class="info-label">Email:</span> ${currentUser.email}</div>
-    <div class="info-item"><span class="info-label">Số điện thoại:</span> ${currentUser.sdt || 'Chưa cập nhật'}</div>
-    <div class="info-item"><span class="info-label">Địa chỉ:</span> ${currentUser.address || 'Chưa cập nhật'}</div>
-  `;
-}
-
-function toggleEditProfile() {
-  let user = getCurrentUser();
-  if (!user) return;
-
+  // Ẩn thông tin và nút hành động
   document.getElementById("profile-info").style.display = "none";
   document.getElementById("profileActions").style.display = "none";
-  let form = document.getElementById("profileForm");
-  form.style.display = "block";
 
-  form.profileFullName.value = user.fullname;
-  form.profileEmail.value = user.email;
-  form.profilePhone.value = user.sdt || "";
-  form.profileAddress.value = user.address || "";
+  // Hiển thị form chỉnh sửa
+  document.getElementById("profileForm").style.display = "block";
+
+  // Điền thông tin hiện tại
+  document.getElementById("profileFullName").value = currentUser.fullName;
+  document.getElementById("profileEmail").value = currentUser.email;
+  document.getElementById("profilePhone").value = currentUser.phone;
+  document.getElementById("profileAddress").value = currentUser.address || ""; // Thêm địa chỉ
+
+  // Reset các field mật khẩu
+  document.getElementById("currentPassword").value = "";
+  document.getElementById("newPassword").value = "";
+  document.getElementById("confirmNewPassword").value = "";
 }
 
+// ================== CANCEL EDIT ==================
+function cancelEdit() {
+  // Ẩn form chỉnh sửa
+  document.getElementById("profileForm").style.display = "none";
+
+  // Hiển thị lại thông tin và nút hành động
+  document.getElementById("profile-info").style.display = "block";
+  document.getElementById("profileActions").style.display = "flex";
+
+  // Load lại thông tin profile
+  loadProfile();
+}
+
+// ================== PROFILE FORM SUBMIT ==================
 document.getElementById("profileForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
-
-  let user = getCurrentUser();
+  let currentUser = getCurrentUser();
   let list = getListUser();
 
   let newData = {
-    ...user,
-    fullname: profileFullName.value.trim(),
-    email: profileEmail.value.trim().toLowerCase(),
-    sdt: profilePhone.value.trim(),
-    address: profileAddress.value.trim()
+    id: currentUser.id,
+    fullName: document.getElementById("profileFullName").value.trim(),
+    username: currentUser.username,
+    email: document.getElementById("profileEmail").value.trim(),
+    phone: document.getElementById("profilePhone").value.trim(),
+    address: document.getElementById("profileAddress").value.trim(), // Thêm địa chỉ
+    pass: currentUser.pass,
+    status: currentUser.status,
+    role: currentUser.role
   };
 
-  let currentPass = currentPassword.value;
-  let newPass = newPassword.value;
-  let confirmNewPass = confirmNewPassword.value;
+  // Lấy thông tin mật khẩu
+  let currentPassword = document.getElementById("currentPassword").value;
+  let newPassword = document.getElementById("newPassword").value;
+  let confirmNewPassword = document.getElementById("confirmNewPassword").value;
 
-  if (newPass) {
-    if (!passRegex.test(newPass))
-      return showProfileAlert("Mật khẩu mới ≥ 8 ký tự gồm chữ + số!", "error");
-
-    if (newPass !== confirmNewPass)
-      return showProfileAlert("Xác nhận mật khẩu không khớp!", "error");
-
-    if (currentPass !== user.password)
-      return showProfileAlert("Mật khẩu hiện tại không đúng!", "error");
-
-    newData.password = newPass;
+  // Kiểm tra email
+  if (!emailRegex.test(newData.email)) {
+    showProfileAlert("Email không hợp lệ!", "error");
+    return;
   }
 
-  setCurrentUser(newData);
-  updateListUser(user, newData);
-  showProfileAlert("Cập nhật thành công!", "success");
+  // Kiểm tra số điện thoại
+  if (newData.phone && !phoneRegex.test(newData.phone)) {
+    showProfileAlert("Số điện thoại phải gồm 10 số và bắt đầu bằng 0", "error");
+    return;
+  }
 
-  setTimeout(() => window.location.reload(), 1000);
+  // Kiểm tra trùng email và số điện thoại
+  for (let u of list) {
+    if (!equalUser(u, currentUser)) {
+      if (u.email === newData.email) {
+        showProfileAlert("Email đã tồn tại!", "error");
+        return;
+      }
+      if (u.phone === newData.phone && newData.phone !== "") {
+        showProfileAlert("Số điện thoại đã tồn tại!", "error");
+        return;
+      }
+    }
+  }
+
+  // Xử lý đổi mật khẩu nếu có nhập
+  let passwordChanged = false;
+  if (currentPassword || newPassword || confirmNewPassword) {
+    if (!currentPassword) {
+      showProfileAlert("Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu", "error");
+      return;
+    }
+
+    if (currentPassword !== currentUser.pass) {
+      showProfileAlert("Mật khẩu hiện tại không đúng!", "error");
+      return;
+    }
+
+    if (!passRegex.test(newPassword)) {
+      showProfileAlert("Mật khẩu mới phải ≥ 8 ký tự và gồm chữ + số!", "error");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      showProfileAlert("Xác nhận mật khẩu mới không khớp!", "error");
+      return;
+    }
+
+    // Cập nhật mật khẩu mới
+    newData.pass = newPassword;
+    passwordChanged = true;
+  }
+
+  // Cập nhật dữ liệu
+  setCurrentUser(newData);
+  updateListUser(currentUser, newData);
+
+  let successMsg = "Cập nhật thông tin thành công!";
+  if (passwordChanged) {
+    successMsg = "Cập nhật thông tin và đổi mật khẩu thành công!";
+  }
+
+  showProfileAlert(successMsg, "success");
+
+  // Đóng form và load lại
+  setTimeout(() => {
+    cancelEdit();
+  }, 1500);
 });
 
+// ================== PROFILE ALERT ==================
 function showProfileAlert(msg, type) {
   const alertDiv = document.getElementById("profile-alert");
   alertDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+
+  setTimeout(() => {
+    alertDiv.innerHTML = "";
+  }, 3000);
 }
 
+// ================== HIỆN / ẨN MẬT KHẨU ==================
+function togglePassword(inputId, icon) {
+  let input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    icon.style.opacity = "0.5";
+  } else {
+    input.type = "password";
+    icon.style.opacity = "1";
+  }
+}
+
+// ================== ĐĂNG XUẤT ==================
 function logout() {
-  localStorage.removeItem("CurrentUser");
-  window.location.href = "index.html";
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    localStorage.removeItem("CurrentUser");
+    window.location.href = "index.html";
+  }
+  return false;
 }
 
-// Load khi mở trang
-window.onload = () => {
-  let user = getCurrentUser();
-  let query = new URLSearchParams(window.location.search).get("tab");
-  if (user) showTab(query || "profile");
-  else showTab(query || "login");
+// ================== ĐỒNG BỘ MỌI THỨ ==================
+function capNhatMoiThu() {
+  let currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  setCurrentUser(currentUser);
+  updateListUser(currentUser);
+  loadProfile();
+
+  console.log("✅ Đồng bộ hoàn tất");
+}
+
+// ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
+window.onload = function () {
+  console.log('🚀 Page loaded');
+  
+  let currentUser = getCurrentUser();
+  let query = new URLSearchParams(window.location.search).get('tab');
+  
+  console.log('🔍 URL query tab:', query);
+  console.log('👤 Current user:', currentUser);
+
+  if (currentUser && (!query || query === "profile")) {
+    console.log('➡️ Auto-switching to profile tab');
+    showTab("profile");
+  } else if (query) {
+    console.log('➡️ Switching to query tab:', query);
+    showTab(query);
+  } else {
+    console.log('➡️ Defaulting to login tab');
+    showTab("login");
+  }
 };
+
+// ================== XỬ LÝ MỞ CART THÔNG MINH ==================
+function navigateToCart() {
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) {
+        if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
+            // Kiểm tra xem đang ở trang nào
+            if (window.location.pathname.includes('user.html') || 
+                window.location.href.includes('user.html')) {
+                // Đang ở user.html -> chuyển tab login
+                showTab('login');
+            } else {
+                // Đang ở trang khác -> chuyển đến user.html
+                window.location.href = 'user.html?tab=login';
+            }
+        }
+        return false;
+    }
+    
+    // Đã đăng nhập -> chuyển đến cart.html
+    window.location.href = 'cart.html';
+    return true;
+}
+
+// ================== CHUYỂN TỪ PROFILE SANG CART ==================
+function navigateToCartFromProfile() {
+    return navigateToCart();
+}
+
+// ================== ÁP DỤNG CHO TẤT CẢ NÚT CART ==================
+document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý cho tất cả link cart
+    const cartLinks = document.querySelectorAll('a[href="cart.html"]');
+    
+    cartLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            navigateToCart();
+        });
+    });
+    
+    // Cập nhật trạng thái đăng nhập trên header
+    updateHeaderUserStatus();
+});
+
+// ================== CẬP NHẬT HEADER ==================
+function updateHeaderUserStatus() {
+    const currentUser = getCurrentUser();
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const adminBadge = document.getElementById('admin-badge');
+    const adminMenuLink = document.getElementById('admin-menu-link');
+    const userNameSpan = document.getElementById('user-name');
+
+    if (currentUser && currentUser.username) {
+        // Ẩn guest links, hiển thị user links
+        if (guestLinks) guestLinks.style.display = 'none';
+        if (userLinks) userLinks.style.display = 'flex';
+
+        // Hiển thị tên user
+        const userName = currentUser.fullName || currentUser.username;
+        if (userNameSpan) userNameSpan.textContent = userName;
+
+        // Kiểm tra và hiển thị badge admin + menu item nếu là admin
+        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';
+        if (adminBadge) {
+            adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
+        }
+        if (adminMenuLink) {
+            adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
+        }
+    } else {
+        if (guestLinks) guestLinks.style.display = 'flex';
+        if (userLinks) userLinks.style.display = 'none';
+    }
+}
