@@ -950,7 +950,8 @@ function updateInventoryFromOrder(order){
   let hasChanges = false;
   
   // Lấy ngày của đơn hàng, hoặc ngày hôm nay nếu không có
-  const orderDate = order.date || new Date().toISOString().split('T')[0]; 
+  const today = new Date();
+  const ngayDelivered = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
   // Lặp qua từng sản phẩm trong đơn hàng
   order.items.forEach(item => {
@@ -967,17 +968,16 @@ function updateInventoryFromOrder(order){
 
       inventoryItem.slBan = currentSlBan + itemQuantity; // Tăng số lượng BÁN
       inventoryItem.slTon = Math.max(0, currentSlTon - itemQuantity); // Giảm số lượng TỒN (không để âm)
-      inventoryItem.ngayCapNhat = orderDate; // Cập nhật ngày
-
+      inventoryItem.ngayCapNhat = ngayDelivered; // Cập nhật ngày
       // Tạo mục lịch sử mới
       const historyEntry = {
-        ngay: orderDate,
-        hanhDong: 'Bán', // Hoặc 'Xuất'
+        ngay: ngayDelivered,
+        hanhDong: 'Bán', 
         soLuong: itemQuantity,
         orderId: order.id // Thêm ID đơn hàng để tham chiếu
       };
 
-      // Thêm vào đầu mảng lịch sử (nếu mảng history tồn tại)
+      // Thêm vào đầu mảng lịch sử 
       if (!inventoryItem.history) {
         inventoryItem.history = [];
       }
@@ -1002,7 +1002,7 @@ function updateInventoryFromOrder(order){
   if (hasChanges) {
     setInventory(inventoryList); // Lưu lại vào localStorage
     
-    // Tự động cập nhật bảng tồn kho (nếu bạn đang xem)
+    // Tự động cập nhật bảng tồn kho
     if (typeof syncAndRenderInventory === 'function') {
       syncAndRenderInventory();
     }
