@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/user.css">
     <link rel="stylesheet" href="assets/css/user2.css">
+    <!-- Thêm Font Awesome cho icon đẹp -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -46,7 +48,12 @@
 
                         <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" id="loginPassword" class="form-input" required>
+                            <div class="password-box">
+                                <input type="password" id="loginPassword" class="form-input" required>
+                                <span class="toggle-pass" onclick="togglePassword('loginPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-primary">Đăng Nhập</button>
@@ -95,7 +102,9 @@
                             <label class="form-label">Mật khẩu</label>
                             <div class="password-box">
                                 <input type="password" id="password" class="form-input" required minlength="8">
-                                <span class="toggle-pass" onclick="togglePassword('password', this)">👁️</span>
+                                <span class="toggle-pass" onclick="togglePassword('password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
                             <small id="passwordError" class="error-text"></small>
                         </div>
@@ -104,7 +113,9 @@
                             <label class="form-label">Xác nhận mật khẩu</label>
                             <div class="password-box">
                                 <input type="password" id="confirmPassword" class="form-input" required>
-                                <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">👁️</span>
+                                <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
                             <small id="confirmPasswordError" class="error-text"></small>
                         </div>
@@ -173,7 +184,9 @@
                             <div class="password-box">
                                 <input type="password" id="currentPassword" class="form-input"
                                     placeholder="Nhập mật khẩu hiện tại">
-                                <span class="toggle-pass" onclick="togglePassword('currentPassword', this)">👁️</span>
+                                <span class="toggle-pass" onclick="togglePassword('currentPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
                         </div>
 
@@ -182,7 +195,9 @@
                             <div class="password-box">
                                 <input type="password" id="newPassword" class="form-input"
                                     placeholder="Nhập mật khẩu mới">
-                                <span class="toggle-pass" onclick="togglePassword('newPassword', this)">👁️</span>
+                                <span class="toggle-pass" onclick="togglePassword('newPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
                             <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
                                 Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số
@@ -194,8 +209,9 @@
                             <div class="password-box">
                                 <input type="password" id="confirmNewPassword" class="form-input"
                                     placeholder="Xác nhận mật khẩu mới">
-                                <span class="toggle-pass"
-                                    onclick="togglePassword('confirmNewPassword', this)">👁️</span>
+                                <span class="toggle-pass" onclick="togglePassword('confirmNewPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
                         </div>
 

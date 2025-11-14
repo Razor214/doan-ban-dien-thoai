@@ -137,14 +137,26 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   
   // Tìm user với cả 2 trường password và pass (để tương thích với dữ liệu cũ)
   let found = list.find(u =>
-    (u.username === userInput || u.email === userInput) && 
-    (u.password === pass || u.pass === pass) && 
-    u.status === "active"
+    (u.username === userInput || u.email === userInput)
   );
 
   if (!found) {
-    document.getElementById("login-alert").innerHTML =
-      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu, hoặc tài khoản đã bị khóa!</div>`;
+    showLoginError("Sai tài khoản hoặc mật khẩu!");
+    clearAndFocusLogin();
+    return;
+  }
+
+  // Kiểm tra tài khoản bị khóa
+  if (found.status === "locked" || found.status === "inactive") {
+    showLoginError("Tài khoản bị khoá, vui lòng liên hệ với quản trị viên.");
+    clearAndFocusLogin();
+    return;
+  }
+
+  // Kiểm tra mật khẩu
+  if (found.password !== pass && found.pass !== pass) {
+    showLoginError("Sai tài khoản hoặc mật khẩu!");
+    clearAndFocusLogin();
     return;
   }
 
@@ -169,6 +181,28 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     window.location.href = "index.html";
   }
 });
+
+// ================== XỬ LÝ LỖI ĐĂNG NHẬP ==================
+function showLoginError(msg) {
+  document.getElementById("login-alert").innerHTML =
+    `<div class="alert alert-error">${msg}</div>`;
+}
+
+function clearAndFocusLogin() {
+  // Lưu lại tên đăng nhập/email để focus
+  const usernameInput = document.getElementById("loginUsername");
+  const usernameValue = usernameInput.value;
+  
+  // Xóa mật khẩu
+  document.getElementById("loginPassword").value = "";
+  
+  // Focus vào trường tên đăng nhập/email
+  setTimeout(() => {
+    usernameInput.focus();
+    // Nếu muốn giữ lại giá trị username/email, không cần clear
+    // usernameInput.value = usernameValue;
+  }, 100);
+}
 
 // ================== HIỂN THỊ PROFILE ==================
 function loadProfile() {
@@ -354,12 +388,16 @@ function showProfileAlert(msg, type) {
 // ================== HIỆN / ẨN MẬT KHẨU ==================
 function togglePassword(inputId, icon) {
   let input = document.getElementById(inputId);
+  let eyeIcon = icon.querySelector('i');
+  
   if (input.type === "password") {
     input.type = "text";
-    icon.style.opacity = "0.5";
+    eyeIcon.classList.remove('fa-eye');
+    eyeIcon.classList.add('fa-eye-slash');
   } else {
     input.type = "password";
-    icon.style.opacity = "1";
+    eyeIcon.classList.remove('fa-eye-slash');
+    eyeIcon.classList.add('fa-eye');
   }
 }
 
