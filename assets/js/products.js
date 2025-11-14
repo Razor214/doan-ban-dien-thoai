@@ -68,8 +68,12 @@ class ProductManager {
         battery: product.battery,
         os: product.os,
         color: product.color,
+        status: product.status || "active",
       };
     });
+    this.products = this.products.filter(p => p.status === "active");
+
+    this.filteredProducts = [...this.products];
 
     console.log("Final products:", this.products);
 
