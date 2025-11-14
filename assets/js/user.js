@@ -374,6 +374,11 @@ function showProfileAlert(msg, type) {
   const alertDiv = document.getElementById("profile-alert");
   alertDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
 
+  window.scrollTo({
+    top: 0,
+    behabior: 'smooth'
+  });
+  
   setTimeout(() => {
     alertDiv.innerHTML = "";
   }, 3000);

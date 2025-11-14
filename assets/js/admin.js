@@ -325,7 +325,7 @@ function searchProduct() {
   const keyword = searchInput.value.trim().toLowerCase();
   for (let row of table.getElementsByTagName('tr')) {
     // Kiểm tra ký tự đầu của tất cả các ô trong hàng
-    const match = Array.from(row.cells).some(cell => {
+    const match = Array.from(row.cells).some((cell, index) => {
       if (index === row.cells.length - 1) return false;
       return cell.innerText.trim().toLowerCase().startsWith(keyword);
     });
@@ -1375,8 +1375,12 @@ function getPriceByProductId(productId) {
 
 // --- RENDER TABLE (SẢN PHẨM) ---
 function renderProductTable(data = products) {
-  productTbody.innerHTML = data.map((p) => `
-    <tr>
+  productTbody.innerHTML = data.map((p) => {
+
+    const isBlocked = p.status === "inactive";
+
+    return `
+    <tr class="${isBlocked ? "fade-out"  : ""}">
       <td>${getCategoryName(p.categoryId)}</td>
       <td>${p.id}</td>
       <td>${p.name}</td>
@@ -1385,7 +1389,7 @@ function renderProductTable(data = products) {
              style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
       </td>
       <td>${p.desc}</td>
-      <td>${p.status === "active" ? "Đang hiển thị" : "Đã ẩn"}</td>
+      <td>${p.status === "active" ? "Active"  : "Hidden"}</td>
       <td class="action">
         <button class="edit" onclick="openProductModal('edit', this)">Sửa</button>
         <button class="delete" onclick="deleteProduct(this)">Xóa</button>
@@ -1395,7 +1399,7 @@ function renderProductTable(data = products) {
         <button class="view" onclick="viewProductDetail('${p.id}')">Chi tiết</button>
       </td>
     </tr>
-  `).join("");
+  `}).join("");
 }
 
 
@@ -1557,7 +1561,7 @@ function toggleProductStatus(id) {
   if (index === -1) return alert("Không tìm thấy sản phẩm!");
 
   const current = products[index];
-  const newStatus = current.status === "active" ? "hidden" : "active";
+  const newStatus = current.status === "active" ? "inactive" : "active";
   products[index].status = newStatus;
 
   setLocal("productList", products);
