@@ -1,14 +1,5 @@
 // ================== LOCALSTORAGE HELPER ==================
 // KHÔNG khởi tạo lại localStorage, giữ nguyên dữ liệu hiện có
-// Thêm ở đầu file user.js
-console.log('🔧 User.js is loading...');
-
-// Kiểm tra xem các element có tồn tại không
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM loaded');
-    console.log('Login form:', document.getElementById('loginForm'));
-    console.log('Register form:', document.getElementById('registerForm'));
-});
 
 function getListUser() {
   return JSON.parse(localStorage.getItem("userList")) || [];
