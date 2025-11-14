@@ -146,8 +146,8 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     return;
   }
 
-  // Kiểm tra tài khoản bị khóa
-  if (found.status === "locked" || found.status === "inactive") {
+  // Kiểm tra tài khoản bị khóa - SỬA LỖI Ở ĐÂY
+  if (found.status && found.status !== "active") {
     showLoginError("Tài khoản bị khoá, vui lòng liên hệ với quản trị viên.");
     clearAndFocusLogin();
     return;
@@ -169,7 +169,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
     pass: found.password || found.pass, // Chuẩn hóa thành pass
     phone: found.phone || found.sdt,
     address: found.address,
-    status: found.status,
+    status: found.status || "active", // Đảm bảo có status
     role: found.role || "user"
   };
 
@@ -189,18 +189,12 @@ function showLoginError(msg) {
 }
 
 function clearAndFocusLogin() {
-  // Lưu lại tên đăng nhập/email để focus
-  const usernameInput = document.getElementById("loginUsername");
-  const usernameValue = usernameInput.value;
-  
   // Xóa mật khẩu
   document.getElementById("loginPassword").value = "";
   
   // Focus vào trường tên đăng nhập/email
   setTimeout(() => {
-    usernameInput.focus();
-    // Nếu muốn giữ lại giá trị username/email, không cần clear
-    // usernameInput.value = usernameValue;
+    document.getElementById("loginUsername").focus();
   }, 100);
 }
 
