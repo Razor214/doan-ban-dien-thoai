@@ -13,12 +13,10 @@ class ProductManager {
     };
     this.searchQuery = "";
     this.isSearching = false;
-
     this.loadProducts();
     this.setupEventListeners();
     this.applyFilters();
   }
-
   loadProducts() {
     // 1️⃣ Lấy dữ liệu từ LocalStorage nếu có
     const storedProducts = JSON.parse(localStorage.getItem("productList"));
@@ -40,7 +38,6 @@ class ProductManager {
         name: product.name,
         brand: this.getBrandFromCategory(product.categoryId),
         price: priceInfo ? priceInfo.price : 0,
-        stock: Math.floor(Math.random() * 20) + 1,
         image: product.img,
         ram: parseInt(product.ram),
         storage: parseInt(product.storage),
@@ -61,15 +58,10 @@ class ProductManager {
 
     this.filteredProducts = [...this.products];
   }
-
   getBrandFromCategory(categoryId) {
     // Lấy dữ liệu loại sản phẩm mới nhất từ localStorage
     const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
     const category = categories.find((c) => c.id === categoryId);
-
-    if (category) {
-      return category.brand;
-    }
 
     const brandMap = {
       TH01: "Apple",
@@ -82,9 +74,9 @@ class ProductManager {
       TH08: "OnePlus",
       TH09: "Google",
     };
+    if (category) return category.brand;
     return brandMap[categoryId] || "Unknown";
   }
-
   setupEventListeners() {
     const filterIds = [
       "brandFilter",
@@ -118,7 +110,6 @@ class ProductManager {
       });
   }
 
-  //chuyển đổi id thành key
   getFilterKey(filterId) {
     const map = {
       brandFilter: "brand",
@@ -129,7 +120,6 @@ class ProductManager {
     };
     return map[filterId];
   }
-
   resetAllFilters() {
     this.filters = {
       brand: "all",
