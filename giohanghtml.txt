@@ -205,13 +205,73 @@
         <label for="newAddress">Địa chỉ:</label>
         <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
 
-        <label for="paymentMethod">Phương thức thanh toán:</label>
-        <select id="paymentMethod">
-          <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
-          <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
-        </select>
+        <!-- ======= PHƯƠNG THỨC THANH TOÁN ======= -->
+<div class="payment-section">
+  <label for="paymentMethod">Phương thức thanh toán:</label>
+  <select id="paymentMethod">
+    <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
+    <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
+  </select>
 
-        <button class="btn btn-checkout">Đặt hàng</button>
+  <!-- Khối hiển thị thông tin ngân hàng -->
+  <div id="bankInfo">
+  <p><strong>🏦 Thông tin chuyển khoản:</strong></p>
+  <label for="bankSelect">Chọn ngân hàng:</label>
+  <select id="bankSelect">
+    <option value="agribank">Agribank</option>
+    <option value="vietcombank">Vietcombank</option>
+    <option value="bidv">BIDV</option>
+    <option value="techcombank">Techcombank</option>
+    <option value="mbbank">MB Bank</option>
+  </select>
+  <div id="bankDetails" style="margin-top:10px;">
+    <p><strong>Ngân hàng Agribank</strong></p>
+    <p>Số TK: <b>123456789</b></p>
+    <p>Chủ TK: <b>Công ty SaiGonPhone</b></p>
+  </div>
+</div>
+
+<script>
+  const paymentSelect = document.getElementById("paymentMethod");
+  const bankInfo = document.getElementById("bankInfo");
+  const bankSelect = document.getElementById("bankSelect");
+  const bankDetails = document.getElementById("bankDetails");
+
+  // Ẩn khối ngân hàng khi mới tải trang
+  bankInfo.style.display = "none";
+
+  // Hiển thị hoặc ẩn thông tin ngân hàng khi chọn phương thức thanh toán
+  paymentSelect.addEventListener("change", () => {
+    if (paymentSelect.value === "Chuyển khoản") {
+      bankInfo.style.display = "block";
+    } else {
+      bankInfo.style.display = "none";
+    }
+  });
+
+  // Khi chọn ngân hàng, cập nhật thông tin hiển thị
+  bankSelect.addEventListener("change", () => {
+    const bank = bankSelect.value;
+    const banks = {
+      agribank: { name: "Agribank", stk: "123456789", owner: "Công ty SaiGonPhone" },
+      vietcombank: { name: "Vietcombank", stk: "0123456789", owner: "Công ty SaiGonPhone" },
+      bidv: { name: "BIDV", stk: "987654321", owner: "Công ty SaiGonPhone" },
+      techcombank: { name: "Techcombank", stk: "5566778899", owner: "Công ty SaiGonPhone" },
+      mbbank: { name: "MB Bank", stk: "1122334455", owner: "Công ty SaiGonPhone" },
+    };
+    const b = banks[bank];
+    bankDetails.innerHTML = `
+      <p><strong>Ngân hàng ${b.name}</strong></p>
+      <p>Số TK: <b>${b.stk}</b></p>
+      <p>Chủ TK: <b>${b.owner}</b></p>
+    `;
+  });
+</script>
+
+
+  <button class="btn btn-checkout">Đặt hàng</button>
+</div>
+
       </div>
 
       <a href="index.html" class="btn-back">⬅ Tiếp tục đặt hàng</a>
@@ -392,18 +452,6 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("closeModal").onclick=()=>ordersModal.style.display="none";
     document.getElementById("clearAllOrdersBtn").onclick=()=>{if(confirm("Xóa tất cả đơn hàng?")){localStorage.removeItem("orders");renderOrders();}};
     window.onclick=e=>{if(e.target===ordersModal)ordersModal.style.display="none";};
-
-    loadCart();
-     //  Hiển thị thông tin chuyển khoản Agribank khi chọn "Chuyển khoản"
-    const paymentSelect = document.getElementById("paymentMethod");
-    const bankInfo = document.getElementById("bankInfo");
-    paymentSelect.addEventListener("change", () => {
-      if (paymentSelect.value === "Chuyển khoản") {
-        bankInfo.style.display = "block";
-      } else {
-        bankInfo.style.display = "none";
-      }
-    });
 
     loadCart();
   </script>

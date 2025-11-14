@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giỏ hàng - SaiGonPhone</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="giohang.css">
 </head>
+
 <body>
   <header>
     🛒 Giỏ hàng của bạn
@@ -13,22 +14,22 @@
   </header>
 
   <main>
-  <h2 style="text-align:center; color:red; margin-top:20px;">🔥 SẢN PHẨM HOT 🔥</h2>
-  <!-- Danh sách sản phẩm -->
-  <section class="product-list">
-
+    <!-- Danh sách sản phẩm -->
+    <section class="product-list">
       <div class="product" data-id="1" data-name="iPhone 15 Pro" data-price="32000000">
         <img src="assets/img/iphone.jpg" alt="iPhone 15 Pro" onerror="this.src='https://via.placeholder.com/200'">
         <h3>iPhone 15 Pro</h3>
         <p>Giá: 32.000.000₫</p>
         <button class="btn-add">Thêm vào giỏ</button>
       </div>
+
       <div class="product" data-id="2" data-name="Samsung Galaxy S24" data-price="25000000">
         <img src="assets/img/samsung.jpg" alt="Samsung Galaxy S24" onerror="this.src='https://via.placeholder.com/200'">
         <h3>Samsung Galaxy S24</h3>
         <p>Giá: 25.000.000₫</p>
         <button class="btn-add">Thêm vào giỏ</button>
       </div>
+
       <div class="product" data-id="3" data-name="Xiaomi 14 Ultra" data-price="20000000">
         <img src="assets/img/xiaomi.jpg" alt="Xiaomi 14 Ultra" onerror="this.src='https://via.placeholder.com/200'">
         <h3>Xiaomi 14 Ultra</h3>
@@ -42,7 +43,13 @@
       <table id="cartTable">
         <thead>
           <tr>
-            <th>Tên sản phẩm</th><th>Giá</th><th>-</th><th>Số lượng</th><th>+</th><th>Tổng</th><th>Xóa</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>-</th>
+            <th>Số lượng</th>
+            <th>+</th>
+            <th>Tổng</th>
+            <th>Xóa</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -56,6 +63,7 @@
       <!-- Địa chỉ nhận hàng -->
       <div class="address-section">
         <h3>Địa chỉ nhận hàng</h3>
+
         <label for="savedAddress">Chọn địa chỉ có sẵn:</label>
         <select id="savedAddress">
           <option value="">-- Chọn địa chỉ --</option>
@@ -63,22 +71,39 @@
 
         <label for="newName">Họ và tên:</label>
         <input type="text" id="newName" placeholder="Nhập họ tên">
+
         <label for="newPhone">Số điện thoại:</label>
         <input type="text" id="newPhone" placeholder="Nhập số điện thoại">
+
         <label for="newAddress">Địa chỉ:</label>
         <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
 
-        <label for="paymentMethod">Phương thức thanh toán:</label>
-        <select id="paymentMethod">
-          <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
-          <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
-        </select>
+        <!-- PHƯƠNG THỨC THANH TOÁN -->
+        <div class="payment-section">
+          <label for="paymentMethod">Phương thức thanh toán:</label>
+          <select id="paymentMethod">
+            <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
+            <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
+          </select>
 
-        <div id="bankInfo" style="display:none; margin-top:10px;">
-          <p><strong>🏦 Thông tin chuyển khoản:</strong></p>
-          <p>Ngân hàng Agribank</p>
-          <p>Số TK: <b>123456789</b></p>
-          <p>Chủ TK: <b>Công ty SaiGonPhone</b></p>
+          <div id="bankInfo">
+            <p><strong>🏦 Thông tin chuyển khoản:</strong></p>
+
+            <label for="bankSelect">Chọn ngân hàng:</label>
+            <select id="bankSelect">
+              <option value="agribank">Agribank</option>
+              <option value="vietcombank">Vietcombank</option>
+              <option value="bidv">BIDV</option>
+              <option value="techcombank">Techcombank</option>
+              <option value="mbbank">MB Bank</option>
+            </select>
+
+            <div id="bankDetails" style="margin-top:10px;">
+              <p><strong>Ngân hàng Agribank</strong></p>
+              <p>Số TK: <b>123456789</b></p>
+              <p>Chủ TK: <b>Công ty SaiGonPhone</b></p>
+            </div>
+          </div>
         </div>
 
         <button class="btn btn-checkout">Đặt hàng</button>
@@ -100,10 +125,6 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-  <script src="data/product.js"></script>
-  <script src="data/price.js"></script>
-  <script src="assets/js/products.js"></script>
-  <script src="assets/js/modal-product.js"></script>
+  <script src="giohang.js"></script>
 </body>
 </html>
