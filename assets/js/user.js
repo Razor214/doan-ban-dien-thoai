@@ -380,24 +380,24 @@ function showProfileAlert(msg, type) {
 }
 
 // ================== HIỆN / ẨN MẬT KHẨU ==================
-function togglePassword(inputId, icon) {
-  let input = document.getElementById(inputId);
-  let eyeIcon = icon.querySelector('i');
-  
-  if (input.type === "password") {
-    input.type = "text";
-    eyeIcon.classList.remove('fa-eye');
-    eyeIcon.classList.add('fa-eye-slash');
-    icon.classList.add('active');
-  } else {
-    input.type = "password";
-    eyeIcon.classList.remove('fa-eye-slash');
-    eyeIcon.classList.add('fa-eye');
-    icon.classList.remove('active');
-  }
-  
-  // Thêm hiệu ứng focus cho input
-  input.focus();
+function togglePassword(inputId, iconElement) {
+    const passwordInput = document.getElementById(inputId);
+    const eyeIcon = iconElement.querySelector('i');
+    
+    if (passwordInput.type === "password") {
+        // Hiện mật khẩu
+        passwordInput.type = "text";
+        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        iconElement.classList.add('active');
+    } else {
+        // Ẩn mật khẩu
+        passwordInput.type = "password";
+        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        iconElement.classList.remove('active');
+    }
+    
+    // Giữ focus trên input
+    passwordInput.focus();
 }
 
 // ================== ĐĂNG XUẤT ==================
