@@ -548,6 +548,15 @@ function update() {
 
   const order = orderList.find((o) => o.id === id);
   if (order) {
+    const oldStatus = order.status;
+    if (newStatus === "delivered" && oldStatus !== "delivered") {
+      if (typeof updateInventoryFromOrder === "function") {
+        updateInventoryFromOrder(order); // Gọi hàm cập nhật tồn kho
+      } else {
+        console.error("Hàm updateInventoryFromOrder không được tìm thấy!");
+        alert("Lỗi: Không thể cập nhật tồn kho. Hàm 'updateInventoryFromOrder' bị thiếu.");
+      }
+    }
     order.status = newStatus;
     setLocalOrders(orderList);
     syncAndRenderOrders(); // Cập nhật lại bảng
@@ -864,7 +873,8 @@ function updateInventoryFromImport(newSlip, oldSlip) {
 
         newSlip.items.forEach(item => {
             let inventoryItem = inventoryList.find(inv => inv.productId === item.productId);
-            
+            const itemQuantity = parseInt(item.quantity) || 0; // Chuyển sang số
+            if (itemQuantity === 0) return;
             // Tạo mục lịch sử mới
             const historyEntry = {
                 ngay: ngayCapNhatTonKho,
@@ -872,7 +882,6 @@ function updateInventoryFromImport(newSlip, oldSlip) {
                 soLuong: item.quantity,
                 importId: newSlip.id // Rất quan trọng để theo dõi
             };
-            const itemQuantity = parseInt(item.quantity) || 0;
             if (inventoryItem) {
                 // --- Cập nhật cho mục tồn kho đã có ---
                 const currentSlNhap = parseInt(inventoryItem.slNhap) || 0;
@@ -886,8 +895,12 @@ function updateInventoryFromImport(newSlip, oldSlip) {
                 hasChanges = true;
             } else {
                 // --- Tạo mới mục tồn kho ---
-                const productInfo = window.productData.find(p => p.id === item.productId);
+                const allProduct = JSON.parse(localStorage.getItem("productList"))||[];
+                const allCategories = JSON.parse(localStorage.getItem("categoryList"))||[];
+                const productInfo = allProduct.find(p => p.id === item.productId);
                 if (productInfo) {
+                    const categoryInfo = allCategories.find(c=>c.id === productInfo.categoryId);
+                    const categoryName = categoryInfo ? categoryInfo.brand : productInfo.categoryId;
                     const newInventoryCode = generateInventoryCode();
                     const newInventoryItem = {
                         id: newInventoryCode,
@@ -898,13 +911,15 @@ function updateInventoryFromImport(newSlip, oldSlip) {
                         slTon: item.quantity,
                         minTon: window.MIN_TON || 10,
                         stockPro: productInfo.name,
-                        stockCate: window.getCategoryName ? window.getCategoryName(productInfo.categoryId) : productInfo.categoryId,
+                        stockCate: categoryName,
                         ngayCapNhat: ngayCapNhatTonKho,
                         trangThai: item.quantity > (window.MIN_TON || 10) ? 'Còn hàng' : 'Sắp hết',
                         history: [historyEntry]
                     };
                     inventoryList.push(newInventoryItem);
                     hasChanges = true;
+                }else{
+                  console.error(`Lỗi Tồn Kho: Không tìm thấy sản phẩm ${item.productId} trong localStorage. Phiếu nhập ${newSlip.id}`);
                 }
             }
         });
@@ -928,7 +943,81 @@ function updateInventoryFromImport(newSlip, oldSlip) {
         }
     }
 }
+//Liên kết với đơn hàng
+function updateInventoryFromOrder(order){
+  console.log("Đang cập nhật tồn kho cho đơn hàng:", order.id);
+  const inventoryList = getInventory(); // Lấy tồn kho hiện tại
+  let hasChanges = false;
+  
+  // Lấy ngày của đơn hàng, hoặc ngày hôm nay nếu không có
+  const today = new Date();
+  const ngayDelivered = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
+  // Lặp qua từng sản phẩm trong đơn hàng
+  order.items.forEach(item => {
+    const itemQuantity = parseInt(item.quantity) || 0;
+    if (itemQuantity === 0) return; // Bỏ qua nếu số lượng là 0
+
+    // Tìm sản phẩm tương ứng trong kho
+    const inventoryItem = inventoryList.find(inv => inv.productId === item.productId);
+
+    if (inventoryItem) {
+      // --- Cập nhật mục tồn kho đã có ---
+      const currentSlBan = parseInt(inventoryItem.slBan) || 0;
+      const currentSlTon = parseInt(inventoryItem.slTon) || 0;
+
+      inventoryItem.slBan = currentSlBan + itemQuantity; // Tăng số lượng BÁN
+      inventoryItem.slTon = Math.max(0, currentSlTon - itemQuantity); // Giảm số lượng TỒN (không để âm)
+      inventoryItem.ngayCapNhat = ngayDelivered; // Cập nhật ngày
+      // Tạo mục lịch sử mới
+      const historyEntry = {
+        ngay: ngayDelivered,
+        hanhDong: 'Bán', 
+        soLuong: itemQuantity,
+        orderId: order.id // Thêm ID đơn hàng để tham chiếu
+      };
+
+      // Thêm vào đầu mảng lịch sử 
+      if (!inventoryItem.history) {
+        inventoryItem.history = [];
+      }
+      inventoryItem.history.unshift(historyEntry);
+
+      // Cập nhật trạng thái
+      if (inventoryItem.slTon === 0) {
+        inventoryItem.trangThai = "Hết hàng";
+      } else if (inventoryItem.slTon <= inventoryItem.minTon) {
+        inventoryItem.trangThai = "Sắp hết";
+      } else {
+        inventoryItem.trangThai = "Còn hàng";
+      }
+
+      hasChanges = true;
+    } else {
+      // --- Trường hợp không tìm thấy SP trong kho ---
+      console.error(`Lỗi Tồn Kho: Không tìm thấy sản phẩm ${item.productId} (từ đơn hàng ${order.id}) trong kho.`);
+    }
+  });
+
+  if (hasChanges) {
+    setInventory(inventoryList); // Lưu lại vào localStorage
+    
+    // Tự động cập nhật bảng tồn kho
+    if (typeof syncAndRenderInventory === 'function') {
+      syncAndRenderInventory();
+    }
+
+    // Cập nhật modal chi tiết tồn kho nếu đang mở
+    const tonkhoModal = document.getElementById('detailModal');
+    if (tonkhoModal && tonkhoModal.classList.contains('show')) {
+      const modalInventoryId = document.getElementById('modalMaSP').textContent;
+      const updatedItem = inventoryList.find(i => i.id === modalInventoryId);
+      if (updatedItem && typeof openModal === 'function') {
+        openModal(updatedItem); // Cập nhật nội dung modal
+      }
+    }
+  }
+}
 window.getInventory=getInventory;
 window.setInventory=setInventory;
 window.MIN_TON=MIN_TON;

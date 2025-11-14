@@ -213,6 +213,7 @@ class ProductModal {
       TH08: "OnePlus",
       TH09: "Google",
     };
+
     return brandMap[categoryId] || categoryId || "Unknown";
   }
 
