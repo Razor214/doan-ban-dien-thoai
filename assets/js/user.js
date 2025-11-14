@@ -1,33 +1,11 @@
 // ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
-  // LUÔN lấy từ userList, nếu không có thì trả về mảng rỗng
-  const userListFromStorage = JSON.parse(localStorage.getItem("userList")) || [];
-  
-  // Nếu có dữ liệu từ file data và localStorage trống -> import dữ liệu
-  if (userListFromStorage.length === 0 && typeof userList !== 'undefined' && userList.length > 0) {
-    console.log('🔄 Import dữ liệu mẫu vào localStorage...');
-    const formattedUsers = userList.map(u => ({
-      id: u.id,
-      fullName: u.fullname || u.fullName,
-      username: u.username,
-      email: u.email,
-      phone: u.sdt || u.phone,
-      pass: u.password || u.pass,
-      status: u.status || "active",
-      role: u.role || "user",
-      address: u.address || ""
-    }));
-    setListUser(formattedUsers);
-    return formattedUsers;
-  }
-  
-  console.log('📊 UserList từ localStorage:', userListFromStorage);
-  return userListFromStorage;
+  const adminUserList = JSON.parse(localStorage.getItem("userList")) || [];
+  console.log('📊 UserList từ admin:', adminUserList);
+  return adminUserList;
 }
 
-// THÊM HÀM NÀY VÀO - ĐÂY LÀ NGUYÊN NHÂN LỖI
 function setListUser(list) {
-  // LUÔN lưu vào userList
   localStorage.setItem("userList", JSON.stringify(list));
   console.log('💾 Đã cập nhật userList:', list);
 }
