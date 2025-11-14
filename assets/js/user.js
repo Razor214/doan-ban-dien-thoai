@@ -1,152 +1,17 @@
-//File 2
-console.log('🚀 Initializing sample data...');
-const userList = [
-    {
-        id: "KH01",
-        fullName: "Lê Thị Bích Ngọc",
-        username: "bichngoc91",
-        email: "bichngoc91@gmail.com",
-        phone: "0938123471",
-        pass: "ngoc2023",
-        status: "active",
-        address: "123 Lê Văn Sỹ, Q.3, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH02",
-        fullName: "Trần Văn Minh",
-        username: "minhtran88",
-        email: "minhtran88@gmail.com",
-        phone: "0902456789",
-        pass: "minhpass88",
-        status: "active",
-        address: "45 Nguyễn Trãi, Q.5, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH03",
-        fullName: "Phạm Quốc Huy",
-        username: "huyphamqk",
-        email: "huyphamqk@gmail.com",
-        phone: "0912345670",
-        pass: "huy123qk",
-        status: "active",
-        address: "78 Cách Mạng Tháng 8, Q.10, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH04",
-        fullName: "Nguyễn Thị Lan Anh",
-        username: "lananh2000",
-        email: "lananh2000@gmail.com",
-        phone: "0978123456",
-        pass: "lananh2000",
-        status: "active",
-        address: "12 Nguyễn Văn Cừ, Q.1, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH05",
-        fullName: "Đặng Văn Tuấn",
-        username: "tuandang96",
-        email: "tuandang96@gmail.com",
-        phone: "0967890123",
-        pass: "tuan96pass",
-        status: "active",
-        address: "56 Trường Chinh, Q.Tân Bình, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH06",
-        fullName: "Hoàng Thị Như Ý",
-        username: "nhuyhoang",
-        email: "nhuyhoang@gmail.com",
-        phone: "0945123789",
-        pass: "nhuy2024",
-        status: "active",
-        address: "89 Lý Thường Kiệt, Q.Tân Phú, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH07",
-        fullName: "Vũ Đức Long",
-        username: "longvuduc",
-        email: "longvuduc@gmail.com",
-        phone: "0934567890",
-        pass: "longpass",
-        status: "active",
-        address: "34 Phan Đăng Lưu, Q.Bình Thạnh, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH08",
-        fullName: "Bùi Thị Hồng",
-        username: "hongbui89",
-        email: "hongbui89@gmail.com",
-        phone: "0923456781",
-        pass: "hongbui89",
-        status: "active",
-        address: "67 Nguyễn Thị Minh Khai, Q.1, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH09",
-        fullName: "Đỗ Văn Quang",
-        username: "quangdo77",
-        email: "quangdo77@gmail.com",
-        phone: "0956781234",
-        pass: "quang77do",
-        status: "active",
-        address: "101 Hoàng Văn Thụ, Q.Phú Nhuận, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "KH10",
-        fullName: "Ngô Thị Mai",
-        username: "maingo92",
-        email: "maingo92@gmail.com",
-        phone: "0901234567",
-        pass: "ngoMai92",
-        status: "active",
-        address: "88 Nguyễn Đình Chiểu, Q.3, TP.HCM",
-        role: "user"
-    },
-    {
-        id: "ADMIN01",
-        fullName: "Quản Trị Viên",
-        username: "admin",
-        email: "admin@saigonphone.vn",
-        phone: "0900000000",
-        pass: "admin123",
-        status: "active",
-        address: "SaiGonPhone Headquarters",
-        role: "admin"
-    }
-];
-
-// Khởi tạo dữ liệu nếu chưa có
-if (!localStorage.getItem("ListUser") || JSON.parse(localStorage.getItem("ListUser")).length === 0) {
-    // Đảm bảo tất cả user có trường status
-    const usersWithStatus = userList.map(user => ({
-        ...user,
-        status: user.status || 'active' // Mặc định là active nếu chưa có
-    }));
-    
-    localStorage.setItem("ListUser", JSON.stringify(usersWithStatus));
-    console.log('✅ Đã khởi tạo dữ liệu mẫu với', usersWithStatus.length, 'users');
-}
-
 // ================== LOCALSTORAGE HELPER ==================
+// KHÔNG khởi tạo lại localStorage, giữ nguyên dữ liệu hiện có
+
 function getListUser() {
-  return JSON.parse(localStorage.getItem("ListUser")) || [];
+  return JSON.parse(localStorage.getItem("userList")) || [];
 }
 
 function setListUser(list) {
-  localStorage.setItem("ListUser", JSON.stringify(list));
+  localStorage.setItem("userList", JSON.stringify(list));
 }
 
 function getCurrentUser() {
-  return JSON.parse(localStorage.getItem("CurrentUser"));
+  const userData = localStorage.getItem("CurrentUser") || localStorage.getItem("currentUser");
+  return userData ? JSON.parse(userData) : null;
 }
 
 function setCurrentUser(u) {
@@ -183,13 +48,23 @@ function checkAccountStatus(username) {
 
 // ================== TAB CONTROL ==================
 function showTab(tab) {
-  document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  console.log('🔄 Switching to tab:', tab);
+  
+  // Ẩn tất cả các trang form
+  document.querySelectorAll('.form-page').forEach(p => {
+    p.classList.remove('active');
+  });
 
-  document.getElementById(tab).classList.add('active');
-  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  // Hiển thị trang được chọn
+  const targetPage = document.getElementById(tab);
+  if (targetPage) {
+    targetPage.classList.add('active');
+  }
 
-  if (tab === "profile") loadProfile();
+  // Xử lý riêng cho tab profile
+  if (tab === "profile") {
+    loadProfile();
+  }
 }
 
 // ================== REGEX CHECKS ==================
@@ -208,6 +83,7 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
   let pass = document.getElementById("password").value;
   let confirmPass = document.getElementById("confirmPassword").value;
   let phone = document.getElementById("phone").value.trim();
+  let address = document.getElementById("address").value.trim();
 
   // --- kiểm tra định dạng ---
   if (!usernameRegex.test(username))
@@ -234,13 +110,18 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     if (u.phone === phone && phone !== "") return showRegisterError("Số điện thoại đã tồn tại!");
   }
 
+  // Tạo ID mới cho user
+  const userCount = list.filter(u => u.id && u.id.startsWith("KH")).length;
+  const newId = "KH" + String(userCount + 1).padStart(2, "0");
+
   let newUser = {
-    id: "KH" + String(list.length + 1).padStart(2, '0'),
-    fullName,
-    username,
-    email,
-    pass,
-    phone,
+    id: newId,
+    fullname: fullName, // Sử dụng fullname (chữ thường) để đồng bộ với dữ liệu hiện có
+    username: username,
+    email: email,
+    pass: pass,
+    phone: phone,
+    address: address,
     status: "active",
     role: "user"
   };
@@ -260,43 +141,38 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   let userInput = document.getElementById("loginUsername").value.trim().toLowerCase();
   let pass = document.getElementById("loginPassword").value;
 
-  console.log('🔐 Attempting login with:', userInput);
-
   let list = getListUser();
-  console.log('👥 Users in storage:', list);
-
-  // KIỂM TRA TRẠNG THÁI TÀI KHOẢN TRƯỚC
-  const accountStatus = checkAccountStatus(userInput);
-  if (accountStatus === 'blocked') {
-      document.getElementById("login-alert").innerHTML =
-          `<div class="alert alert-error">Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!</div>`;
-      return;
-  }
-
+  
+  // Tìm user với cả 2 trường password và pass (để tương thích với dữ liệu cũ)
   let found = list.find(u =>
-      (u.username === userInput || u.email === userInput) && u.pass === pass
+    (u.username === userInput || u.email === userInput) && 
+    (u.password === pass || u.pass === pass) && 
+    u.status === "active"
   );
 
-  console.log('🔍 Found user:', found);
-
   if (!found) {
-      document.getElementById("login-alert").innerHTML =
-          `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu!</div>`;
-      return;
+    document.getElementById("login-alert").innerHTML =
+      `<div class="alert alert-error">Sai tài khoản hoặc mật khẩu, hoặc tài khoản đã bị khóa!</div>`;
+    return;
   }
 
-  // KIỂM TRA LẦN CUỐI TRƯỚC KHI ĐĂNG NHẬP
-  if (found.status === 'blocked') {
-      document.getElementById("login-alert").innerHTML =
-          `<div class="alert alert-error">Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!</div>`;
-      return;
-  }
+  // Chuẩn hóa dữ liệu user trước khi lưu
+  const normalizedUser = {
+    id: found.id,
+    fullName: found.fullname || found.fullName, // Chuẩn hóa thành fullName
+    username: found.username,
+    email: found.email,
+    pass: found.password || found.pass, // Chuẩn hóa thành pass
+    phone: found.phone || found.sdt,
+    address: found.address,
+    status: found.status,
+    role: found.role || "user"
+  };
 
-  setCurrentUser(found);
-  console.log('✅ User logged in:', found);
+  setCurrentUser(normalizedUser);
 
-  if (found.role === 'admin') {
-      window.location.href = "admin.html";
+  if (normalizedUser.role === 'admin') {
+    window.location.href = "admin.html";
   } else {
       window.location.href = "index.html";
   }
@@ -307,35 +183,39 @@ function loadProfile() {
   let currentUser = getCurrentUser();
   let infoBox = document.getElementById("profile-info");
   let actionsBox = document.getElementById("profileActions");
+  let profileForm = document.getElementById("profileForm");
 
   if (!currentUser) {
     infoBox.innerHTML = `<p>Vui lòng đăng nhập để xem thông tin</p>`;
     if (actionsBox) actionsBox.style.display = "none";
-    document.getElementById("profileForm").style.display = "none";
+    if (profileForm) profileForm.style.display = "none";
     return;
   }
 
-  const statusText = currentUser.status === 'blocked' ? 'Đã khóa' : 'Đang hoạt động';
-  const statusClass = currentUser.status === 'blocked' ? 'status-blocked' : 'status-active';
+  // Sử dụng cả fullname và fullName để tương thích
+  const displayName = currentUser.fullName || currentUser.fullname;
 
+  // Hiển thị thông tin user
   infoBox.innerHTML = `
-        <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${currentUser.fullName}</span></div>
-        <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
-        <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
-        <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone}</span></div>
-        <div class="info-item"><span class="info-label">Trạng thái:</span> <span class="info-value ${statusClass}">${statusText}</span></div>
-        <div class="info-item"><span class="info-label">Vai trò:</span> <span class="info-value">${currentUser.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}</span></div>
-    `;
+    <div class="info-item"><span class="info-label">Họ tên:</span> <span class="info-value">${displayName || 'Chưa cập nhật'}</span></div>
+    <div class="info-item"><span class="info-label">Tên đăng nhập:</span> <span class="info-value">${currentUser.username}</span></div>
+    <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${currentUser.email}</span></div>
+    <div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">${currentUser.phone || currentUser.sdt || 'Chưa cập nhật'}</span></div>
+    <div class="info-item"><span class="info-label">Địa chỉ:</span> <span class="info-value">${currentUser.address || 'Chưa cập nhật'}</span></div>
+  `;
 
-  if (actionsBox) actionsBox.style.display = "flex";
-  document.getElementById("profileForm").style.display = "none";
-
-  // ✅ hiển thị lời chào trên header
-  let greetingElement = document.getElementById("user-greeting");
-  let greetingNameElement = document.getElementById("greeting-name");
+  // Hiển thị nút hành động
+  if (actionsBox) {
+    actionsBox.style.display = "flex";
+  }
   
-  if (greetingElement) greetingElement.style.display = "inline";
-  if (greetingNameElement) greetingNameElement.innerText = currentUser.fullName;
+  // Ẩn form chỉnh sửa
+  if (profileForm) {
+    profileForm.style.display = "none";
+  }
+
+  // Hiển thị thông tin profile
+  infoBox.style.display = "block";
 }
 
 // ================== TOGGLE EDIT PROFILE ==================
@@ -350,10 +230,11 @@ function toggleEditProfile() {
   // Hiển thị form chỉnh sửa
   document.getElementById("profileForm").style.display = "block";
 
-  // Điền thông tin hiện tại
-  document.getElementById("profileFullName").value = currentUser.fullName;
-  document.getElementById("profileEmail").value = currentUser.email;
-  document.getElementById("profilePhone").value = currentUser.phone;
+  // Điền thông tin hiện tại (sử dụng cả fullname và fullName)
+  document.getElementById("profileFullName").value = currentUser.fullName || currentUser.fullname || "";
+  document.getElementById("profileEmail").value = currentUser.email || "";
+  document.getElementById("profilePhone").value = currentUser.phone || currentUser.sdt || "";
+  document.getElementById("profileAddress").value = currentUser.address || "";
 
   // Reset các field mật khẩu
   document.getElementById("currentPassword").value = "";
@@ -382,13 +263,14 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   let newData = {
     id: currentUser.id,
-    fullName: document.getElementById("profileFullName").value.trim(),
+    fullname: document.getElementById("profileFullName").value.trim(), // Sử dụng fullname để đồng bộ
     username: currentUser.username,
     email: document.getElementById("profileEmail").value.trim(),
     phone: document.getElementById("profilePhone").value.trim(),
+    address: document.getElementById("profileAddress").value.trim(),
     pass: currentUser.pass,
-    role: currentUser.role,
-    status: currentUser.status
+    status: currentUser.status,
+    role: currentUser.role
   };
 
   // Lấy thông tin mật khẩu
@@ -410,7 +292,7 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   // Kiểm tra trùng email và số điện thoại
   for (let u of list) {
-    if (!equalUser(u, currentUser)) {
+    if (u.username !== currentUser.username) { // So sánh bằng username thay vì equalUser
       if (u.email === newData.email) {
         showProfileAlert("Email đã tồn tại!", "error");
         return;
@@ -493,21 +375,10 @@ function togglePassword(inputId, icon) {
 function logout() {
   if (confirm('Bạn có chắc muốn đăng xuất?')) {
     localStorage.removeItem("CurrentUser");
+    localStorage.removeItem("currentUser");
     window.location.href = "index.html";
   }
   return false;
-}
-
-// ================== ĐỒNG BỘ MỌI THỨ ==================
-function capNhatMoiThu() {
-  let currentUser = getCurrentUser();
-  if (!currentUser) return;
-
-  setCurrentUser(currentUser);
-  updateListUser(currentUser);
-  loadProfile();
-
-  console.log("✅ Đồng bộ hoàn tất");
 }
 
 // ================== TỰ ĐỘNG MỞ TAB KHI TẢI TRANG ==================
@@ -524,51 +395,6 @@ window.onload = function () {
   }
 };
 
-// ================== XỬ LÝ MỞ CART THÔNG MINH ==================
-function navigateToCart() {
-    const currentUser = getCurrentUser();
-    
-    if (!currentUser) {
-        if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
-            // Kiểm tra xem đang ở trang nào
-            if (window.location.pathname.includes('user.html') || 
-                window.location.href.includes('user.html')) {
-                // Đang ở user.html -> chuyển tab login
-                showTab('login');
-            } else {
-                // Đang ở trang khác -> chuyển đến user.html
-                window.location.href = 'user.html?tab=login';
-            }
-        }
-        return false;
-    }
-    
-    // Đã đăng nhập -> chuyển đến cart.html
-    window.location.href = 'cart.html';
-    return true;
-}
-
-// ================== CHUYỂN TỪ PROFILE SANG CART ==================
-function navigateToCartFromProfile() {
-    return navigateToCart();
-}
-
-// ================== ÁP DỤNG CHO TẤT CẢ NÚT CART ==================
-document.addEventListener('DOMContentLoaded', function() {
-    // Xử lý cho tất cả link cart
-    const cartLinks = document.querySelectorAll('a[href="cart.html"]');
-    
-    cartLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToCart();
-        });
-    });
-    
-    // Cập nhật trạng thái đăng nhập trên header
-    updateHeaderUserStatus();
-});
-
 // ================== CẬP NHẬT HEADER ==================
 function updateHeaderUserStatus() {
     const currentUser = getCurrentUser();
@@ -583,9 +409,9 @@ function updateHeaderUserStatus() {
         if (guestLinks) guestLinks.style.display = 'none';
         if (userLinks) userLinks.style.display = 'flex';
 
-        // Hiển thị tên user
-        const userName = currentUser.fullName || currentUser.username;
-        if (userNameSpan) userNameSpan.textContent = userName;
+        // Hiển thị fullName (ưu tiên fullName, sau đó fullname) thay vì username
+        const displayName = currentUser.fullName || currentUser.fullname || currentUser.username;
+        if (userNameSpan) userNameSpan.textContent = displayName;
 
         // Kiểm tra và hiển thị badge admin + menu item nếu là admin
         const isAdmin = currentUser.role && currentUser.role.toLowerCase() === 'admin';

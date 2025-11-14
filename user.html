@@ -55,48 +55,20 @@
 
         <nav class="navbar" id="navbar">
             <a href="index.html" class="bar_right">Trang Chủ</a>
-
-            <!-- Hiển thị khi chưa đăng nhập -->
-            <div id="guest-links" class="navbar-links">
-                <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-                <a href="user.html?tab=register">Đăng ký</a>
-            </div>
-
-            <!-- Hiển thị khi đã đăng nhập -->
-            <div id="user-links" style="display: none;" class="navbar-links">
-                <div class="user-dropdown">
-                    <a href="user.html?tab=profile" class="user-profile-link">
-                        Xin chào, <span id="user-name"></span>
-                        <span class="admin-badge" id="admin-badge" style="display: none;">Admin</span>
-                    </a>
-                    <div class="dropdown-content">
-                        <a href="index.html" class="icon-home">Về trang chủ</a>
-                        <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
-                        <a href="#" onclick="navigateToCart(); return false;" class="icon-cart">🛒 Giỏ hàng</a>
-                        <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link"
-                            style="display: none;">
-                            Quản Trị Viên
-                        </a>
-                        <a href="#" onclick="logout(); return false;" class="icon-logout">Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
+            <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
+            <a href="user.html?tab=register">Đăng ký</a>
+            <a href="user.html?tab=profile">Hồ sơ</a>
+            <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
         </nav>
     </header>
-    <!------------------ PHẦN TÀI KHOẢN ------------------->
+
+    <!------------------ PHẦN TÀI KHOẢN ĐƠN GIẢN ------------------->
     <div class="auth-container">
         <div class="container">
-            <!-- Tabs Navigation -->
-            <div class="tabs">
-                <button class="tab active" data-tab="login" onclick="showTab('login')">Đăng Nhập</button>
-                <button class="tab" data-tab="register" onclick="showTab('register')">Đăng Ký</button>
-                <button class="tab" data-tab="profile" onclick="showTab('profile')">Hồ Sơ</button>
-            </div>
-
-            <!-- Tab Content -->
+            <!-- Chỉ hiển thị form tương ứng với tab được chọn -->
             <div class="tab-content">
                 <!-- LOGIN PAGE -->
-                <div id="login" class="form-page active">
+                <div id="login" class="form-page">
                     <h2 class="form-title">Đăng Nhập</h2>
 
                     <div id="login-alert"></div>
@@ -149,14 +121,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="phone" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea id="address" class="form-input" rows="3"
+                                placeholder="Nhập địa chỉ đầy đủ"></textarea>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Mật khẩu</label>
                             <div class="password-box">
                                 <input type="password" id="password" class="form-input" required minlength="8">
                                 <span class="toggle-pass" onclick="togglePassword('password', this)">👁️</span>
                             </div>
-                            <small id="passwordError" class="error-text" style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số
-                            </small>
+                            <small id="passwordError" class="error-text"></small>
                         </div>
 
                         <div class="form-group">
@@ -165,11 +144,7 @@
                                 <input type="password" id="confirmPassword" class="form-input" required>
                                 <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">👁️</span>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Số điện thoại</label>
-                            <input type="tel" id="phone" class="form-input">
+                            <small id="confirmPasswordError" class="error-text"></small>
                         </div>
 
                         <button type="submit" class="btn-primary">Đăng Ký</button>
@@ -221,7 +196,11 @@
                             <label class="form-label">Số điện thoại</label>
                             <input type="tel" id="profilePhone" class="form-input" placeholder="Nhập số điện thoại">
                         </div>
-
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea id="profileAddress" class="form-input" rows="3"
+                                placeholder="Nhập địa chỉ đầy đủ"></textarea>
+                        </div>
                         <h3
                             style="margin: 30px 0 20px 0; color: #333; border-bottom: 2px solid #2196F3; padding-bottom: 10px;">
                             Đổi mật khẩu
