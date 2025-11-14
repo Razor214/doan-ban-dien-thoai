@@ -388,11 +388,16 @@ function togglePassword(inputId, icon) {
     input.type = "text";
     eyeIcon.classList.remove('fa-eye');
     eyeIcon.classList.add('fa-eye-slash');
+    icon.classList.add('active');
   } else {
     input.type = "password";
     eyeIcon.classList.remove('fa-eye-slash');
     eyeIcon.classList.add('fa-eye');
+    icon.classList.remove('active');
   }
+  
+  // Thêm hiệu ứng focus cho input
+  input.focus();
 }
 
 // ================== ĐĂNG XUẤT ==================

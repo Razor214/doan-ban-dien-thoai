@@ -288,30 +288,7 @@
     align-items: center;
     justify-content: center;
 }
-/* CSS cho icon mắt - VỊ TRÍ GIỮA VERTICAL */
-.toggle-pass {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #666;
-    transition: color 0.3s ease;
-    background: none;
-    border: none;
-    padding: 0;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-}
-
-.toggle-pass:hover {
-    color: #4CAF50;
-}
-
+/* CSS cho icon mắt - VỊ TRÍ GIỮA HOÀN HẢO */
 .password-box {
     position: relative;
     display: flex;
@@ -319,12 +296,70 @@
 }
 
 .password-box .form-input {
-    padding-right: 40px;
+    padding-right: 45px;
     width: 100%;
+    height: 48px; /* Chiều cao cố định để dễ căn giữa */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
 }
 
-/* Đảm bảo icon nằm chính giữa chiều cao */
+.password-box .form-input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.toggle-pass {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toggle-pass:hover {
+    color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.toggle-pass:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
 .toggle-pass i {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+/* Hiệu ứng khi click */
+.toggle-pass.active i {
+    transform: scale(1.1);
+}
+
+/* Style cho form group để đảm bảo layout đẹp */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
 }
