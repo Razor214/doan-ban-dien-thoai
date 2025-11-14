@@ -24,25 +24,16 @@
             <a href="user.html?tab=register">Đăng ký</a>
             <a href="user.html?tab=profile">Hồ sơ</a>
             <a href="admin.html" class="admin-link" style="display:none;">Admin</a>
-
         </nav>
-
     </header>
 
-    <!------------------ PHẦN TÀI KHOẢN ------------------->
+    <!------------------ PHẦN TÀI KHOẢN ĐƠN GIẢN ------------------->
     <div class="auth-container">
         <div class="container">
-            <!-- Tabs Navigation -->
-            <div class="tabs">
-                <button class="tab active" data-tab="login" onclick="showTab('login')">Đăng Nhập</button>
-                <button class="tab" data-tab="register" onclick="showTab('register')">Đăng Ký</button>
-                <button class="tab" data-tab="profile" onclick="showTab('profile')">Hồ Sơ</button>
-            </div>
-
-            <!-- Tab Content -->
+            <!-- Chỉ hiển thị form tương ứng với tab được chọn -->
             <div class="tab-content">
                 <!-- LOGIN PAGE -->
-                <div id="login" class="form-page active">
+                <div id="login" class="form-page">
                     <h2 class="form-title">Đăng Nhập</h2>
 
                     <div id="login-alert"></div>
