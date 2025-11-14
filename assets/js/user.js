@@ -17,7 +17,6 @@ if (!localStorage.getItem("userList")) {
     }
 }
 
-
 function getListUser() {
   return JSON.parse(localStorage.getItem("userList")) || [];
 }
@@ -138,6 +137,9 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   }
 
   setCurrentUser(found);
+  
+  // Cập nhật header sau khi đăng nhập
+  updateHeaderUserStatus();
 
   if (found.role === "admin") window.location.href = "admin.html";
   else window.location.href = "index.html";
@@ -172,6 +174,13 @@ function toggleEditProfile() {
   form.profileAddress.value = user.address || "";
 }
 
+function cancelEditProfile() {
+  document.getElementById("profileForm").style.display = "none";
+  document.getElementById("profile-info").style.display = "block";
+  document.getElementById("profileActions").style.display = "flex";
+  document.getElementById("profile-alert").innerHTML = "";
+}
+
 document.getElementById("profileForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -180,16 +189,43 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   let newData = {
     ...user,
-    fullname: profileFullName.value.trim(),
-    email: profileEmail.value.trim().toLowerCase(),
-    sdt: profilePhone.value.trim(),
-    address: profileAddress.value.trim()
+    fullname: document.getElementById("profileFullName").value.trim(),
+    email: document.getElementById("profileEmail").value.trim().toLowerCase(),
+    sdt: document.getElementById("profilePhone").value.trim(),
+    address: document.getElementById("profileAddress").value.trim()
   };
 
-  let currentPass = currentPassword.value;
-  let newPass = newPassword.value;
-  let confirmNewPass = confirmNewPassword.value;
+  let currentPass = document.getElementById("currentPassword").value;
+  let newPass = document.getElementById("newPassword").value;
+  let confirmNewPass = document.getElementById("confirmNewPassword").value;
 
+  // Kiểm tra email
+  if (!emailRegex.test(newData.email)) {
+    showProfileAlert("Email không hợp lệ!", "error");
+    return;
+  }
+
+  // Kiểm tra số điện thoại
+  if (newData.sdt && !phoneRegex.test(newData.sdt)) {
+    showProfileAlert("Số điện thoại phải gồm 10 số và bắt đầu bằng 0", "error");
+    return;
+  }
+
+  // Kiểm tra trùng email và số điện thoại
+  for (let u of list) {
+    if (!equalUser(u, user)) {
+      if (u.email === newData.email) {
+        showProfileAlert("Email đã tồn tại!", "error");
+        return;
+      }
+      if (u.sdt === newData.sdt && newData.sdt !== "") {
+        showProfileAlert("Số điện thoại đã tồn tại!", "error");
+        return;
+      }
+    }
+  }
+
+  // Xử lý đổi mật khẩu
   if (newPass) {
     if (!passRegex.test(newPass))
       return showProfileAlert("Mật khẩu mới ≥ 8 ký tự gồm chữ + số!", "error");
@@ -205,9 +241,16 @@ document.getElementById("profileForm")?.addEventListener("submit", function (e) 
 
   setCurrentUser(newData);
   updateListUser(user, newData);
+  
+  // Cập nhật header sau khi chỉnh sửa
+  updateHeaderUserStatus();
+  
   showProfileAlert("Cập nhật thành công!", "success");
 
-  setTimeout(() => window.location.reload(), 1000);
+  setTimeout(() => {
+    cancelEditProfile();
+    loadProfile();
+  }, 1500);
 });
 
 function showProfileAlert(msg, type) {
@@ -216,14 +259,83 @@ function showProfileAlert(msg, type) {
 }
 
 function logout() {
-  localStorage.removeItem("CurrentUser");
-  window.location.href = "index.html";
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    localStorage.removeItem("CurrentUser");
+    // Cập nhật header sau khi đăng xuất
+    updateHeaderUserStatus();
+    window.location.href = "index.html";
+  }
+}
+
+// ================== HIỂN THỊ TÊN NGƯỜI DÙNG TRONG HEADER ==================
+function updateHeaderUserStatus() {
+  const currentUser = getCurrentUser();
+  const guestLinks = document.getElementById('guest-links');
+  const userLinks = document.getElementById('user-links');
+  const userNameSpan = document.getElementById('user-name');
+  const adminBadge = document.getElementById('admin-badge');
+  const adminMenuLink = document.getElementById('admin-menu-link');
+
+  if (currentUser) {
+    // Hiển thị menu người dùng đã đăng nhập
+    if (guestLinks) guestLinks.style.display = 'none';
+    if (userLinks) userLinks.style.display = 'flex';
+    
+    // Hiển thị tên người dùng
+    if (userNameSpan) {
+      userNameSpan.textContent = currentUser.fullname || currentUser.username;
+    }
+    
+    // Hiển thị badge admin nếu là admin
+    if (adminBadge) {
+      adminBadge.style.display = currentUser.role === 'admin' ? 'inline-block' : 'none';
+    }
+    
+    if (adminMenuLink) {
+      adminMenuLink.style.display = currentUser.role === 'admin' ? 'flex' : 'none';
+    }
+  } else {
+    // Hiển thị menu khách
+    if (guestLinks) guestLinks.style.display = 'flex';
+    if (userLinks) userLinks.style.display = 'none';
+  }
+}
+
+// ================== XỬ LÝ CHUYỂN TRANG GIỎ HÀNG ==================
+function navigateToCart() {
+  const currentUser = getCurrentUser();
+  
+  if (!currentUser) {
+    if (confirm('Bạn cần đăng nhập để xem giỏ hàng. Đăng nhập ngay?')) {
+      showTab('login');
+    }
+    return false;
+  }
+  
+  window.location.href = 'cart.html';
+  return true;
 }
 
 // Load khi mở trang
 window.onload = () => {
   let user = getCurrentUser();
   let query = new URLSearchParams(window.location.search).get("tab");
+  
+  // Cập nhật header
+  updateHeaderUserStatus();
+  
   if (user) showTab(query || "profile");
   else showTab(query || "login");
 };
+
+// Thêm event listener cho các nút giỏ hàng
+document.addEventListener('DOMContentLoaded', function() {
+  const cartLinks = document.querySelectorAll('a[href="cart.html"]');
+  
+  cartLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateToCart();
+    });
+  });
+});
