@@ -1,18 +1,16 @@
 // ================== LOCALSTORAGE HELPER ==================
+// ================== LOCALSTORAGE HELPER ==================
 function getListUser() {
-  // Ưu tiên lấy từ userList, nếu không có thì lấy từ users
-  let userList = JSON.parse(localStorage.getItem("userList"));
-  
-  if (!userList || userList.length === 0) {
-    userList = JSON.parse(localStorage.getItem("users")) || [];
-    // Nếu tìm thấy từ users, đồng bộ lại vào userList
-    if (userList.length > 0) {
-      localStorage.setItem("userList", JSON.stringify(userList));
-    }
-  }
-  
-  console.log('📊 UserList hiện tại:', userList);
+  // LUÔN lấy từ userList, nếu không có thì trả về mảng rỗng
+  const userList = JSON.parse(localStorage.getItem("userList")) || [];
+  console.log('📊 UserList từ localStorage:', userList);
   return userList;
+}
+
+function setListUser(list) {
+  // LUÔN lưu vào userList
+  localStorage.setItem("userList", JSON.stringify(list));
+  console.log('💾 Đã cập nhật userList:', list);
 }
 
 function setListUser(list) {
