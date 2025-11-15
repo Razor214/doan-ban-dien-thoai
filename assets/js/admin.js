@@ -12,7 +12,6 @@ const searchInput = document.getElementById('Timkiem')
 const idPrice = document.getElementById('id');
 const idCatePrice = document.getElementById('categoryId');
 const idProPrice = document.getElementById('productId');
-const idImPrice = document.getElementById('importId');
 const costInput = document.getElementById('cost');
 const profitInput = document.getElementById('profit');
 const priceInput = document.getElementById('sell');
@@ -41,7 +40,6 @@ function renderTable(list){
             <td>${sp.id}</td>
             <td>${sp.categoryId}</td>
             <td>${sp.productId}</td>
-            <td>${sp.importId}</td>
             <td>${Number(sp.cost).toLocaleString("vi-VN")}</td>
             <td>${sp.profit}%</td>
             <td>${Number(sp.price).toLocaleString("vi-VN")}</td>
@@ -74,7 +72,7 @@ function validatePositiveNumber(value) {
 }
 //Xóa viền đỏ khi đúng
 function clearValidationStyles() {
-    [idPrice, idCatePrice, idProPrice, idImPrice, costInput, profitInput, priceInput].forEach(input => {
+    [idPrice, idCatePrice, idProPrice, costInput, profitInput, priceInput].forEach(input => {
         input.style.border = ''; 
     });
 }
@@ -105,7 +103,6 @@ function openPriceModal(mode, btn) {
         const idPriceValue = row.cells[0].innerText;
         const brandId = row.cells[1].innerText;
         const productId = row.cells[2].innerText;
-        const importId = row.cells[3].innerText;
         const brandExists = allBrands.find(b => b.id === brandId);
         if (brandExists) {
             brandSelect.value = brandId; 
@@ -132,20 +129,21 @@ function openPriceModal(mode, btn) {
         idPrice.value = row.cells[0].innerText;
         idCatePrice.value = row.cells[1].innerText;
         idProPrice.value = row.cells[2].innerText;
-        idImPrice.value = row.cells[3].innerText;
-        costInput.value = row.cells[4].innerText.replace(/,/g, '');
-        profitInput.value = parseFloat(row.cells[5].innerText);
-        priceInput.value = row.cells[6].innerText.replace(/,/g, '');
+        costInput.value = row.cells[3].innerText.replace(/,/g, '');
+        profitInput.value = parseFloat(row.cells[4].innerText);
+        priceInput.value = row.cells[5].innerText.replace(/,/g, '');
         editingRow = row;
         costInput.setAttribute('readonly', true);
         idPrice.setAttribute('readonly', true);
-        idImPrice.setAttribute('readonly', true);
+        idProPrice.setAttribute('readonly', true);
+        idCatePrice.setAttribute('readonly', true);
         brandSelect.setAttribute('disabled', true);
         productSelect.setAttribute('disabled', true);
     }else{
         costInput.removeAttribute('readonly');  
         idPrice.removeAttribute('readonly');
-        idImPrice.removeAttribute('readonly');  
+        idProPrice.removeAttribute('readonly', true);
+        idCatePrice.removeAttribute('readonly', true);
         brandSelect.removeAttribute('disabled');
         productSelect.removeAttribute('disabled');
         idCatePrice.value = '';
@@ -158,7 +156,7 @@ window.openPriceModal = openPriceModal;
 cancelBtn.onclick = () => {
     form.reset();
     priceInput.value = '';
-    [idPrice, idCatePrice, idProPrice, idImPrice, costInput, profitInput, priceInput].forEach(input => {
+    [idPrice, idCatePrice, idProPrice, costInput, profitInput, priceInput].forEach(input => {
         input.style.border = '';
     });
     editingRow = null;
@@ -191,7 +189,6 @@ const generateCode = (prefix, colIndex) => {
 };
 function autoFillNewCodes() {
   idPrice.value = generateCode("GN", 0); // Cột 0 là Mã GN
-  idImPrice.value = generateCode("PN", 3); // Cột 3 là Mã nhập PN
 }
 //Giá và lợi 
 function cleanNumber(value) {
@@ -238,7 +235,6 @@ form.onsubmit = (e) => {
     const ID = idPrice.value;
     const categoryPrice = idCatePrice.value;
     const productPrice = idProPrice.value;
-    const importPrice = idImPrice.value;
     const cost = cleanNumber(costInput.value);
     const profit = parseFloat(profitInput.value);
     const price = cleanNumber(priceInput.value);
@@ -248,12 +244,6 @@ form.onsubmit = (e) => {
         idPrice.style.border = '2px solid red';
         alert('Mã phải có dạng GN01 hoặc GN001!');
         idPrice.focus();
-        return;
-    }
-    if (!validateID(idImPrice.value, 'PN')) {
-        idImPrice.style.border = '2px solid red';
-        alert('Mã nhập phải có dạng PN01 hoặc PN001!');
-        idImPrice.focus();
         return;
     }
     if (!validatePositiveNumber(costInput)) {
@@ -268,7 +258,7 @@ form.onsubmit = (e) => {
         priceInput.style.border = '2px solid red';
         alert('Giá bán phải lớn hơn 0!'); 
         return; }
-    if (!ID || !categoryPrice || !productPrice || !importPrice || !cost || !profit) {
+    if (!ID || !categoryPrice || !productPrice || !cost || !profit) {
         alert('Vui lòng nhập đầy đủ thông tin!');
         return;
     }
@@ -278,13 +268,12 @@ form.onsubmit = (e) => {
         editingRow.cells[0].innerText = ID;
         editingRow.cells[1].innerText = categoryPrice;
         editingRow.cells[2].innerText = productPrice;
-        editingRow.cells[3].innerText = importPrice;
-        editingRow.cells[4].innerText = cost;
-        editingRow.cells[5].innerText = profit + '%';
-        editingRow.cells[6].innerText = price;
+        editingRow.cells[3].innerText = cost;
+        editingRow.cells[4].innerText = profit + '%';
+        editingRow.cells[5].innerText = price;
         const index = list.findIndex(item => item.id === ID);
         if(index !== -1){
-            list[index] = {id: ID, categoryId: categoryPrice, productId: productPrice, importId: importPrice, cost, profit, price };
+            list[index] = {id: ID, categoryId: categoryPrice, productId: productPrice, cost, profit, price };
         }
     } else {
         const row = table.insertRow();
@@ -293,7 +282,6 @@ form.onsubmit = (e) => {
                 <td>${idPrice.value}</td>
                 <td>${idCatePrice.value}</td>
                 <td>${idProPrice.value}</td>
-                <td>${idImPrice.value}</td>
                 <td>${cost}</td>
                 <td>${profit}%</td>
                 <td>${price}</td>
@@ -306,7 +294,6 @@ form.onsubmit = (e) => {
       id: ID,
       categoryId: categoryPrice,
       productId: productPrice,
-      importId: importPrice,
       cost,
       profit,
       price,
@@ -321,7 +308,7 @@ function searchProduct() {
     const keyword = searchInput.value.trim().toLowerCase();
     for (let row of table.getElementsByTagName('tr')) {
         // Kiểm tra ký tự đầu của tất cả các ô trong hàng
-        const match = Array.from(row.cells).some(cell => {
+        const match = Array.from(row.cells).some((cell, index) => {
             if (index === row.cells.length - 1) return false;
             return cell.innerText.trim().toLowerCase().startsWith(keyword);
         });
@@ -435,7 +422,6 @@ function populateProductDropdown(selectedBrandId) {
 function getLocalOrders() {
   return JSON.parse(localStorage.getItem("orderList")) || [];
 }
-
 function setLocalOrders(list) {
   localStorage.setItem("orderList", JSON.stringify(list));
 }
@@ -684,9 +670,9 @@ function openModal(item) {
   }
   tonkhoModal.classList.add("show");
 }
-function openSummaryModal() {
+function openSummaryModal(data = getInventory()) {
   if (!summaryModal) return;
-  const inventory = getInventory();
+  const inventory = data;
   const outOfStock = inventory.filter((item) => item.slTon === 0);
   const lowStock = inventory.filter(
     (item) => item.slTon > 0 && item.slTon <= item.minTon
@@ -749,8 +735,8 @@ if (btnSearch) {
         item.id.toLowerCase().includes(keyword) ||
         item.productId.toLowerCase().includes(keyword) ||
         item.categoryId.toLowerCase().includes(keyword);
-      const ProMatch = !Pro || item.stockPro.toLowerCase().includes(Pro);
-      const CateMatch = !Cate || item.stockCate.toLowerCase().includes(Cate);
+      const ProMatch = !Pro || item.productId.toLowerCase().includes(Pro);
+      const CateMatch = !Cate || item.categoryId.toLowerCase().includes(Cate);
       const dateStartMatch = !startDate || itemDate >= startDate;
       const dateEndMatch = !endDate || itemDate <= endDate;
 
@@ -760,13 +746,14 @@ if (btnSearch) {
     });
     displayTon(filterData);
     renderSummary(filterData);
+    window.currentFilterData=filterData;
   });
 }
 
 if (viewDetails) {
   viewDetails.addEventListener("click", (e) => {
     e.preventDefault();
-    openSummaryModal();
+    openSummaryModal(window.currentFilterData||inventory);
   });
 }
 closeBtns.forEach((btn) => {
