@@ -102,6 +102,117 @@ function saveNewAddress(name, phone, address) {
   }
 }
 
+// --- Cập nhật số lượng sản phẩm trong giỏ hàng ---
+function updateCartCount() {
+  const cartCountEl = document.getElementById("cartCount");
+  if (!cartCountEl) return;
+  
+  let totalItems = 0;
+  for (const id in cart) {
+    totalItems += cart[id].qty;
+  }
+  
+  cartCountEl.textContent = `${totalItems} sản phẩm`;
+}
+
+// --- Cập nhật cart-header ---
+function updateCartHeader() {
+  const cartHeader = document.querySelector('.cart-header');
+  if (!cartHeader) return;
+  
+  // Tạo cart-header mới
+  cartHeader.innerHTML = `
+    <div class="cart-header-left">
+      <h1>🛒 Giỏ hàng của bạn</h1>
+      <span class="cart-count" id="cartCount">0 sản phẩm</span>
+    </div>
+    <div class="cart-header-right">
+      <button class="btn-continue" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+        Tiếp tục mua sắm
+      </button>
+      <button class="btn-orders" id="showOrders">
+        <i class="fas fa-box"></i>
+        Đơn hàng của tôi
+      </button>
+    </div>
+  `;
+  
+  // Thêm CSS inline cho cart-header mới
+  const style = document.createElement('style');
+  style.textContent = `
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 2px solid #e0e0e0;
+      margin-bottom: 30px;
+    }
+    .cart-header-left h1 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .cart-count {
+      display: inline-block;
+      background: #3498db;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    .cart-header-right {
+      display: flex;
+      gap: 15px;
+    }
+    .btn-continue, .btn-orders {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-continue {
+      background: #f8f9fa;
+      color: #2c3e50;
+      border: 1px solid #ddd;
+    }
+    .btn-continue:hover {
+      background: #e9ecef;
+      border-color: #adb5bd;
+    }
+    .btn-orders {
+      background: #3498db;
+      color: white;
+    }
+    .btn-orders:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+    @media (max-width: 768px) {
+      .cart-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      .cart-header-right {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 // --- Giỏ hàng ---
 let cart = {};
 const cartTableBody = document.querySelector("#cartTable tbody");
@@ -142,6 +253,9 @@ function renderCart() {
   if (totalPriceEl) {
     totalPriceEl.textContent = total.toLocaleString('vi-VN') + "₫";
   }
+  
+  // Cập nhật số lượng sản phẩm
+  updateCartCount();
 }
 
 // --- Xử lý sự kiện thêm sản phẩm ---
@@ -350,6 +464,9 @@ function setupOrdersModal() {
 let savedAddresses = loadAddresses();
 
 document.addEventListener("DOMContentLoaded", function() {
+  // Cập nhật cart-header
+  updateCartHeader();
+  
   // Tự điền thông tin từ currentUser nếu có
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || localStorage.getItem("CurrentUser") || "{}");
   const newName = document.getElementById("newName");
