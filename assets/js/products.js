@@ -13,14 +13,55 @@ class ProductManager {
     };
     this.searchQuery = "";
     this.isSearching = false;
+
     this.loadProducts();
+    this.updateBrandFilter();
+    this.setupStorageListener();
     this.setupEventListeners();
     this.applyFilters();
   }
-  loadProducts() {
-    console.log("=== BẮT ĐẦU LOAD PRODUCTS ===");
+  updateBrandFilter() {
+    const brandFilter = document.getElementById("brandFilter");
+    if (!brandFilter) return;
 
-    // Kiểm tra dữ liệu từ các nguồn
+    // Lấy danh sách thương hiệu từ localStorage
+    const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
+
+    // Lọc chỉ những thương hiệu đang active
+    const activeBrands = categories.filter((cat) => cat.status === "active");
+
+    // Giữ option "Thương hiệu" đầu tiên và lưu giá trị đang chọn
+    const currentValue = brandFilter.value;
+    brandFilter.innerHTML = '<option value="all">Thương hiệu</option>';
+
+    // Thêm các thương hiệu từ dữ liệu
+    activeBrands.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.brand;
+      option.textContent = category.brand;
+      brandFilter.appendChild(option);
+    });
+
+    // Khôi phục giá trị đang chọn nếu có
+    if (
+      currentValue &&
+      Array.from(brandFilter.options).some((opt) => opt.value === currentValue)
+    )
+      brandFilter.value = currentValue;
+  }
+  setupStorageListener() {
+    // Lắng nghe thay đổi trong localStorage để tự động cập nhật
+    window.addEventListener("storage", (e) => {
+      if (e.key === "categoryList") {
+        this.updateBrandFilter();
+      }
+    });
+    // Lắng nghe custom event (cho cùng tab)
+    window.addEventListener("brandFilterUpdate", () => {
+      this.updateBrandFilter();
+    });
+  }
+  loadProducts() {
     const storedProducts = JSON.parse(localStorage.getItem("productList"));
     const storedPrices = JSON.parse(localStorage.getItem("priceList"));
 
@@ -71,7 +112,7 @@ class ProductManager {
         status: product.status || "active",
       };
     });
-    this.products = this.products.filter(p => p.status === "active");
+    this.products = this.products.filter((p) => p.status === "active");
 
     this.filteredProducts = [...this.products];
 
@@ -192,6 +233,17 @@ class ProductManager {
     this.isSearching = this.searchQuery.length > 0;
     this.currentPage = 1;
     this.applyFilters();
+    setTimeout(() => this.scrollToProducts(), 300);
+  }
+
+  scrollToProducts() {
+    const productsSection = document.getElementById("products");
+    if (productsSection) {
+      productsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   }
 
   applyFilters() {

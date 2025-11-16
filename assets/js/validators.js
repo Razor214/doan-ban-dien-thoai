@@ -82,28 +82,6 @@ function checkDuplicateProduct(prod) {
   }
   return true;
 }
-function businessLogicCheck(prod) {
-  // Nếu là Apple thì hệ điều hành phải bắt đầu bằng iOS
-  const category = getLocal("categoryList").find(c => c.id === prod.categoryId);
-  if (category?.brand === "Apple" && !prod.os.startsWith("iOS")) {
-    alert("Sản phẩm Apple phải dùng hệ điều hành iOS!");
-    return false;
-  }
-
-  // Nếu là Samsung thì OS phải bắt đầu bằng Android
-  if (category?.brand === "Samsung" && !prod.os.startsWith("Android")) {
-    alert("Sản phẩm Samsung phải dùng hệ điều hành Android!");
-    return false;
-  }
-
-  // Nếu chip chứa “Apple”, thì thương hiệu phải là Apple
-  if (/Apple/i.test(prod.chip) && category?.brand !== "Apple") {
-    alert("Chip Apple chỉ được dùng cho thương hiệu Apple!");
-    return false;
-  }
-
-  return true;
-}
 /* ======================================================
               RÀNG BUỘC QUẢN LÝ NHẬP SẢN PHẨM
 ====================================================== */
