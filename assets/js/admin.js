@@ -1480,13 +1480,6 @@ function getCategoryName(id) {
   return cat ? cat.brand : id;
 }
 
-function getPriceByProductId(productId) {
-  const price = prices.find((p) => p.productId === productId);
-  return price
-    ? Number(price.price).toLocaleString("vi-VN") + " ₫"
-    : "Chưa có giá";
-}
-
 // --- RENDER TABLE (SẢN PHẨM) ---
 function renderProductTable(data = products) {
   productTbody.innerHTML = data
@@ -1526,12 +1519,14 @@ function openProductModal(mode, btn) {
   previewImg.src = "assets/img/logo.png";
   productModal.style.display = "flex";
   editingProductRow = null;
+  document.getElementById("prodCode").readOnly = false;
 
   if (mode === "edit" && btn) {
     const row = btn.closest("tr");
     const id = row.cells[1].innerText.trim();
     const product = products.find((p) => p.id === id);
     if (product) {
+      document.getElementById("prodCode").readOnly = true;
       document.getElementById("prodType").value = product.categoryId;
       document.getElementById("prodCode").value = product.id;
       document.getElementById("prodName").value = product.name;
@@ -1626,7 +1621,6 @@ productForm?.addEventListener("submit", (e) => {
   }
   if (!validateProductForm(newProd)) return;
   if (!checkDuplicateProduct(newProd)) return;
-  if (!businessLogicCheck(newProd)) return;
 
   const existingIndex = products.findIndex((p) => p.id === newProd.id);
   if (editingProductRow && existingIndex > -1) {
