@@ -211,7 +211,7 @@ if (confirm(orderText)) {
     };
 
     // --- Đơn hàng đã mua ---
-    const ordersModal=document.getElementById("ordersModal"),ordersList=document.getElementById("ordersList");
+    const ordersModal=document.getElementById("ordersModal"),ordersList=document.getElementById("ordersDetail");
     function renderOrders(){
       const orders=JSON.parse(localStorage.getItem("orderList")||"[]");
       if(orders.length===0){ordersList.innerHTML="<p>Chưa có đơn hàng nào.</p>";return;}

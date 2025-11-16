@@ -315,7 +315,7 @@ class ProductManager {
                 }" style="text-decoration: none; color: inherit;">
                     <img src="${product.image}" alt="${
           product.name
-        }" onerror="this.src='assets/img/placeholder.jpg'">
+        }" onerror="this.src='assets/img/logo.png'">
                     <h4>${product.name}</h4>
                     <p class="price">${this.formatPrice(product.price)}đ</p>
                 </a>

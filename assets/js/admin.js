@@ -1635,7 +1635,7 @@ function toggleProductStatus(id) {
 
   alert(
     `Sản phẩm "${current.name}" đã được ${
-      newStatus === "hidden" ? "ẩn" : "hiển thị"
+      newStatus === "inactive" ? "ẩn" : "hiển thị"
     }!`
   );
 }
