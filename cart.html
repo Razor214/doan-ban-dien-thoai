@@ -6,15 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giỏ hàng - SaiGonPhone</title>
   <link rel="stylesheet" href="assets/css/cart.css">
-</head>
 
 <body>
-  <main>
-    <div class="cart-header">
-      <h2>🛒 Giỏ hàng của bạn</h2>
-      <button class="orders-btn" id="showOrders">📦 Đơn đã mua</button>
-    </div>
+  <header>
+    🛒 Giỏ hàng của bạn
+    <button class="orders-btn" id="showOrders">📦 Đơn đã mua</button>
+  </header>
 
+  <main>
     <!-- Danh sách sản phẩm -->
     <section class="product-list">
       <div class="product" data-id="1" data-name="iPhone 15 Pro" data-price="32000000">
@@ -38,7 +37,7 @@
     </section>
 
     <!-- Giỏ hàng -->
-    <section class="cart-section">
+    <section>
       <table id="cartTable">
         <thead>
           <tr>
@@ -57,7 +56,6 @@
       <div class="cart-summary">
         <p><strong>Tổng cộng:</strong> <span id="totalPrice">0₫</span></p>
       </div>
-      
       <!-- Địa chỉ nhận hàng -->
       <div class="address-section">
         <h3>Địa chỉ nhận hàng</h3>
@@ -74,7 +72,6 @@
         <label for="newAddress">Địa chỉ:</label>
         <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
       </div>
-      
       <div class="address-section payment-box">
         <h3>Phương thức thanh toán</h3>
         <div class="payment-section">
@@ -103,6 +100,7 @@
           </div>
           <button class="btn btn-checkout">Đặt hàng</button>
         </div>
+
       </div>
 
       <a href="index.html" class="btn-back">⬅ Tiếp tục đặt hàng</a>
