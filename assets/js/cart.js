@@ -12,6 +12,36 @@ function loadAddresses() {
 function saveAddresses() {
   localStorage.setItem("savedAddresses", JSON.stringify(savedAddresses));
 }
+// --- Hàm thêm sản phẩm vào giỏ hàng (dùng chung cho cả index và cart) ---
+function addToCart(id, name, price) {
+  if (!cart[id]) {
+    cart[id] = { name, price, qty: 1 };
+  } else {
+    cart[id].qty++;
+  }
+  renderCart();
+  saveCart();
+  alert("Đã thêm " + name + " vào giỏ hàng!");
+}
+
+// --- Hàm lấy ID user hiện tại ---
+function getCurrentUserId() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  return currentUser.id || "GUEST";
+}
+
+// --- Hàm lưu địa chỉ mới ---
+function saveNewAddress(name, phone, address) {
+  const isDuplicate = savedAddresses.some(addr => 
+    addr.name === name && addr.phone === phone && addr.address === address
+  );
+  
+  if (!isDuplicate) {
+    savedAddresses.push({ name, phone, address, isDefault: false });
+    saveAddresses();
+    renderAddressOptions();
+  }
+}
 
 // --- Hiển thị danh sách chọn địa chỉ ---
 function renderAddressOptions() {
@@ -248,7 +278,6 @@ document.querySelector(".btn-checkout").onclick = () => {
     orderText += `\n💵 Tổng tiền: ${totalCost.toLocaleString('vi-VN')}₫\n\n`;
     orderText += "📦 Bạn có chắc muốn đặt đơn này không?";
 
-    // 👉 Dùng confirm để cho phép OK hoặc Cancel
     if (confirm(orderText)) {
       // Người dùng bấm OK
       alert("🎉 Đặt hàng thành công! Cảm ơn bạn đã mua tại SaiGonPhone!");
@@ -334,24 +363,6 @@ function renderOrders() {
     };
   });
 }
-
-document.getElementById("showOrders").onclick = () => {
-  ordersModal.style.display = "flex";
-  renderOrders();
-};
-
-document.getElementById("closeModal").onclick = () => ordersModal.style.display = "none";
-
-document.getElementById("clearAllOrdersBtn").onclick = () => {
-  if (confirm("Xóa tất cả đơn hàng?")) {
-    localStorage.removeItem("orders");
-    renderOrders();
-  }
-};
-
-window.onclick = e => {
-  if (e.target === ordersModal) ordersModal.style.display = "none";
-};
 
 // Khởi tạo giỏ hàng
 loadCart();
