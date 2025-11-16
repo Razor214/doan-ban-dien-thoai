@@ -1567,9 +1567,10 @@ productForm?.addEventListener("submit", (e) => {
   };
 
   // --- RÀNG BUỘC DỮ LIỆU ---
-  for (const [key, val] of Object.entries(newProd)) {
-    if (!val && key !== "img") {
-      alert("Vui lòng nhập đầy đủ thông tin sản phẩm!");
+  const required = ["id","categoryId","name","desc","color","storage","ram","display","camera","battery","chip","os"];
+  for (const k of required) {
+    if (!newProd[k] || (typeof newProd[k] === 'string' && newProd[k].trim() === '')) {
+      alert("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
   }
