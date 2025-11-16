@@ -134,3 +134,7 @@ footer { text-align: center; padding: 10px; background: #0078d7; color: white; m
   main { width: 95%; }
   table { font-size: 0.9rem; }
 }
+.quantity-input{
+  max-width: 30px;
+  text-align: center;
+}
