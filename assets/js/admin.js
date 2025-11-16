@@ -575,7 +575,80 @@ function ResetDate() {
 }
 window.Orders = Orders;
 window.ResetDate = ResetDate;
+function addOrderToAdminList(customer, cartItems, paymentMethod) {
+    const adminOrderList = getLocalOrders();
+
+    // 1. TẠO ID MỚI (Logic Tự Tăng ID DHxx hợp lệ)
+    const dhIds = adminOrderList
+        // Lọc: Chỉ lấy đơn hàng có ID là chuỗi và bắt đầu bằng "DH"
+        .filter(order => order.id && typeof order.id === 'string' && order.id.startsWith("DH") && order.id.length <=5)
+        .map(order => parseInt(order.id.replace("DH", "")))
+        .filter(num => !isNaN(num)); 
+
+    let maxNum = 0;
+    if (dhIds.length > 0) {
+        maxNum = Math.max(...dhIds);
+    }
+    const newIdNum = maxNum + 1;
+    // Format ID: DHxx
+    const newOrderId = "DH" + String(newIdNum).padStart(2, '0');
+    // Format UserID: KHxx
+    const newUserId = "KH" + String(newIdNum).padStart(2, '0');
+
+    // 2. FORMAT NGÀY (Chỉ lấy YYYY-MM-DD)
+    const newDate = new Date().toISOString().split('T')[0];
+
+    const adminItems = Object.keys(cartItems).map(productId => {
+        const item = cartItems[productId];
+        return {
+            productId: item.id || item.productId || item.name, // Mã SP (được lấy từ key trong object cartItems)
+            quantity: item.qty
+        };
+    });
+
+    const isConfirmed = false; 
+
+    const newOrder = {
+        id: newOrderId, // Đã sửa lỗi dãy số dài
+        userId: newUserId, // Đã sửa lỗi dãy số dài
+        date: newDate, // Đã sửa lỗi định dạng ngày
+        status: "newly ordered",
+        
+        // Cấu trúc bắt buộc cho showDetails
+        address: { 
+            value: customer.address 
+        },
+        
+        // Cấu trúc bắt buộc cho showDetails
+        payment: {
+            method: paymentMethod,
+            confirmed: isConfirmed // Đã sửa lỗi set mặc định
+        },
+        
+        items: adminItems, // Đã sửa lỗi mã SP và SL
+        customer: customer // Thông tin KH đầy đủ
+    };
+
+    adminOrderList.push(newOrder);
+    setLocalOrders(adminOrderList);
+    syncAndRenderOrders();
+
+    // Cập nhật lại orders của khách hàng
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    
+    // Đơn hàng của khách hàng nên giữ nguyên format đầy đủ (bao gồm tên SP, giá)
+    orders.push({
+      id: newOrderId, // Dùng ID mới để đồng bộ giữa 2 bảng
+      date: new Date().toLocaleString(), // Dùng toLocaleString() cho giao diện khách hàng
+      items: Object.values(cartItems),
+      customer: customer,
+      payment: paymentMethod
+    });
+    localStorage.setItem("orders", JSON.stringify(orders));
+}
+//==============
 //Quản lý tồn kho
+//=============
 function getInventory() {
   return JSON.parse(localStorage.getItem("inventoryList")) || [];
 }
