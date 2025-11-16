@@ -3,21 +3,20 @@
 //================
 
 //Truy cập phần tử HTML
-const priceModal = document.getElementById("popup");
-const form = document.getElementById("productadd");
-const cancelBtn = document.getElementById("cancelBtn");
-const table = document.querySelector("#Bangsp tbody");
-const searchInput = document.getElementById("Timkiem");
+const priceModal = document.getElementById('popup');
+const form = document.getElementById('productadd');
+const cancelBtn = document.getElementById('cancelBtn');
+const table = document.querySelector('#Bangsp tbody');
+const searchInput = document.getElementById('Timkiem')
 
-const idPrice = document.getElementById("id");
-const idCatePrice = document.getElementById("categoryId");
-const idProPrice = document.getElementById("productId");
-const idImPrice = document.getElementById("importId");
-const costInput = document.getElementById("cost");
-const profitInput = document.getElementById("profit");
-const priceInput = document.getElementById("sell");
-const brandSelect = document.getElementById("categorySelect");
-const productSelect = document.getElementById("productSelect");
+const idPrice = document.getElementById('id');
+const idCatePrice = document.getElementById('categoryId');
+const idProPrice = document.getElementById('productId');
+const costInput = document.getElementById('cost');
+const profitInput = document.getElementById('profit');
+const priceInput = document.getElementById('sell');
+const brandSelect = document.getElementById('categorySelect');
+const productSelect = document.getElementById('productSelect'); 
 let editingRow = null;
 
 //LocalStorage
@@ -52,7 +51,6 @@ function renderTable(list) {
             <td>${sp.id}</td>
             <td>${sp.categoryId}</td>
             <td>${sp.productId}</td>
-            <td>${sp.importId}</td>
             <td>${Number(sp.cost).toLocaleString("vi-VN")}</td>
             <td>${sp.profit}%</td>
             <td>${Number(sp.price).toLocaleString("vi-VN")}</td>
@@ -85,17 +83,9 @@ function validatePositiveNumber(value) {
 }
 //Xóa viền đỏ khi đúng
 function clearValidationStyles() {
-  [
-    idPrice,
-    idCatePrice,
-    idProPrice,
-    idImPrice,
-    costInput,
-    profitInput,
-    priceInput,
-  ].forEach((input) => {
-    input.style.border = "";
-  });
+    [idPrice, idCatePrice, idProPrice, costInput, profitInput, priceInput].forEach(input => {
+        input.style.border = ''; 
+    });
 }
 function checkDuplicatePriceID(newId) {
   const prices = getLocalPrices();
@@ -109,44 +99,67 @@ function checkDuplicatePriceID(newId) {
 }
 //Mở
 function openPriceModal(mode, btn) {
-  form.reset();
-  priceInput.value = "";
-  clearValidationStyles();
-  priceModal.style.display = "flex";
-  editingRow = null;
+    form.reset();
+    priceInput.value = '';
+    clearValidationStyles();
+    priceModal.style.display = 'flex';
+    editingRow = null;
 
-  allBrands = [];
-  allProducts = [];
-  populateBrandDropdown();
-  populateProductDropdown(null);
-  if (mode === "edit" && btn) {
-    const row = btn.closest("tr");
-    const idPriceValue = row.cells[0].innerText;
-    const brandId = row.cells[1].innerText;
-    const productId = row.cells[2].innerText;
-    const importId = row.cells[3].innerText;
-    const brandExists = allBrands.find((b) => b.id === brandId);
-    if (brandExists) {
-      brandSelect.value = brandId;
-      populateProductDropdown(brandId); // Tải sản phẩm cho brand này
-    } else {
-      const tempOption = document.createElement("option");
-      tempOption.value = brandId;
-      tempOption.textContent = `${brandId} (Đã bị xóa)`;
-      brandSelect.appendChild(tempOption);
-      brandSelect.value = brandId;
-    }
-
-    // 2. Product: Kiểm tra và tạo option tạm nếu đã bị xóa
-    const productExists = allProducts.find((p) => p.id === productId);
-    if (productExists) {
-      productSelect.value = productId;
-    } else {
-      const tempOption = document.createElement("option");
-      tempOption.value = productId;
-      tempOption.textContent = `${productId} (Đã bị xóa)`;
-      productSelect.appendChild(tempOption);
-      productSelect.value = productId;
+    allBrands = [];
+    allProducts = [];
+    populateBrandDropdown();
+    populateProductDropdown(null);
+    if (mode === 'edit' && btn) {
+        const row = btn.closest('tr');
+        const idPriceValue = row.cells[0].innerText;
+        const brandId = row.cells[1].innerText;
+        const productId = row.cells[2].innerText;
+        const brandExists = allBrands.find(b => b.id === brandId);
+        if (brandExists) {
+            brandSelect.value = brandId; 
+            populateProductDropdown(brandId); // Tải sản phẩm cho brand này
+        } else {
+            const tempOption = document.createElement('option');
+            tempOption.value = brandId;
+            tempOption.textContent = `${brandId} (Đã bị xóa)`;
+            brandSelect.appendChild(tempOption);
+            brandSelect.value = brandId;
+        }
+        
+        // 2. Product: Kiểm tra và tạo option tạm nếu đã bị xóa
+        const productExists = allProducts.find(p => p.id === productId);
+        if (productExists) {
+            productSelect.value = productId;
+        } else {
+            const tempOption = document.createElement('option');
+            tempOption.value = productId;
+            tempOption.textContent = `${productId} (Đã bị xóa)`;
+            productSelect.appendChild(tempOption);
+            productSelect.value = productId;
+        }
+        idPrice.value = row.cells[0].innerText;
+        idCatePrice.value = row.cells[1].innerText;
+        idProPrice.value = row.cells[2].innerText;
+        costInput.value = row.cells[3].innerText.replace(/,/g, '');
+        profitInput.value = parseFloat(row.cells[4].innerText);
+        priceInput.value = row.cells[5].innerText.replace(/,/g, '');
+        editingRow = row;
+        costInput.setAttribute('readonly', true);
+        idPrice.setAttribute('readonly', true);
+        idProPrice.setAttribute('readonly', true);
+        idCatePrice.setAttribute('readonly', true);
+        brandSelect.setAttribute('disabled', true);
+        productSelect.setAttribute('disabled', true);
+    }else{
+        costInput.removeAttribute('readonly');  
+        idPrice.removeAttribute('readonly');
+        idProPrice.removeAttribute('readonly', true);
+        idCatePrice.removeAttribute('readonly', true);
+        brandSelect.removeAttribute('disabled');
+        productSelect.removeAttribute('disabled');
+        idCatePrice.value = '';
+        idProPrice.value = '';
+        autoFillNewCodes();
     }
     idPrice.value = row.cells[0].innerText;
     idCatePrice.value = row.cells[1].innerText;
@@ -175,21 +188,13 @@ function openPriceModal(mode, btn) {
 window.openPriceModal = openPriceModal;
 
 cancelBtn.onclick = () => {
-  form.reset();
-  priceInput.value = "";
-  [
-    idPrice,
-    idCatePrice,
-    idProPrice,
-    idImPrice,
-    costInput,
-    profitInput,
-    priceInput,
-  ].forEach((input) => {
-    input.style.border = "";
-  });
-  editingRow = null;
-  priceModal.style.display = "none";
+    form.reset();
+    priceInput.value = '';
+    [idPrice, idCatePrice, idProPrice, costInput, profitInput, priceInput].forEach(input => {
+        input.style.border = '';
+    });
+    editingRow = null;
+    priceModal.style.display = 'none';
 };
 // Khi chọn thương hiệu
 brandSelect.addEventListener("change", () => {
@@ -218,7 +223,6 @@ const generateCode = (prefix, colIndex) => {
 };
 function autoFillNewCodes() {
   idPrice.value = generateCode("GN", 0); // Cột 0 là Mã GN
-  idImPrice.value = generateCode("PN", 3); // Cột 3 là Mã nhập PN
 }
 //Giá và lợi
 function cleanNumber(value) {
@@ -261,83 +265,57 @@ priceInput.addEventListener("blur", () => {
 });
 //Lưu cập nhật
 form.onsubmit = (e) => {
-  e.preventDefault();
-  const ID = idPrice.value;
-  const categoryPrice = idCatePrice.value;
-  const productPrice = idProPrice.value;
-  const importPrice = idImPrice.value;
-  const cost = cleanNumber(costInput.value);
-  const profit = parseFloat(profitInput.value);
-  const price = cleanNumber(priceInput.value);
-
-  if (!validateID(idPrice.value, "GN")) {
-    idPrice.style.border = "2px solid red";
-    alert("Mã phải có dạng GN01 hoặc GN001!");
-    idPrice.focus();
-    return;
-  }
-  if (!validateID(idImPrice.value, "PN")) {
-    idImPrice.style.border = "2px solid red";
-    alert("Mã nhập phải có dạng PN01 hoặc PN001!");
-    idImPrice.focus();
-    return;
-  }
-  if (!validatePositiveNumber(costInput)) {
-    costInput.style.border = "2px solid red";
-    alert("Giá vốn phải lớn hơn 0!");
-    return;
-  }
-  if (!validatePositiveNumber(profitInput)) {
-    profitInput.style.border = "2px solid red";
-    alert("Lợi nhuận phải lớn hơn 0!");
-    return;
-  }
-  if (!validatePositiveNumber(priceInput)) {
-    priceInput.style.border = "2px solid red";
-    alert("Giá bán phải lớn hơn 0!");
-    return;
-  }
-  if (
-    !ID ||
-    !categoryPrice ||
-    !productPrice ||
-    !importPrice ||
-    !cost ||
-    !profit
-  ) {
-    alert("Vui lòng nhập đầy đủ thông tin!");
-    return;
-  }
-
-  //Thêm hoặc sửa
-  if (editingRow) {
-    editingRow.cells[0].innerText = ID;
-    editingRow.cells[1].innerText = categoryPrice;
-    editingRow.cells[2].innerText = productPrice;
-    editingRow.cells[3].innerText = importPrice;
-    editingRow.cells[4].innerText = cost;
-    editingRow.cells[5].innerText = profit + "%";
-    editingRow.cells[6].innerText = price;
-    const index = list.findIndex((item) => item.id === ID);
-    if (index !== -1) {
-      list[index] = {
-        id: ID,
-        categoryId: categoryPrice,
-        productId: productPrice,
-        importId: importPrice,
-        cost,
-        profit,
-        price,
-      };
+    e.preventDefault();
+    const ID = idPrice.value;
+    const categoryPrice = idCatePrice.value;
+    const productPrice = idProPrice.value;
+    const cost = cleanNumber(costInput.value);
+    const profit = parseFloat(profitInput.value);
+    const price = cleanNumber(priceInput.value);
+    
+    
+    if (!validateID(idPrice.value, 'GN')) {
+        idPrice.style.border = '2px solid red';
+        alert('Mã phải có dạng GN01 hoặc GN001!');
+        idPrice.focus();
+        return;
     }
-  } else {
-    const row = table.insertRow();
-    if (checkDuplicatePriceID(ID)) return;
-    row.innerHTML = `
+    if (!validatePositiveNumber(costInput)) {
+        costInput.style.border = '2px solid red'; 
+        alert('Giá vốn phải lớn hơn 0!'); 
+        return; }
+    if (!validatePositiveNumber(profitInput)) {
+        profitInput.style.border = '2px solid red'; 
+        alert('Lợi nhuận phải lớn hơn 0!'); 
+        return; }
+    if (!validatePositiveNumber(priceInput)) { 
+        priceInput.style.border = '2px solid red';
+        alert('Giá bán phải lớn hơn 0!'); 
+        return; }
+    if (!ID || !categoryPrice || !productPrice || !cost || !profit) {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+        return;
+    }
+
+    //Thêm hoặc sửa
+    if (editingRow) {
+        editingRow.cells[0].innerText = ID;
+        editingRow.cells[1].innerText = categoryPrice;
+        editingRow.cells[2].innerText = productPrice;
+        editingRow.cells[3].innerText = cost;
+        editingRow.cells[4].innerText = profit + '%';
+        editingRow.cells[5].innerText = price;
+        const index = list.findIndex(item => item.id === ID);
+        if(index !== -1){
+            list[index] = {id: ID, categoryId: categoryPrice, productId: productPrice, cost, profit, price };
+        }
+    } else {
+        const row = table.insertRow();
+        if (checkDuplicatePriceID(ID)) return;
+        row.innerHTML = `
                 <td>${idPrice.value}</td>
                 <td>${idCatePrice.value}</td>
                 <td>${idProPrice.value}</td>
-                <td>${idImPrice.value}</td>
                 <td>${cost}</td>
                 <td>${profit}%</td>
                 <td>${price}</td>
@@ -350,7 +328,6 @@ form.onsubmit = (e) => {
       id: ID,
       categoryId: categoryPrice,
       productId: productPrice,
-      importId: importPrice,
       cost,
       profit,
       price,
@@ -362,13 +339,13 @@ form.onsubmit = (e) => {
 };
 
 function searchProduct() {
-  const keyword = searchInput.value.trim().toLowerCase();
-  for (let row of table.getElementsByTagName("tr")) {
-    // Kiểm tra ký tự đầu của tất cả các ô trong hàng
-    const match = Array.from(row.cells).some((cell, index) => {
-      if (index === row.cells.length - 1) return false;
-      return cell.innerText.trim().toLowerCase().startsWith(keyword);
-    });
+    const keyword = searchInput.value.trim().toLowerCase();
+    for (let row of table.getElementsByTagName('tr')) {
+        // Kiểm tra ký tự đầu của tất cả các ô trong hàng
+        const match = Array.from(row.cells).some((cell, index) => {
+            if (index === row.cells.length - 1) return false;
+            return cell.innerText.trim().toLowerCase().startsWith(keyword);
+        });
 
     row.style.display = match || keyword === "" ? "" : "none";
   }
@@ -481,7 +458,6 @@ function populateProductDropdown(selectedBrandId) {
 function getLocalOrders() {
   return JSON.parse(localStorage.getItem("orderList")) || [];
 }
-
 function setLocalOrders(list) {
   localStorage.setItem("orderList", JSON.stringify(list));
 }
@@ -739,9 +715,9 @@ function openModal(item) {
   }
   tonkhoModal.classList.add("show");
 }
-function openSummaryModal() {
+function openSummaryModal(data = getInventory()) {
   if (!summaryModal) return;
-  const inventory = getInventory();
+  const inventory = data;
   const outOfStock = inventory.filter((item) => item.slTon === 0);
   const lowStock = inventory.filter(
     (item) => item.slTon > 0 && item.slTon <= item.minTon
@@ -804,8 +780,8 @@ if (btnSearch) {
         item.id.toLowerCase().includes(keyword) ||
         item.productId.toLowerCase().includes(keyword) ||
         item.categoryId.toLowerCase().includes(keyword);
-      const ProMatch = !Pro || item.stockPro.toLowerCase().includes(Pro);
-      const CateMatch = !Cate || item.stockCate.toLowerCase().includes(Cate);
+      const ProMatch = !Pro || item.productId.toLowerCase().includes(Pro);
+      const CateMatch = !Cate || item.categoryId.toLowerCase().includes(Cate);
       const dateStartMatch = !startDate || itemDate >= startDate;
       const dateEndMatch = !endDate || itemDate <= endDate;
 
@@ -815,13 +791,14 @@ if (btnSearch) {
     });
     displayTon(filterData);
     renderSummary(filterData);
+    window.currentFilterData=filterData;
   });
 }
 
 if (viewDetails) {
   viewDetails.addEventListener("click", (e) => {
     e.preventDefault();
-    openSummaryModal();
+    openSummaryModal(window.currentFilterData||inventory);
   });
 }
 closeBtns.forEach((btn) => {
