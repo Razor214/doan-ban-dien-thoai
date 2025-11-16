@@ -9,43 +9,6 @@
 </head>
 
 <body>
-  <!-- HEADER GIỐNG NHƯ TRANG CHỦ -->
-  <header>
-    <div class="logo">
-      <img src="assets/img/logo.png" alt="SaiGonPhone Logo" />
-      <h1>SaiGonPhone</h1>
-    </div>
-
-    <nav class="navbar" id="navbar">
-      <a href="index.html" class="bar_right">Trang Chủ</a>
-
-      <!-- Hiển thị khi chưa đăng nhập -->
-      <div id="guest-links" class="navbar-links">
-        <a href="user.html?tab=login" class="bar_right">Đăng nhập</a>
-        <a href="user.html?tab=register">Đăng ký</a>
-      </div>
-
-      <!-- Hiển thị khi đã đăng nhập -->
-      <div id="user-links" style="display: none" class="navbar-links">
-        <div class="user-dropdown">
-          <a href="user.html?tab=profile" class="user-profile-link">
-            Xin chào, <span id="user-name"></span>
-            <span class="admin-badge" id="admin-badge" style="display: none">Admin</span>
-          </a>
-          <div class="dropdown-content">
-            <a href="index.html" class="icon-home">Về trang chủ</a>
-            <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
-            <a href="cart.html" class="icon-cart">🛒 Giỏ hàng</a>
-            <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link" style="display: none">
-              Quản Trị Viên
-            </a>
-            <a href="#" onclick="logoutFromCart(); return false;" class="icon-logout">Đăng xuất</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </header>
-
   <main>
     <div class="cart-header">
       <h2>🛒 Giỏ hàng của bạn</h2>
@@ -158,47 +121,6 @@
     </div>
   </div>
 
-  <script>
-    // Xử lý đăng nhập/đăng xuất trên trang cart
-    document.addEventListener("DOMContentLoaded", function () {
-      const userData = localStorage.getItem("currentUser") || localStorage.getItem("CurrentUser");
-      const currentUser = userData ? JSON.parse(userData) : null;
-
-      const guestLinks = document.getElementById("guest-links");
-      const userLinks = document.getElementById("user-links");
-      const adminBadge = document.getElementById("admin-badge");
-      const adminMenuLink = document.getElementById("admin-menu-link");
-      const userNameSpan = document.getElementById("user-name");
-
-      if (currentUser && currentUser.username) {
-        guestLinks.style.display = "none";
-        userLinks.style.display = "flex";
-        const userName = currentUser.fullName || currentUser.username;
-        userNameSpan.textContent = userName;
-
-        const isAdmin = currentUser.role && currentUser.role.toLowerCase() === "admin";
-        if (isAdmin) {
-          adminBadge.style.display = "inline-block";
-          adminMenuLink.style.display = "flex";
-        } else {
-          adminBadge.style.display = "none";
-          adminMenuLink.style.display = "none";
-        }
-      } else {
-        guestLinks.style.display = "flex";
-        userLinks.style.display = "none";
-      }
-    });
-
-    function logoutFromCart() {
-      if (confirm("Bạn có chắc muốn đăng xuất?")) {
-        localStorage.removeItem("CurrentUser");
-        localStorage.removeItem("currentUser");
-        window.location.href = "index.html";
-      }
-      return false;
-    }
-  </script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/cartinner.js"></script>
 </body>
