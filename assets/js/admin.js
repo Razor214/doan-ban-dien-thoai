@@ -499,13 +499,16 @@ function showDetails(orderId) {
   document.getElementById("detail-date").textContent = order.date;
   document.getElementById("detail-product").textContent =
     order.address.value || "";
-  const methodTableBody = document.querySelector("#methodtable tbody");
-  methodTableBody.innerHTML = `
-    <tr>
-        <td>${order.payment.method}</td>
-        <td>${order.payment.confirmed}</td>
-    </tr>
-    `;
+const methodTableBody = document.querySelector("#methodtable tbody");
+const method = order.payment?.method || "unknown";
+const confirmed = order.payment?.confirmed ? "true" : "false";
+methodTableBody.innerHTML = `
+  <tr>
+    <td>${"Tiền mặt"}</td>
+    <td>${confirmed}</td>
+  </tr>
+`;
+
   const select = document.getElementById("detailsstatus");
   select.value = order.status;
   const statusFlow = ["newly ordered", "processed", "delivered", "cancelled"];
@@ -578,73 +581,56 @@ window.ResetDate = ResetDate;
 function addOrderToAdminList(customer, cartItems, paymentMethod) {
     const adminOrderList = getLocalOrders();
 
-    // 1. TẠO ID MỚI (Logic Tự Tăng ID DHxx hợp lệ)
+    // Tạo ID mới (giữ logic cũ)
     const dhIds = adminOrderList
-        // Lọc: Chỉ lấy đơn hàng có ID là chuỗi và bắt đầu bằng "DH"
         .filter(order => order.id && typeof order.id === 'string' && order.id.startsWith("DH") && order.id.length <=5)
         .map(order => parseInt(order.id.replace("DH", "")))
-        .filter(num => !isNaN(num)); 
-
-    let maxNum = 0;
-    if (dhIds.length > 0) {
-        maxNum = Math.max(...dhIds);
-    }
+        .filter(num => !isNaN(num));
+    let maxNum = dhIds.length > 0 ? Math.max(...dhIds) : 0;
     const newIdNum = maxNum + 1;
-    // Format ID: DHxx
     const newOrderId = "DH" + String(newIdNum).padStart(2, '0');
-    // Format UserID: KHxx
     const newUserId = "KH" + String(newIdNum).padStart(2, '0');
-
-    // 2. FORMAT NGÀY (Chỉ lấy YYYY-MM-DD)
     const newDate = new Date().toISOString().split('T')[0];
 
-    const adminItems = Object.keys(cartItems).map(productId => {
-        const item = cartItems[productId];
-        return {
-            productId: item.id || item.productId || item.name, // Mã SP (được lấy từ key trong object cartItems)
-            quantity: item.qty
-        };
-    });
+    // Chuẩn hóa cartItems -> lấy values (dù là object keyed hoặc array)
+    const values = Array.isArray(cartItems) ? cartItems : Object.values(cartItems || {});
 
-    const isConfirmed = false; 
+    // Admin items lấy productId từ item.id hoặc item.productId
+    const adminItems = values.map(item => ({
+        productId: item.id || item.productId || item.product || item.name || "UNKNOWN",
+        quantity: Number(item.quantity || item.qty) || 1
+    }));
+
+    // Chuẩn hóa phương thức thanh toán và xác nhận nếu "tiền" (case-insensitive)
+    const normalizedPaymentMethod = String(paymentMethod || "").trim();
+    const isCash = normalizedPaymentMethod.toLowerCase().includes("tiền");
+    const isConfirmed = isCash; // nếu muốn admin xác nhận sau thì set false; mình set true cho tiền mặt
 
     const newOrder = {
-        id: newOrderId, // Đã sửa lỗi dãy số dài
-        userId: newUserId, // Đã sửa lỗi dãy số dài
-        date: newDate, // Đã sửa lỗi định dạng ngày
+        id: newOrderId,
+        userId: newUserId,
+        date: newDate,
         status: "newly ordered",
-        
-        // Cấu trúc bắt buộc cho showDetails
-        address: { 
-            value: customer.address 
-        },
-        
-        // Cấu trúc bắt buộc cho showDetails
-        payment: {
-            method: paymentMethod,
-            confirmed: isConfirmed // Đã sửa lỗi set mặc định
-        },
-        
-        items: adminItems, // Đã sửa lỗi mã SP và SL
-        customer: customer // Thông tin KH đầy đủ
+        address: { value: customer.address },
+        payment: { method: normalizedPaymentMethod, confirmed: isConfirmed },
+        items: adminItems,
+        customer: customer
     };
 
     adminOrderList.push(newOrder);
     setLocalOrders(adminOrderList);
     syncAndRenderOrders();
 
-    // Cập nhật lại orders của khách hàng
-    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    
-    // Đơn hàng của khách hàng nên giữ nguyên format đầy đủ (bao gồm tên SP, giá)
+    // Cập nhật orders cho khách (bảng khách) — lưu dạng items là values (tên/giá/qty)
+    const orders = JSON.parse(localStorage.getItem("orderList") || "[]");
     orders.push({
-      id: newOrderId, // Dùng ID mới để đồng bộ giữa 2 bảng
-      date: new Date().toLocaleString(), // Dùng toLocaleString() cho giao diện khách hàng
-      items: Object.values(cartItems),
+      id: newOrderId,
+      date: new Date().toLocaleString(),
+      items: values,
       customer: customer,
-      payment: paymentMethod
+      payment: normalizedPaymentMethod
     });
-    localStorage.setItem("orders", JSON.stringify(orders));
+    localStorage.setItem("orderList", JSON.stringify(orders));
 }
 //==============
 //Quản lý tồn kho
