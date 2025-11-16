@@ -122,11 +122,11 @@ window.addEventListener("DOMContentLoaded", () => {
     function renderCart(){
       cartTableBody.innerHTML="";let total=0;
       for(const id in cart){
-        const i=cart[id];const t=i.price*i.quantity;total+=t;
+        const i=cart[id];const t=i.price*i.qty;total+=t;
         cartTableBody.innerHTML+=`
         <tr><td>${i.name}</td><td>${i.price.toLocaleString('vi-VN')}₫</td>
         <td><button class='btn btn-minus' data-id='${id}'>-</button></td>
-        <td><input type='number' class='quantity-input' value='${i.quantity}' min='1' data-id='${id}'></td>
+        <td><input type='number' class='qty-input' value='${i.qty}' min='1' data-id='${id}'></td>
         <td><button class='btn btn-plus' data-id='${id}'>+</button></td>
         <td>${t.toLocaleString('vi-VN')}₫</td>
         <td><button class='btn btn-remove' data-id='${id}'>Xóa</button></td></tr>`;
@@ -137,21 +137,21 @@ window.addEventListener("DOMContentLoaded", () => {
       btn.onclick=()=>{
         const p=btn.closest(".product");
         const id=p.dataset.id;const name=p.dataset.name;const price=parseInt(p.dataset.price);
-        if(!cart[id])cart[id]={name,price,quantity:1};else cart[id].quantity++;
+        if(!cart[id])cart[id]={name,price,qty:1};else cart[id].qty++;
         renderCart();saveCart();alert("Đã thêm "+name+" vào giỏ hàng!");
       };
     });
     cartTableBody.onclick=e=>{
       const id=e.target.dataset.id;
-      if(e.target.classList.contains("btn-plus"))cart[id].quantity++;
-      if(e.target.classList.contains("btn-minus")){cart[id].quantity--;if(cart[id].quantity<=0)delete cart[id];}
+      if(e.target.classList.contains("btn-plus"))cart[id].qty++;
+      if(e.target.classList.contains("btn-minus")){cart[id].qty--;if(cart[id].qty<=0)delete cart[id];}
       if(e.target.classList.contains("btn-remove")&&confirm("Xóa sản phẩm này?"))delete cart[id];
       renderCart();saveCart();
     };
     cartTableBody.onchange=e=>{
-      if(e.target.classList.contains("quantity-input")){
-        const id=e.target.dataset.id;const quantity=parseInt(e.target.value);
-        if(quantity<=0)delete cart[id];else cart[id].quantity=quantity;renderCart();saveCart();
+      if(e.target.classList.contains("qty-input")){
+        const id=e.target.dataset.id;const qty=parseInt(e.target.value);
+        if(qty<=0)delete cart[id];else cart[id].qty=qty;renderCart();saveCart();
       }
     };
 
@@ -161,7 +161,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const name=newName.value.trim(),phone=newPhone.value.trim(),address=newAddress.value.trim(),payment=paymentMethod.value;
       if(!name||!phone||!address)return alert("Vui lòng nhập đầy đủ thông tin!");
       if(confirm(`Xác nhận đặt hàng với hình thức: ${payment}?`)){
-        const orders=JSON.parse(localStorage.getItem("orderList")||"[]");
+        const orders=JSON.parse(localStorage.getItem("orders")||"[]");
         orders.push({
           id:Date.now(),
           date:new Date().toLocaleString(),
@@ -169,7 +169,7 @@ window.addEventListener("DOMContentLoaded", () => {
           customer:{name,phone,address},
           payment
         });
-        localStorage.setItem("orderList",JSON.stringify(orders));
+        localStorage.setItem("orders",JSON.stringify(orders));
       
       
       
@@ -183,11 +183,11 @@ let orderText =
   "🛒 Sản phẩm đã đặt:\n";
 
 Object.values(cart).forEach(item => {
-  orderText += `- ${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString('vi-VN')}₫\n`;
+  orderText += `- ${item.name} (x${item.qty}) - ${(item.price * item.qty).toLocaleString('vi-VN')}₫\n`;
 });
 
 let totalCost = Object.values(cart)
-  .reduce((sum, item) => sum + item.price * item.quantity, 0);
+  .reduce((sum, item) => sum + item.price * item.qty, 0);
 
 orderText += `\n💵 Tổng tiền: ${totalCost.toLocaleString('vi-VN')}₫\n\n`;
 orderText += "📦 Bạn có chắc muốn đặt đơn này không?";
@@ -195,25 +195,27 @@ orderText += "📦 Bạn có chắc muốn đặt đơn này không?";
 // 👉 Dùng confirm để cho phép OK hoặc Cancel
 if (confirm(orderText)) {
     // Người dùng bấm OK
+    //Gọi hàm lưu vào bảng quản lý
+    addOrderToAdminList({name, phone, address}, cart, payment);
     alert("🎉 Đặt hàng thành công! Cảm ơn bạn đã mua tại SaiGonPhone!");
-    
+    cart = {};
+    saveCart();
+    renderCart();
+    newName.value = newPhone.value = newAddress.value = "";
+    savedAddressSelect.value = "";
     // XÓA GIỎ HÀNG, LƯU ĐƠN HÀNG,... tuỳ bạn
     // localStorage.removeItem("cart");
 } else {
     // Người dùng bấm Cancel
     alert("❌ Bạn đã hủy đặt hàng. Vui lòng kiểm tra lại thông tin!");
 }
-
-        saveNewAddress(name,phone,address);
-        cart={};saveCart();renderCart();
-        newName.value=newPhone.value=newAddress.value="";savedAddressSelect.value="";
-      }
     };
+  }
 
     // --- Đơn hàng đã mua ---
     const ordersModal=document.getElementById("ordersModal"),ordersList=document.getElementById("ordersDetail");
     function renderOrders(){
-      const orders=JSON.parse(localStorage.getItem("orderList")||"[]");
+      const orders=JSON.parse(localStorage.getItem("orders")||"[]");
       if(orders.length===0){ordersList.innerHTML="<p>Chưa có đơn hàng nào.</p>";return;}
       ordersList.innerHTML=orders.map((o,i)=>`
         <div style='border:1px solid #ddd;padding:8px;margin:8px 0;border-radius:6px'>
@@ -221,15 +223,15 @@ if (confirm(orderText)) {
         <b>👤 KH:</b> ${o.customer.name} - ${o.customer.phone}<br>
         <b>🏠 Địa chỉ:</b> ${o.customer.address}<br>
         <b>💳 Thanh toán:</b> ${o.payment||"Tiền mặt"}<br>
-        <ul>${o.items.map(it=>`<li>${it.name} - SL: ${it.quantity} - ${(it.price*it.quantity).toLocaleString('vi-VN')}₫</li>`).join("")}</ul>
+        <ul>${o.items.map(it=>`<li>${it.name} - SL: ${it.qty} - ${(it.price*it.qty).toLocaleString('vi-VN')}₫</li>`).join("")}</ul>
         <button class='btn btn-remove btn-del-order' data-index='${i}'>Hủy đơn</button></div>`).join("");
       ordersList.querySelectorAll(".btn-del-order").forEach(btn=>{
-        btn.onclick=()=>{if(confirm("Hủy đơn hàng này?")){orders.splice(btn.dataset.index,1);localStorage.setItem("orderList",JSON.stringify(orders));renderOrders();}};
+        btn.onclick=()=>{if(confirm("Hủy đơn hàng này?")){orders.splice(btn.dataset.index,1);localStorage.setItem("orders",JSON.stringify(orders));renderOrders();}};
       });
     }
     document.getElementById("showOrders").onclick=()=>{ordersModal.style.display="flex";renderOrders();};
     document.getElementById("closeModal").onclick=()=>ordersModal.style.display="none";
-    document.getElementById("clearAllOrdersBtn").onclick=()=>{if(confirm("Xóa tất cả đơn hàng?")){localStorage.removeItem("orderList");renderOrders();}};
+    document.getElementById("clearAllOrdersBtn").onclick=()=>{if(confirm("Xóa tất cả đơn hàng?")){localStorage.removeItem("orders");renderOrders();}};
     window.onclick=e=>{if(e.target===ordersModal)ordersModal.style.display="none";};
 
     loadCart();
