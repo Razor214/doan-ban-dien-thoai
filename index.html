@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="assets/css/homepage.css" />
   <link rel="stylesheet" href="assets/css/hero.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 
@@ -51,7 +50,7 @@
           <div class="dropdown-content">
             <a href="index.html" class="icon-home">Về trang chủ</a>
             <a href="user.html?tab=profile" class="icon-profile">Hồ sơ cá nhân</a>
-            <a href="cart.html" onclick="navigateToCart(); return false;" class="icon-cart">🛒 Giỏ hàng</a>
+            <a href="giohang.html" class="icon-cart">🛒 Giỏ hàng</a>
             <a href="admin.html" class="icon-admin admin-menu-item" id="admin-menu-link" style="display: none">
               Quản Trị Viên
             </a>
@@ -249,7 +248,7 @@
                 <circle cx="20" cy="21" r="1"></circle>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
               </svg>
-              Thêm vào giỏ hàng
+           Thêm vào giỏ hàng
             </button>
           </div>
         </div>
@@ -325,7 +324,52 @@
   <script src="assets/js/products.js"></script>
   <script src="assets/js/modal-product.js"></script>
   <script src="assets/js/user.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".btn-add-cart").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const id = this.dataset.id;
+      addToCart(id);
+      alert("Đã Thêm vào giỏ hàng!");
+    });
+  });
+});
 
+
+function addToCart(productId) {
+    // Lấy giỏ hàng từ localStorage
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Tìm sản phẩm trong danh sách sản phẩm
+    let product = products.find(p => p.id === productId);
+    if (!product) {
+        console.error("Không tìm thấy sản phẩm!");
+        return;
+    }
+
+    // Kiểm tra sản phẩm đã có trong giỏ chưa
+    let existing = cart.find(item => item.id === productId);
+
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            img: product.img,
+            quantity: 1
+        });
+    }
+
+    // Lưu lại vào localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    alert("Đã thêm vào giỏ hàng!");
+}
+
+
+</script>
+<script src="assets/js/cart.js"></script>
 </body>
-
 </html>
