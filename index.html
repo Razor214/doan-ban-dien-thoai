@@ -187,6 +187,16 @@
       </div>
     </div>
 
+  <!-- chi tiết sản phẩm -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+
+      <div class="product-details">
+        <div class="product-image-section">
+          <div class="main-image">
+            <img id="modalProductMainImage" src="" alt="Product Image" />
+
     <!-- MAIN -->
     <main>
       <section class="hero-modern">
@@ -200,6 +210,7 @@
 
           <div class="hero-image">
             <img src="assets/img/phonehero.png" alt="SaiGonPhone Product" />
+
           </div>
         </div>
       </section>
@@ -264,8 +275,14 @@
           </button>
         </div>
 
+        <div class="product-info-section">
+          <div class="product-header">
+            <h1 id="modalProductName">Tên sản phẩm</h1>
+          </div>
+
         <!-- Hiển thị sản phẩm -->
         <div class="product-grid" id="productGrid"></div>
+
 
         <!-- Phân trang -->
         <div class="pagination" id="pagination"></div>
@@ -385,12 +402,96 @@
           window.location.href = "index.html";
         }
         return false;
-      }
-    </script>
-    <script src="data/product.js"></script>
-    <script src="data/price.js"></script>
-    <script src="assets/js/products.js"></script>
-    <script src="assets/js/modal-product.js"></script>
-    <script src="assets/js/user.js"></script>
-  </body>
+    }
+  </script>
+  <script src="data/product.js"></script>
+  <script src="data/price.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/modal-product.js"></script>
+  <script src="assets/js/user.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".btn-add-cart").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const id = this.dataset.id;
+      addToCart(id);
+      alert("Đã Thêm vào giỏ hàng!");
+    });
+  });
+});
+
+
+function addToCart(productId) {
+    // Lấy giỏ hàng từ localStorage
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Tìm sản phẩm trong danh sách sản phẩm
+    let product = products.find(p => p.id === productId);
+    if (!product) {
+        console.error("Không tìm thấy sản phẩm!");
+        return;
+    }
+
+    // Kiểm tra sản phẩm đã có trong giỏ chưa
+    let existing = cart.find(item => item.id === productId);
+
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            img: product.img,
+            quantity: 1
+        });
+    }
+
+    // Lưu lại vào localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    alert("Đã thêm vào giỏ hàng!");
+}
+
+
+</script>
+<script src="assets/js/cart.js"></script>
+</body>
 </html>
+<script>
+  // Khi người dùng nhấn nút "Thêm vào giỏ hàng" trong modal
+  document.getElementById("modalAddToCartBtn").addEventListener("click", function () {
+    // Lấy thông tin sản phẩm đang hiển thị trong modal
+    const productName = document.getElementById("modalProductName").textContent;
+    const priceText = document.getElementById("modalCurrentPrice").textContent;
+    const price = parseInt(priceText.replace(/[^\d]/g, "")); // Lọc chỉ lấy số
+    const productId = document
+      .querySelector(".product-modal-trigger.active")
+      ?.getAttribute("data-product-id") || Date.now(); // fallback ID
+
+    // Tạo object sản phẩm
+    const product = {
+      id: productId,
+      name: productName,
+      price: price,
+      qty: 1
+    };
+
+    // Lấy giỏ hàng hiện tại từ localStorage (nếu có)
+    let cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+    // Nếu sản phẩm đã tồn tại → tăng số lượng
+    if (cart[product.id]) {
+      cart[product.id].qty += 1;
+    } else {
+      cart[product.id] = product;
+    }
+
+    // Lưu lại giỏ hàng
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Chuyển sang trang giỏ hàng
+    window.location.href = "giohang.html";
+  });
+</script>
+
