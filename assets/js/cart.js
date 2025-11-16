@@ -115,102 +115,106 @@ function updateCartCount() {
   cartCountEl.textContent = `${totalItems} sản phẩm`;
 }
 
-// --- Cập nhật cart-header ---
-function updateCartHeader() {
-  const cartHeader = document.querySelector('.cart-header');
-  if (!cartHeader) return;
-  
-  // Tạo cart-header mới
-  cartHeader.innerHTML = `
-    <div class="cart-header-left">
-      <h1>🛒 Giỏ hàng của bạn</h1>
-      <span class="cart-count" id="cartCount">0 sản phẩm</span>
-    </div>
-    <div class="cart-header-right">
-      <button class="btn-continue" onclick="window.location.href='index.html'">
-        <i class="fas fa-arrow-left"></i>
-        Tiếp tục mua sắm
-      </button>
-      <button class="btn-orders" id="showOrders">
-        <i class="fas fa-box"></i>
-        Đơn hàng của tôi
-      </button>
-    </div>
-  `;
-  
-  // Thêm CSS inline cho cart-header mới
-  const style = document.createElement('style');
-  style.textContent = `
-    .cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-      border-bottom: 2px solid #e0e0e0;
-      margin-bottom: 30px;
+// --- Xử lý địa chỉ từ user ---
+function setupUserAddress() {
+  const user = JSON.parse(localStorage.getItem("CurrentUser") || localStorage.getItem("currentUser") || "{}");
+  if (!user || !user.fullName) return;
+
+  const savedAddress = document.getElementById("savedAddress");
+  const nameInput     = document.getElementById("newName");
+  const phoneInput    = document.getElementById("newPhone");
+  const addressInput  = document.getElementById("newAddress");
+
+  if (!savedAddress || !nameInput || !phoneInput || !addressInput) return;
+
+  // ---- Tạo option 1: Địa chỉ mặc định ----
+  const optDefault = document.createElement("option");
+  optDefault.value = "default";
+  optDefault.textContent = `${user.fullName} - ${user.phone || ''} - ${user.address || ''}`;
+  savedAddress.appendChild(optDefault);
+
+  // ---- Tạo option 2: Nhập địa chỉ mới ----
+  const optNew = document.createElement("option");
+  optNew.value = "new";
+  optNew.textContent = "Nhập địa chỉ mới";
+  savedAddress.appendChild(optNew);
+
+  // ---- Hàm fill mặc định ----
+  function fillDefault() {
+    nameInput.value = user.fullName || '';
+    phoneInput.value = user.phone || '';
+    addressInput.value = user.address || '';
+
+    nameInput.readOnly = true;
+    phoneInput.readOnly = true;
+    addressInput.readOnly = true;
+  }
+
+  // Auto khi mới vào trang
+  fillDefault();
+  savedAddress.value = "default";
+
+  // ---- Xử lý đổi lựa chọn ----
+  savedAddress.addEventListener("change", () => {
+    if (savedAddress.value === "default") {
+      fillDefault();
+    } 
+    else if (savedAddress.value === "new") {
+      nameInput.value = user.fullName || '';
+      phoneInput.value = user.phone || '';
+
+      nameInput.readOnly = true;
+      phoneInput.readOnly = true;
+
+      addressInput.value = "";
+      addressInput.readOnly = false;
     }
-    .cart-header-left h1 {
-      margin: 0;
-      color: #2c3e50;
-      font-size: 28px;
-      font-weight: 600;
+  });
+}
+
+// --- Xử lý thanh toán ngân hàng ---
+function setupPaymentMethod() {
+  const paymentSelect = document.getElementById("paymentMethod");
+  const bankInfo = document.getElementById("bankInfo");
+  const bankSelect = document.getElementById("bankSelect");
+  const bankDetails = document.getElementById("bankDetails");
+
+  if (!paymentSelect || !bankInfo) return;
+
+  // Ẩn khối ngân hàng khi mới tải trang
+  bankInfo.style.display = "none";
+
+  // Hiển thị hoặc ẩn thông tin ngân hàng khi chọn phương thức thanh toán
+  paymentSelect.addEventListener("change", () => {
+    if (paymentSelect.value === "transfer") {
+      bankInfo.style.display = "block";
+    } else {
+      bankInfo.style.display = "none";
     }
-    .cart-count {
-      display: inline-block;
-      background: #3498db;
-      color: white;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 14px;
-      margin-left: 10px;
-    }
-    .cart-header-right {
-      display: flex;
-      gap: 15px;
-    }
-    .btn-continue, .btn-orders {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .btn-continue {
-      background: #f8f9fa;
-      color: #2c3e50;
-      border: 1px solid #ddd;
-    }
-    .btn-continue:hover {
-      background: #e9ecef;
-      border-color: #adb5bd;
-    }
-    .btn-orders {
-      background: #3498db;
-      color: white;
-    }
-    .btn-orders:hover {
-      background: #2980b9;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-    }
-    @media (max-width: 768px) {
-      .cart-header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-      }
-      .cart-header-right {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-  `;
-  document.head.appendChild(style);
+  });
+
+  // Khi chọn ngân hàng, cập nhật thông tin hiển thị
+  if (bankSelect && bankDetails) {
+    bankSelect.addEventListener("change", () => {
+      const bank = bankSelect.value;
+      const banks = {
+        agribank: { name: "Agribank", stk: "123456789", owner: "Công ty SaiGonPhone" },
+        vietcombank: { name: "Vietcombank", stk: "0123456789", owner: "Công ty SaiGonPhone" },
+        bidv: { name: "BIDV", stk: "987654321", owner: "Công ty SaiGonPhone" },
+        techcombank: { name: "Techcombank", stk: "5566778899", owner: "Công ty SaiGonPhone" },
+        mbbank: { name: "MB Bank", stk: "1122334455", owner: "Công ty SaiGonPhone" },
+      };
+      const b = banks[bank];
+      bankDetails.innerHTML = `
+        <p><strong>Ngân hàng ${b.name}</strong></p>
+        <p>Số TK: <b>${b.stk}</b></p>
+        <p>Chủ TK: <b>${b.owner}</b></p>
+      `;
+    });
+
+    // Kích hoạt sự kiện change lần đầu để hiển thị thông tin mặc định
+    bankSelect.dispatchEvent(new Event('change'));
+  }
 }
 
 // --- Giỏ hàng ---
@@ -464,22 +468,11 @@ function setupOrdersModal() {
 let savedAddresses = loadAddresses();
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Cập nhật cart-header
-  updateCartHeader();
-  
-  // Tự điền thông tin từ currentUser nếu có
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || localStorage.getItem("CurrentUser") || "{}");
-  const newName = document.getElementById("newName");
-  const newPhone = document.getElementById("newPhone");
-  const newAddress = document.getElementById("newAddress");
-
-  if (currentUser.name && newName) newName.value = currentUser.name;
-  if (currentUser.phone && newPhone) newPhone.value = currentUser.phone;
-  if (currentUser.address && newAddress) newAddress.value = currentUser.address;
-
   // Khởi tạo các sự kiện
   loadCart();
   renderAddressOptions();
+  setupUserAddress();
+  setupPaymentMethod();
   setupProductEvents();
   setupCartEvents();
   setupCheckout();
@@ -492,10 +485,18 @@ document.addEventListener("DOMContentLoaded", function() {
       const idx = savedAddressSelect.value;
       if (idx !== "") {
         const a = savedAddresses[idx];
+        const newName = document.getElementById("newName");
+        const newPhone = document.getElementById("newPhone");
+        const newAddress = document.getElementById("newAddress");
+        
         if (newName) newName.value = a.name;
         if (newPhone) newPhone.value = a.phone;
         if (newAddress) newAddress.value = a.address;
       } else {
+        const newName = document.getElementById("newName");
+        const newPhone = document.getElementById("newPhone");
+        const newAddress = document.getElementById("newAddress");
+        
         if (newName) newName.value = "";
         if (newPhone) newPhone.value = "";
         if (newAddress) newAddress.value = "";
