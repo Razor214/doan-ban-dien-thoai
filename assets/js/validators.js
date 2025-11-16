@@ -129,7 +129,7 @@ function validateImportForm(pn) {
   }
 
   // Trạng thái chỉ cho phép hai giá trị
-  if (!["Đang xử lý", "Hoàn thành"].includes(pn.status)) {
+  if (!["pending", "completed"].includes(pn.status)) {
     alert("Trạng thái phiếu nhập không hợp lệ!");
     return false;
   }
