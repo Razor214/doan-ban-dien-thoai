@@ -161,29 +161,6 @@ function openPriceModal(mode, btn) {
         idProPrice.value = '';
         autoFillNewCodes();
     }
-    idPrice.value = row.cells[0].innerText;
-    idCatePrice.value = row.cells[1].innerText;
-    idProPrice.value = row.cells[2].innerText;
-    idImPrice.value = row.cells[3].innerText;
-    costInput.value = row.cells[4].innerText.replace(/,/g, "");
-    profitInput.value = parseFloat(row.cells[5].innerText);
-    priceInput.value = row.cells[6].innerText.replace(/,/g, "");
-    editingRow = row;
-    costInput.setAttribute("readonly", true);
-    idPrice.setAttribute("readonly", true);
-    idImPrice.setAttribute("readonly", true);
-    brandSelect.setAttribute("disabled", true);
-    productSelect.setAttribute("disabled", true);
-  } else {
-    costInput.removeAttribute("readonly");
-    idPrice.removeAttribute("readonly");
-    idImPrice.removeAttribute("readonly");
-    brandSelect.removeAttribute("disabled");
-    productSelect.removeAttribute("disabled");
-    idCatePrice.value = "";
-    idProPrice.value = "";
-    autoFillNewCodes();
-  }
 }
 window.openPriceModal = openPriceModal;
 
