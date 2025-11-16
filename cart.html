@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giỏ hàng - SaiGonPhone</title>
-  <link rel="stylesheet" href="assets/css/cart.css" />
-</head>
+  <link rel="stylesheet" href="assets/css/cart.css">
+
 <body>
   <header>
-    🛒 Giỏ hàng của bạn
+   🛒 Giỏ hàng của bạn
     <button class="orders-btn" id="showOrders">📦 Đơn đã mua</button>
   </header>
 
@@ -48,31 +48,52 @@
 
       <div class="cart-summary">
         <p><strong>Tổng cộng:</strong> <span id="totalPrice">0₫</span></p>
-        <button class="btn btn-update">Cập nhật giỏ hàng</button>
       </div>
+ <!-- Địa chỉ nhận hàng -->
+<div class="address-section">
+    <h3>Địa chỉ nhận hàng</h3>
 
-      <!-- Địa chỉ nhận hàng -->
-      <div class="address-section">
-        <h3>Địa chỉ nhận hàng</h3>
-        <label for="savedAddress">Chọn địa chỉ có sẵn:</label>
-        <select id="savedAddress">
-          <option value="">-- Chọn địa chỉ --</option>
-        </select>
+    <label for="savedAddress">Chọn địa chỉ:</label>
+    <select id="savedAddress"></select>
 
-        <label for="newName">Họ và tên:</label>
-        <input type="text" id="newName" placeholder="Nhập họ tên">
-        <label for="newPhone">Số điện thoại:</label>
-        <input type="text" id="newPhone" placeholder="Nhập số điện thoại">
-        <label for="newAddress">Địa chỉ:</label>
-        <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
+    <label for="newName">Họ và tên:</label>
+    <input type="text" id="newName" placeholder="Nhập họ tên">
 
-        <label for="paymentMethod">Phương thức thanh toán:</label>
-        <select id="paymentMethod">
-          <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
-          <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
-        </select>
+    <label for="newPhone">Số điện thoại:</label>
+    <input type="text" id="newPhone" placeholder="Nhập số điện thoại">
 
-        <button class="btn btn-checkout">Đặt hàng</button>
+    <label for="newAddress">Địa chỉ:</label>
+    <input type="text" id="newAddress" placeholder="Nhập địa chỉ">
+</div>
+  <div class="address-section payment-box">
+    <h3>Phương thức thanh toán</h3>
+<div class="payment-section">
+  <label for="paymentMethod">Phương thức thanh toán:</label>
+  <select id="paymentMethod">
+    <option value="Tiền mặt">💵 Thanh toán tiền mặt khi nhận hàng</option>
+    <option value="Chuyển khoản">💳 Chuyển khoản ngân hàng</option>
+  </select>
+
+  <!-- Khối hiển thị thông tin ngân hàng -->
+  <div id="bankInfo">
+  <p><strong>🏦 Thông tin chuyển khoản:</strong></p>
+  <label for="bankSelect">Chọn ngân hàng:</label>
+  <select id="bankSelect">
+    <option value="agribank">Agribank</option>
+    <option value="vietcombank">Vietcombank</option>
+    <option value="bidv">BIDV</option>
+    <option value="techcombank">Techcombank</option>
+    <option value="mbbank">MB Bank</option>
+  </select>
+  <div id="bankDetails" style="margin-top:10px;">
+    <p><strong>Ngân hàng Agribank</strong></p>
+    <p>Số TK: <b>123456789</b></p>
+    <p>Chủ TK: <b>Công ty SaiGonPhone</b></p>
+  </div>
+</div>
+  <button class="btn btn-checkout">Đặt hàng</button>
+</div>
+
       </div>
 
       <a href="index.html" class="btn-back">⬅ Tiếp tục đặt hàng</a>
@@ -92,5 +113,6 @@
   </div>
 
   <script src="assets/js/cart.js"></script>
+  <script src="assets/js/cartinner.js"></script>
 </body>
 </html>
