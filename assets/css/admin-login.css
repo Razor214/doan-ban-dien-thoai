@@ -1,0 +1,156 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#login-screen {
+    background-image: url("../img/background.jpeg");
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: white;
+    z-index: 100;
+
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+#login-screen.fade-out {
+    opacity: 0;
+}
+
+
+#container {
+    opacity: 0.8;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+#login-screen label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+#login-screen input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+#login-screen input:focus {
+    outline: none;
+    border-color: green;
+}
+
+#login-screen h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: black;
+    font-size: 24px;
+}
+
+#login-screen button {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#login-screen button:hover {
+    background: #45a049;
+}
+
+.password-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-box .form-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    height: 48px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.password-box .form-input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.toggle-pass {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toggle-pass:hover {
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.toggle-pass:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.toggle-pass i {
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.toggle-pass.active {
+    color: #4CAF50;
+}
+
+.toggle-pass.active i {
+    transform: scale(1.1);
+}
