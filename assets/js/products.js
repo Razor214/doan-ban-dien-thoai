@@ -10,9 +10,8 @@ class ProductManager {
       storage: "all",
       priceRange: "all",
       sort: "default",
+      search: "",
     };
-    this.searchQuery = "";
-    this.isSearching = false;
 
     this.loadProducts();
     this.updateBrandFilter();
@@ -20,21 +19,17 @@ class ProductManager {
     this.setupEventListeners();
     this.applyFilters();
   }
+
   updateBrandFilter() {
     const brandFilter = document.getElementById("brandFilter");
     if (!brandFilter) return;
 
-    // Lấy danh sách thương hiệu từ localStorage
     const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
-
-    // Lọc chỉ những thương hiệu đang active
     const activeBrands = categories.filter((cat) => cat.status === "active");
 
-    // Giữ option "Thương hiệu" đầu tiên và lưu giá trị đang chọn
     const currentValue = brandFilter.value;
     brandFilter.innerHTML = '<option value="all">Thương hiệu</option>';
 
-    // Thêm các thương hiệu từ dữ liệu
     activeBrands.forEach((category) => {
       const option = document.createElement("option");
       option.value = category.brand;
@@ -42,58 +37,54 @@ class ProductManager {
       brandFilter.appendChild(option);
     });
 
-    // Khôi phục giá trị đang chọn nếu có
     if (
       currentValue &&
       Array.from(brandFilter.options).some((opt) => opt.value === currentValue)
-    )
+    ) {
       brandFilter.value = currentValue;
+    }
   }
+
   setupStorageListener() {
-    // Lắng nghe thay đổi trong localStorage để tự động cập nhật
     window.addEventListener("storage", (e) => {
       if (e.key === "categoryList") {
         this.updateBrandFilter();
       }
     });
-    // Lắng nghe custom event (cho cùng tab)
+
     window.addEventListener("brandFilterUpdate", () => {
       this.updateBrandFilter();
     });
   }
+
   loadProducts() {
-    const storedProducts = JSON.parse(localStorage.getItem("productList"));
-    const storedPrices = JSON.parse(localStorage.getItem("priceList"));
+    const storedProducts =
+      JSON.parse(localStorage.getItem("productList")) || [];
+    const storedPrices = JSON.parse(localStorage.getItem("priceList")) || [];
 
     console.log("Stored products:", storedProducts);
     console.log("Stored prices:", storedPrices);
-    console.log(
-      "Global productList:",
-      typeof productList !== "undefined" ? productList : "UNDEFINED"
-    );
-    console.log(
-      "Global priceList:",
-      typeof priceList !== "undefined" ? priceList : "UNDEFINED"
-    );
-    console.log(
-      "Global categoryList:",
-      typeof categoryList !== "undefined" ? categoryList : "UNDEFINED"
-    );
 
     const productsData =
-      storedProducts || (typeof productList !== "undefined" ? productList : []);
+      storedProducts.length > 0
+        ? storedProducts
+        : typeof productList !== "undefined"
+        ? productList
+        : [];
     const pricesData =
-      storedPrices || (typeof priceList !== "undefined" ? priceList : []);
+      storedPrices.length > 0
+        ? storedPrices
+        : typeof priceList !== "undefined"
+        ? priceList
+        : [];
 
     console.log("Products data to use:", productsData);
     console.log("Prices data to use:", pricesData);
 
-    // Gán dữ liệu
     this.products = productsData.map((product) => {
       const priceInfo = pricesData.find(
         (price) => price.productId === product.id
       );
-      console.log(`Product ${product.id} - Price info:`, priceInfo);
 
       return {
         id: product.id,
@@ -112,17 +103,16 @@ class ProductManager {
         status: product.status || "active",
       };
     });
-    this.products = this.products.filter((p) => p.status === "active");
 
+    this.products = this.products.filter((p) => p.status === "active");
     this.filteredProducts = [...this.products];
 
     console.log("Final products:", this.products);
 
-    // Cập nhật localStorage nếu chưa có
-    if (!storedProducts && productsData.length > 0) {
+    if (!storedProducts.length && productsData.length > 0) {
       localStorage.setItem("productList", JSON.stringify(productsData));
     }
-    if (!storedPrices && pricesData.length > 0) {
+    if (!storedPrices.length && pricesData.length > 0) {
       localStorage.setItem("priceList", JSON.stringify(pricesData));
     }
     if (
@@ -134,12 +124,13 @@ class ProductManager {
 
     this.filteredProducts = [...this.products];
   }
+
   getBrandFromCategory(categoryId) {
-    // Lấy dữ liệu loại sản phẩm mới nhất từ localStorage
     const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
     const category = categories.find((c) => c.id === categoryId);
 
     if (category) return category.brand;
+
     const brandMap = {
       TH01: "Apple",
       TH02: "Samsung",
@@ -154,6 +145,7 @@ class ProductManager {
 
     return brandMap[categoryId] || "Unknown";
   }
+
   setupEventListeners() {
     const filterIds = [
       "brandFilter",
@@ -173,18 +165,27 @@ class ProductManager {
         });
       }
     });
-    //nếu element nhận resetFilters thì khi click vào sẽ ...
+
     document
       .getElementById("resetFilters")
       ?.addEventListener("click", () => this.resetAllFilters());
+
     document
       .getElementById("headerSearchBtn")
       ?.addEventListener("click", () => this.performHeaderSearch());
+
     document
       .getElementById("headerSearch")
       ?.addEventListener("keypress", (e) => {
         if (e.key === "Enter") this.performHeaderSearch();
       });
+
+    document.getElementById("headerSearch")?.addEventListener("input", (e) => {
+      if (e.target.value.trim() === "") {
+        this.filters.search = "";
+        this.applyFilters();
+      }
+    });
   }
 
   getFilterKey(filterId) {
@@ -197,6 +198,7 @@ class ProductManager {
     };
     return map[filterId];
   }
+
   resetAllFilters() {
     this.filters = {
       brand: "all",
@@ -204,9 +206,8 @@ class ProductManager {
       storage: "all",
       priceRange: "all",
       sort: "default",
+      search: "",
     };
-    this.searchQuery = "";
-    this.isSearching = false;
     this.currentPage = 1;
 
     document.getElementById("brandFilter").value = "all";
@@ -229,10 +230,10 @@ class ProductManager {
     const searchInput = document.getElementById("headerSearch");
     if (!searchInput) return;
 
-    this.searchQuery = searchInput.value.trim().toLowerCase();
-    this.isSearching = this.searchQuery.length > 0;
+    this.filters.search = searchInput.value.trim().toLowerCase();
     this.currentPage = 1;
     this.applyFilters();
+
     setTimeout(() => this.scrollToProducts(), 300);
   }
 
@@ -249,9 +250,10 @@ class ProductManager {
   applyFilters() {
     let filtered = [...this.products];
 
-    if (this.isSearching && this.searchQuery) {
+    // Áp dụng tất cả bộ lọc cùng lúc
+    if (this.filters.search) {
       filtered = filtered.filter((product) =>
-        product.name.toLowerCase().includes(this.searchQuery)
+        product.name.toLowerCase().includes(this.filters.search)
       );
     }
 
@@ -301,8 +303,9 @@ class ProductManager {
       startIndex + this.productsPerPage
     );
 
+    // ĐÃ BỎ PHẦN HIỂN THỊ SỐ LƯỢNG - CHỈ HIỂN THỊ SẢN PHẨM
     if (productsToShow.length === 0) {
-      productGrid.innerHTML = `<p class="no-products">${this.getNoProductsMessage()}</p>`;
+      productGrid.innerHTML = `<p class="no-products">Không có sản phẩm nào phù hợp</p>`;
       return;
     }
 
@@ -328,6 +331,12 @@ class ProductManager {
       .join("");
 
     this.setupAddToCartButtons();
+  }
+
+  hasActiveFilters() {
+    return Object.values(this.filters).some(
+      (filter) => filter !== "all" && filter !== "default" && filter !== ""
+    );
   }
 
   setupAddToCartButtons() {
@@ -381,20 +390,6 @@ class ProductManager {
     return currentUser !== null;
   }
 
-  getNoProductsMessage() {
-    if (this.isSearching && this.searchQuery) {
-      return "Không tìm thấy sản phẩm phù hợp với từ khóa tìm kiếm.";
-    }
-    if (
-      Object.values(this.filters).some(
-        (filter) => filter !== "all" && filter !== "default"
-      )
-    ) {
-      return "Không có sản phẩm nào phù hợp với bộ lọc đã chọn.";
-    }
-    return "Không có sản phẩm nào.";
-  }
-
   renderPagination() {
     const pagination = document.getElementById("pagination");
     if (!pagination) return;
@@ -402,6 +397,7 @@ class ProductManager {
     const totalPages = Math.ceil(
       this.filteredProducts.length / this.productsPerPage
     );
+
     if (totalPages <= 1) {
       pagination.innerHTML = "";
       return;

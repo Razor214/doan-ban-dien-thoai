@@ -14,13 +14,16 @@ class ProductModal {
     document
       .querySelector(".close-modal")
       .addEventListener("click", () => this.closeModal());
+
     this.modal.addEventListener("click", (e) => {
       if (e.target === this.modal) this.closeModal();
     });
+
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.modal.style.display === "block")
         this.closeModal();
     });
+
     document
       .getElementById("modalAddToCartBtn")
       .addEventListener("click", () => this.addToCart());
@@ -128,14 +131,12 @@ class ProductModal {
   }
 
   renderQuantitySelector() {
-    // Tìm hoặc tạo phần tử chứa số lượng
     let quantitySection = document.querySelector(".product-quantity");
 
     if (!quantitySection) {
       quantitySection = document.createElement("div");
       quantitySection.className = "product-quantity";
 
-      // Chèn vào trước phần tử product-actions
       const productActions = document.querySelector(".product-actions");
       if (productActions) {
         productActions.parentNode.insertBefore(quantitySection, productActions);
@@ -153,7 +154,6 @@ class ProductModal {
       </div>
     `;
 
-    // Thêm sự kiện cho nút +/-
     document
       .getElementById("modalQuantityMinus")
       .addEventListener("click", () => {
@@ -166,7 +166,6 @@ class ProductModal {
         this.adjustQuantity(1);
       });
 
-    // Thêm sự kiện cho input
     document.getElementById("modalQuantity").addEventListener("change", (e) => {
       this.validateQuantity(e.target);
     });
@@ -177,7 +176,6 @@ class ProductModal {
     let currentValue = parseInt(quantityInput.value) || 1;
     let newValue = currentValue + change;
 
-    // Đảm bảo số lượng không nhỏ hơn 1 và không lớn hơn 99
     if (newValue < 1) newValue = 1;
     if (newValue > 99) newValue = 99;
 
@@ -194,7 +192,6 @@ class ProductModal {
   }
 
   getBrandFromCategory(categoryId) {
-    // Lấy dữ liệu loại sản phẩm mới nhất từ localStorage
     const categories = JSON.parse(localStorage.getItem("categoryList")) || [];
     const category = categories.find((c) => c.id === categoryId);
 
@@ -263,6 +260,7 @@ class ProductModal {
     this.showNotification(
       `Đã thêm ${quantity} ${this.currentProduct.name} vào giỏ hàng!`
     );
+    this.closeModal();
   }
 
   checkLogin() {
