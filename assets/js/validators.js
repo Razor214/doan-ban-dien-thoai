@@ -3,7 +3,7 @@
 ====================================================== */
 function validateProductForm(prod) {
   // Mã sản phẩm: SP + 2-3 chữ số
-  if (!/^SP\d{2}$/.test(prod.id)) {
+  if (!/^SP\d{2,3}$/.test(prod.id)) {
     alert("Mã sản phẩm phải có dạng SP01!");
     return false;
   }
@@ -24,18 +24,6 @@ function validateProductForm(prod) {
   // Màu sắc chỉ chứa ký tự chữ và khoảng trắng
   if (!/^[A-Za-zÀ-ỹ\s]+$/.test(prod.color)) {
     alert("Màu sắc chỉ được chứa chữ và khoảng trắng!");
-    return false;
-  }
-
-  // Dung lượng phải kết thúc bằng GB hoặc TB
-  if (!/^\d+(GB|TB)$/.test(prod.storage)) {
-    alert("Dung lượng phải kết thúc bằng GB hoặc TB!");
-    return false;
-  }
-
-  // RAM phải kết thúc bằng GB
-  if (!/^\d+GB$/.test(prod.ram)) {
-    alert("RAM phải có dạng 8GB, 16GB,...");
     return false;
   }
 

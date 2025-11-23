@@ -4,7 +4,7 @@ const userList = [
         fullname: "Lê Thị Bích Ngọc",
         username: "bichngoc91",
         email: "bichngoc91@gmail.com",
-        sdt: "0938123471",
+        phone: "0938123471",
         password: "ngoc2023",
         status: "active",
         address: "123 Lê Văn Sỹ, Q.3, TP.HCM"
@@ -14,7 +14,7 @@ const userList = [
         fullname: "Trần Văn Minh",
         username: "minhtran88",
         email: "minhtran88@gmail.com",
-        sdt: "0902456789",
+        phone: "0902456789",
         password: "minhpass88",
         status: "active",
         address: "45 Nguyễn Trãi, Q.5, TP.HCM"
@@ -24,7 +24,7 @@ const userList = [
         fullname: "Phạm Quốc Huy",
         username: "huyphamqk",
         email: "huyphamqk@gmail.com",
-        sdt: "0912345670",
+        phone: "0912345670",
         password: "huy123qk",
         status: "active",
         address: "78 Cách Mạng Tháng 8, Q.10, TP.HCM"
@@ -34,7 +34,7 @@ const userList = [
         fullname: "Nguyễn Thị Lan Anh",
         username: "lananh2000",
         email: "lananh2000@gmail.com",
-        sdt: "0978123456",
+        phone: "0978123456",
         password: "lananh2000",
         status: "active",
         address: "12 Nguyễn Văn Cừ, Q.1, TP.HCM"
@@ -44,7 +44,7 @@ const userList = [
         fullname: "Đặng Văn Tuấn",
         username: "tuandang96",
         email: "tuandang96@gmail.com",
-        sdt: "0967890123",
+        phone: "0967890123",
         password: "tuan96pass",
         status: "active",
         address: "56 Trường Chinh, Q.Tân Bình, TP.HCM"
@@ -54,7 +54,7 @@ const userList = [
         fullname: "Hoàng Thị Như Ý",
         username: "nhuyhoang",
         email: "nhuyhoang@gmail.com",
-        sdt: "0945123789",
+        phone: "0945123789",
         password: "nhuy2024",
         status: "active",
         address: "89 Lý Thường Kiệt, Q.Tân Phú, TP.HCM"
@@ -64,7 +64,7 @@ const userList = [
         fullname: "Vũ Đức Long",
         username: "longvuduc",
         email: "longvuduc@gmail.com",
-        sdt: "0934567890",
+        phone: "0934567890",
         password: "longpass",
         status: "active",
         address: "34 Phan Đăng Lưu, Q.Bình Thạnh, TP.HCM"
@@ -74,7 +74,7 @@ const userList = [
         fullname: "Bùi Thị Hồng",
         username: "hongbui89",
         email: "hongbui89@gmail.com",
-        sdt: "0923456781",
+        phone: "0923456781",
         password: "hongbui89",
         status: "active",
         address: "67 Nguyễn Thị Minh Khai, Q.1, TP.HCM"
@@ -84,7 +84,7 @@ const userList = [
         fullname: "Đỗ Văn Quang",
         username: "quangdo77",
         email: "quangdo77@gmail.com",
-        sdt: "0956781234",
+        phone: "0956781234",
         password: "quang77do",
         status: "active",
         address: "101 Hoàng Văn Thụ, Q.Phú Nhuận, TP.HCM"
@@ -94,7 +94,7 @@ const userList = [
         fullname: "Ngô Thị Mai",
         username: "maingo92",
         email: "maingo92@gmail.com",
-        sdt: "0901234567",
+        phone: "0901234567",
         password: "ngoMai92",
         status: "active",
         address: "88 Nguyễn Đình Chiểu, Q.3, TP.HCM"

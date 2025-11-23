@@ -126,7 +126,7 @@ function openPriceModal(mode, btn) {
             brandSelect.value = brandId;
         }
         
-        // 2. Product: Kiểm tra và tạo option tạm nếu đã bị xóa
+        // Kiểm tra và tạo option tạm nếu đã bị xóa
         const productExists = allProducts.find(p => p.id === productId);
         if (productExists) {
             productSelect.value = productId;
@@ -513,14 +513,37 @@ methodTableBody.innerHTML = `
   select.value = order.status;
   const statusFlow = ["newly ordered", "processed", "delivered", "cancelled"];
   const current = statusFlow.indexOf(order.status);
-  for (let option of select.options) {
-    const optionIndex = statusFlow.indexOf(option.value);
-    if (order.status == "delivered" || order.status == "cancelled") {
-      option.disabled = option.value !== order.status;
-    } else {
-      option.disabled = optionIndex < current;
+  const inventoryList = getInventory();
+  let tonDu = true; // mặc định đủ tồn
+
+  for (let item of order.items) {
+    const inv = inventoryList.find(i => i.productId === item.productId);
+    const ton = inv ? parseInt(inv.slTon) : 0;
+    const dat = parseInt(item.quantity);
+
+    if (ton < dat) {
+      tonDu = false; // phát hiện thiếu -> đánh dấu thiếu
+      break;
     }
   }
+
+  // === TRƯỜNG HỢP TỒN < SỐ LƯỢNG ĐẶT ===
+  if (!tonDu) {
+    for (let option of select.options) {
+      option.disabled = option.value !== "cancelled";
+    }
+  } else {
+    // logic cũ
+    for (let option of select.options) {
+      const optionIndex = statusFlow.indexOf(option.value);
+      if (order.status == "delivered" || order.status == "cancelled") {
+        option.disabled = option.value !== order.status;
+      } else {
+        option.disabled = optionIndex < current;
+      }
+    }
+  }
+
   const listBody = document.querySelector("#list tbody");
   listBody.innerHTML = order.items
     .map(
@@ -598,7 +621,10 @@ function addOrderToAdminList(customer, cartItems, paymentMethod) {
     // Admin items lấy productId từ item.id hoặc item.productId
     const adminItems = values.map(item => ({
         productId: item.id || item.productId || item.product || item.name || "UNKNOWN",
-        quantity: Number(item.quantity || item.qty) || 1
+        quantity: Number(item.quantity || item.qty) || 1,
+        price: parseInt(item.price),
+        name: item.name
+
     }));
 
     // Chuẩn hóa phương thức thanh toán và xác nhận nếu "tiền" (case-insensitive)
@@ -614,7 +640,8 @@ function addOrderToAdminList(customer, cartItems, paymentMethod) {
         address: { value: customer.address },
         payment: { method: normalizedPaymentMethod, confirmed: isConfirmed },
         items: adminItems,
-        customer: customer
+        customer: customer,
+        paymentMethod: normalizedPaymentMethod,
     };
 
     adminOrderList.push(newOrder);
@@ -628,6 +655,7 @@ function addOrderToAdminList(customer, cartItems, paymentMethod) {
       date: new Date().toLocaleString(),
       items: values,
       customer: customer,
+      itemsFull: values,
       payment: normalizedPaymentMethod
     });
     localStorage.setItem("orderList", JSON.stringify(orders));
@@ -928,10 +956,7 @@ function updateInventoryFromImport(newSlip, oldSlip) {
       if (inventoryItem) {
         const Int = parseInt(item.quantity);
         // Đảm bảo không trừ số lượng âm
-        inventoryItem.slNhap = Math.max(
-          0,
-          parseInt(inventoryItem.slNhap) - Int
-        );
+        inventoryItem.slNhap = Math.max(0, parseInt(inventoryItem.slNhap) - Int );
         inventoryItem.slTon = Math.max(0, parseInt(inventoryItem.slTon) - Int);
         inventoryItem.trangThai =
           inventoryItem.slTon <= (window.MIN_TON || 10)
@@ -1180,10 +1205,17 @@ function closeData1() {
   document.getElementById("home-section").style.display = "block";
 }
 
-const savedCategorys = localStorage.getItem("categoryList");
+/*const savedCategorys = localStorage.getItem("categoryList");
 categorys_data_local = savedCategorys
   ? JSON.parse(savedCategorys)
-  : categoryList;
+  : categoryList; */
+
+console.log("categoryList =", categoryList);
+
+if (!localStorage.getItem("categoryList")) {
+  localStorage.setItem("categoryList", JSON.stringify(categoryList));
+}
+categorys_data_local = JSON.parse(localStorage.getItem("categoryList"));
 
 // Cập nhật dropdown loại sản phẩm trong form thêm sản phẩm
 function updateProductCategoryDropdown() {
@@ -1393,7 +1425,7 @@ function renderCustomers() {
                 <td>${isBlocked ? "Đã khóa" : cm.fullname}</td>
                 <td>${isBlocked ? "Đã khóa" : cm.username}</td>
                 <td>${isBlocked ? "Đã khóa" : cm.email}</td>
-                <td>${isBlocked ? "Đã khóa" : cm.sdt}</td> 
+                <td>${isBlocked ? "Đã khóa" : cm.phone}</td> 
                 <td>${cm.status}</td>
                 <td class = "action1">
                     <div class = "wrapper-button"><button class="unlock">${

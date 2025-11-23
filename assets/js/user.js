@@ -376,7 +376,7 @@ function showProfileAlert(msg, type) {
 
   window.scrollTo({
     top: 0,
-    behabior: 'smooth'
+    behavior: 'smooth'
   });
   
   setTimeout(() => {

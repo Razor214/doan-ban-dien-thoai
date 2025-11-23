@@ -3,10 +3,7 @@ function loadAddresses() {
   const saved = localStorage.getItem("savedAddresses");
   return saved
     ? JSON.parse(saved)
-    : [
-        { name: "Nguyen Van A", phone: "0901234567", address: "123 Lê Lợi, Q1, TP.HCM", isDefault: true },
-        { name: "Tran Thi B", phone: "0912345678", address: "456 Nguyễn Trãi, Q5, TP.HCM", isDefault: false }
-      ];
+    : [];
 }
 
 function saveAddresses() {
@@ -203,24 +200,67 @@ if (confirm(orderText)) {
 
     // --- Đơn hàng đã mua ---
     const ordersModal=document.getElementById("ordersModal"),ordersList=document.getElementById("ordersDetail");
-    function renderOrders(){
-      const orders=JSON.parse(localStorage.getItem("orderList")||"[]");
-      if(orders.length===0){ordersList.innerHTML="<p>Chưa có đơn hàng nào.</p>";return;}
-      ordersList.innerHTML=orders.map((o,i)=>`
-        <div style='border:1px solid #ddd;padding:8px;margin:8px 0;border-radius:6px'>
-        <b>🧾 Mã đơn:</b> ${o.id}<br><b>📅 Ngày:</b> ${o.date}<br>
+function renderOrders() {
+  const currentUser = JSON.parse(localStorage.getItem("CurrentUser") || "null");
+
+  if (!currentUser) {
+    ordersList.innerHTML = "<p>Vui lòng đăng nhập để xem đơn hàng.</p>";
+    return;
+  }
+
+  const allOrders = JSON.parse(localStorage.getItem("orderList") || "[]");
+
+  // 🟦 Lọc ra đơn của chính khách đó
+  const userOrders = allOrders.filter(o =>
+    o.customer && o.customer.phone === currentUser.phone
+  );
+
+  if (userOrders.length === 0) {
+    ordersList.innerHTML = "<p>Bạn chưa có đơn hàng nào.</p>";
+    return;
+  }
+
+  ordersList.innerHTML = userOrders
+    .map(o => `
+      <div style='border:1px solid #ddd;padding:8px;margin:8px 0;border-radius:6px'>
+        <b>🧾 Mã đơn:</b> ${o.id}<br>
+        <b>📅 Ngày:</b> ${o.date}<br>
         <b>👤 KH:</b> ${o.customer.name} - ${o.customer.phone}<br>
         <b>🏠 Địa chỉ:</b> ${o.customer.address}<br>
-        <b>💳 Thanh toán:</b> ${o.payment||"Tiền mặt"}<br>
-        <ul>${o.items.map(it=>`<li>${it.name} - SL: ${it.quantity} - ${(it.price*it.quantity).toLocaleString('vi-VN')}₫</li>`).join("")}</ul>
-        <button class='btn btn-remove btn-del-order' data-index='${i}'>Hủy đơn</button></div>`).join("");
-      ordersList.querySelectorAll(".btn-del-order").forEach(btn=>{
-        btn.onclick=()=>{if(confirm("Hủy đơn hàng này?")){orders.splice(btn.dataset.index,1);localStorage.setItem("orderList",JSON.stringify(orders));renderOrders();}};
-      });
-    }
+        <b>💳 Thanh toán:</b> ${o.paymentMethod || o.payment.method}<br>
+        <ul>
+          ${(o.itemsFull || o.items)
+            .map(
+              it =>
+                
+                `<li>${it.name} - SL: ${it.quantity} - ${(it.price *
+                  it.quantity).toLocaleString("vi-VN")}₫</li>`
+            )
+            .join("")}
+        </ul>
+        <button class='btn btn-remove btn-del-order' data-id='${o.id}'>
+          Hủy đơn
+        </button>
+      </div>
+    `)
+    .join("");
+
+  // 🟦 Hủy đơn
+  ordersList.querySelectorAll(".btn-del-order").forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.id;
+
+      if (confirm("Hủy đơn hàng này?")) {
+        const newList = allOrders.filter(o => o.id !== id);
+        localStorage.setItem("orderList", JSON.stringify(newList));
+        renderOrders();
+      }
+    };
+  });
+}
+
     document.getElementById("showOrders").onclick=()=>{ordersModal.style.display="flex";renderOrders();};
     document.getElementById("closeModal").onclick=()=>ordersModal.style.display="none";
-    document.getElementById("clearAllOrdersBtn").onclick=()=>{if(confirm("Xóa tất cả đơn hàng?")){localStorage.removeItem("orderList");renderOrders();}};
     window.onclick=e=>{if(e.target===ordersModal)ordersModal.style.display="none";};
 
     loadCart();

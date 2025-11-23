@@ -4,11 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginScreen = document.getElementById("login-screen");
 
     if (isLoggedIn === "true") {
-        loginScreen.classList.add("fade-out");
-        setTimeout(() => {
             loginScreen.style.display = "none";
-            loginScreen.classList.remove("fade-out");
-        }, 500);
     } else {
         loginScreen.style.display = "flex";
     }
