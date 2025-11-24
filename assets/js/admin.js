@@ -174,19 +174,97 @@ cancelBtn.onclick = () => {
     priceModal.style.display = 'none';
 };
 // Khi chọn thương hiệu
+// --- HÀM HỖ TRỢ LẤY GIÁ VỐN TỪ PHIẾU NHẬP ---
+function getLatestImportCost(productId) {
+    // 1. Lấy danh sách phiếu nhập từ LocalStorage
+    const importList = JSON.parse(localStorage.getItem("importList")) || [];
+    
+    // 2. Tìm tất cả các phiếu đã hoàn thành có chứa sản phẩm này
+    let foundItems = [];
+    importList.forEach(slip => {
+        if (slip.status === "completed" && slip.items) {
+            const item = slip.items.find(i => i.productId === productId);
+            if (item) {
+                // Lưu lại giá nhập và ngày nhập
+                foundItems.push({
+                    cost: parseInt(item.importPrice) || 0, // Giả sử trong phiếu nhập lưu field là importPrice
+                    date: new Date(slip.date)
+                });
+            }
+        }
+    });
+
+    // 3. Nếu không tìm thấy trong phiếu nhập, thử tìm trong danh sách sản phẩm gốc (giá vốn khởi tạo)
+    if (foundItems.length === 0) {
+        const products = getLocalProducts();
+        const product = products.find(p => p.id === productId);
+        return product && product.cost ? parseInt(product.cost) : 0;
+    }
+
+    // 4. Sắp xếp lấy ngày gần nhất
+    foundItems.sort((a, b) => b.date - a.date);
+    return foundItems[0].cost;
+}
+
+// --- SỰ KIỆN KHI CHỌN THƯƠNG HIỆU (BRAND) ---
 brandSelect.addEventListener("change", () => {
-  const selectedBrandId = brandSelect.value;
-  // Gán Mã Thương hiệu vào input ẩn
-  idCatePrice.value = selectedBrandId;
-  // Lọc và cập nhật danh sách sản phẩm
-  populateProductDropdown(selectedBrandId);
-  productSelect.value = "";
-  idProPrice.value = "";
+    const selectedBrandId = brandSelect.value;
+    
+    // Reset các ô liên quan
+    idCatePrice.value = selectedBrandId;
+    productSelect.value = "";
+    idProPrice.value = "";
+    costInput.value = ""; 
+    priceInput.value = "";
+    
+    // Load danh sách sản phẩm theo Brand
+    populateProductDropdown(selectedBrandId);
+
+    // LOGIC TỰ ĐIỀN % LỢI NHUẬN
+    if (selectedBrandId) {
+        const priceList = getLocalPrices(); // Lấy data thật từ LocalStorage
+        
+        // Debug: Bật F12 xem nó đang lấy data gì mà ra 15 hoài
+        // console.log("Data trong kho:", priceList); 
+
+        // Tìm xem Brand này đã từng được set profit chưa
+        const existingEntry = priceList.find(item => item.categoryId === selectedBrandId);
+
+        if (existingEntry) {
+            profitInput.value = existingEntry.profit;
+            console.log(`Đã tìm thấy Brand ${selectedBrandId} có profit cũ là: ${existingEntry.profit}%`);
+        } else {
+            profitInput.value = ""; // Nếu brand mới toanh chưa có thì để trống
+        }
+    }
 });
+
+// --- SỰ KIỆN KHI CHỌN SẢN PHẨM (PRODUCT) ---
 productSelect.addEventListener("change", () => {
-  const selectedProductId = productSelect.value;
-  // Gán Mã Sản phẩm vào input ẩn
-  idProPrice.value = selectedProductId;
+    const selectedProductId = productSelect.value;
+    idProPrice.value = selectedProductId;
+
+    if (selectedProductId) {
+        // 1. Tự động lấy giá vốn từ lịch sử nhập
+        const cost = getLatestImportCost(selectedProductId);
+        
+        if (cost > 0) {
+            costInput.value = cost.toLocaleString("vi-VN");
+            
+            // 2. KHOÁ Ô GIÁ VỐN (Không cho sửa, chỉ xem)
+            costInput.setAttribute("readonly", true);
+            costInput.style.backgroundColor = "#e9ecef"; // Màu xám báo hiệu readonly
+        } else {
+            // Trường hợp không tìm thấy giá nhập (SP chưa nhập bao giờ)
+            costInput.value = "";
+            costInput.removeAttribute("readonly"); // Cho phép nhập tay nếu chưa có dữ liệu nhập
+            costInput.style.backgroundColor = "";
+            costInput.placeholder = "Chưa có dữ liệu nhập, hãy nhập tay";
+        }
+
+        // 3. Tự động tính giá bán ngay lập tức
+        updatePrice();
+    }
 });
 //đề xuất mã kế tiếp
 const generateCode = (prefix, colIndex) => {
@@ -753,7 +831,8 @@ function openModal(item) {
   document.getElementById("modalMaSP").textContent = item.id;
   document.getElementById("modalTenSP").textContent = item.productId;
   document.getElementById("modalNhanhieuSP").textContent = item.categoryId;
-  document.getElementById("minTonLimit").textContent = item.minTon;
+  const minTonInput = document.getElementById("minTonLimit");
+  minTonInput.value = item.minTon !== undefined ? item.minTon : 10;
   const historyBody = document.getElementById("modalHistoryBody");
   historyBody.innerHTML = "";
   if (item.history && item.history.length > 0) {
@@ -810,6 +889,61 @@ function openSummaryModal(data = getInventory()) {
     : "<li>Không có sản phẩm nào.</li>";
 
   summaryModal.classList.add("show");
+}
+const btnConfirmLimit = document.getElementById("confirmLimit");
+
+if (btnConfirmLimit) {
+  btnConfirmLimit.addEventListener("click", function (e) {
+    e.preventDefault(); 
+
+    // 1. Lấy giá trị mới từ ô input
+    const minTonInput = document.getElementById("minTonLimit");
+    const newVal = parseFloat(minTonInput.value);
+    if (isNaN(newVal) || newVal < 0) {
+        alert("Vui lòng nhập số lượng hợp lệ!");
+        return;
+    }
+    const isConfirmed = confirm(`Bạn có chắc muốn thay đổi mức tồn tối thiểu là ${newVal} không?`);
+    if (!isConfirmed) return;
+
+    // 2. Lấy toàn bộ danh sách kho
+    let currentInventory = getInventory();
+    
+    // 3. Dùng vòng lặp cập nhật cho TOÀN BỘ sản phẩm
+    let countUpdated = 0;
+    
+    currentInventory.forEach(item => {
+        // Cập nhật minTon
+        item.minTon = newVal;
+
+        // Tính toán lại trạng thái ngay lập tức cho từng sản phẩm
+        const slTon = Number(item.slTon);
+        if (slTon === 0) {
+            item.trangThai = "Hết hàng";
+        } else if (slTon <= newVal) {
+            item.trangThai = "Sắp hết";
+        } else {
+            item.trangThai = "Còn hàng";
+        }
+        countUpdated++;
+    });
+
+    // 4. Cập nhật biến Global mặc định (để các tính năng khác dùng số mới này)
+    window.MIN_TON = newVal; 
+
+    // 5. Lưu lại vào LocalStorage
+    setInventory(currentInventory);
+      
+    // 6. Vẽ lại bảng hiển thị
+    if(typeof syncAndRenderInventory === 'function'){
+        syncAndRenderInventory(); 
+    } else {
+        displayTon(currentInventory);
+        renderSummary(currentInventory);
+    }
+
+    alert(`Số lượng tối thiểu mới là ${countUpdated} đã cập nhật thành công!`);
+  });
 }
 if (btnSearch) {
   btnSearch.addEventListener("click", () => {

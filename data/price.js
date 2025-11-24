@@ -24,7 +24,7 @@ const priceList = [
         productId: "SP03",
         importId: "PN03",
         cost: 23000000,
-        profit: 15,
+        profit: 12,
         price: 26450000
     },
     {
@@ -33,7 +33,7 @@ const priceList = [
         productId: "SP04",
         importId: "PN04",
         cost: 15000000,
-        profit: 15,
+        profit: 20,
         price: 17250000
     },
     {
@@ -42,7 +42,7 @@ const priceList = [
         productId: "SP05",
         importId: "PN05",
         cost: 18000000,
-        profit: 15,
+        profit: 22,
         price: 20700000
     },
     {
@@ -51,7 +51,7 @@ const priceList = [
         productId: "SP06",
         importId: "PN06",
         cost: 25000000,
-        profit: 15,
+        profit: 10,
         price: 28750000
     },
     {
@@ -60,7 +60,7 @@ const priceList = [
         productId: "SP07",
         importId: "PN07",
         cost: 16000000,
-        profit: 15,
+        profit: 13,
         price: 18400000
     },
     {
@@ -69,7 +69,7 @@ const priceList = [
         productId: "SP08",
         importId: "PN08",
         cost: 12000000,
-        profit: 15,
+        profit: 11,
         price: 13800000
     },
     {
@@ -78,7 +78,7 @@ const priceList = [
         productId: "SP09",
         importId: "PN09",
         cost: 19000000,
-        profit: 15,
+        profit: 8,
         price: 21850000
     },
     {
@@ -87,7 +87,7 @@ const priceList = [
         productId: "SP10",
         importId: "PN10",
         cost: 30000000,
-        profit: 15,
+        profit: 21,
         price: 34500000
     }
 ];
