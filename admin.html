@@ -83,8 +83,25 @@
                     </select>
 
                     <label>Chi tiết sản phẩm:</label>
-                    <div id="productItems"></div>
-                    <button type="button" onclick="addProductItem()">+ Thêm sản phẩm</button>
+
+                    <table id="importItemTable" class="item-table">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập (VNĐ)</th>
+                                <th>Thành tiền (VNĐ)</th>
+                                <th>Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="importItemBody"></tbody>
+                    </table>
+
+                    <button type="button" onclick="addProductItem()" class="add-item-btn">
+                        + Thêm sản phẩm
+                    </button>
+
 
                     <div class="popup-foot">
                         <button type="submit">Lưu</button>

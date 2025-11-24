@@ -116,14 +116,15 @@ function validateImportForm(pn) {
 }
 
 // -------------------- RÀNG BUỘC TRÙNG LẶP --------------------
-function checkDuplicateImport(pn) {
+function checkDuplicateImport(pn, idOld) {
   const imports = getLocal("importList");
 
-  
-  // Mã phiếu đã tồn tại
-  const exists = imports.some(i => i.id === pn.id && i.id !== (editingImportRow?.id));
+  const exists = imports.some(i => 
+      i.id === pn.id && i.id !== idOld
+  );
+
   if (exists) {
-    alert(" Mã phiếu nhập đã tồn tại!");
+    alert("Mã phiếu nhập đã tồn tại!");
     return false;
   }
 

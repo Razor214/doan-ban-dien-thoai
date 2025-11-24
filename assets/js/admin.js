@@ -1814,6 +1814,9 @@ productForm?.addEventListener("submit", (e) => {
   }
 
   setLocal("productList", products);
+  if (typeof refreshProductData === "function") {
+    refreshProductData();
+  }
   renderProductTable();
   productModal.style.display = "none";
 });
@@ -1914,6 +1917,10 @@ const priceData = getLocal("priceList");
 
 let editingImportRow = null;
 
+function refreshProductData() {
+    window.productData = getLocal("productList");
+}
+
 // Hiển thị bảng phiếu nhập
 function renderImportTable(data = imports) {
   importTbody.innerHTML = data
@@ -1986,13 +1993,13 @@ importCancelBtn?.addEventListener("click", (e) => {
 importForm?.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const itemRows = document.querySelectorAll("#productItems .item-row");
+  const itemRows = document.querySelectorAll("#importItemBody tr");
   const items = [];
 
-  itemRows.forEach((row) => {
-    const productId = row.querySelector(".item-name").value.trim();
-    const quantity = Number(row.querySelector(".item-qty").value);
-    const price = Number(row.querySelector(".item-price").value);
+  itemRows.forEach(row => {
+    const productId = row.querySelector(".item-row-select").value.trim();
+    const quantity = Number(row.querySelector(".item-row-qty").value);
+    const price = Number(row.querySelector(".item-row-price").value);
     if (productId && quantity > 0 && price > 0)
       items.push({ productId, quantity, price });
   });
@@ -2012,10 +2019,7 @@ importForm?.addEventListener("submit", (e) => {
     ? editingImportRow.cells[0].innerText.trim()
     : null;
   const exists = imports.some((i) => i.id === newImport.id && i.id !== idOld);
-  if (exists) {
-    alert("⚠️ Mã phiếu nhập đã tồn tại!");
-    return;
-  }
+  if (!checkDuplicateImport(newImport, idOld)) return;
   let oldImport = null;
   const existingIdx = imports.findIndex((i) => i.id === idOld);
 
@@ -2065,81 +2069,107 @@ function searchImport() {
 }
 window.searchImport = searchImport;
 
-// Hiển thị danh sách sản phẩm trong form nhập
+// Render items (khi sửa phiếu nhập)
 function loadProductItems(items) {
-  const container = document.getElementById("productItems");
-  container.innerHTML = "";
+    const body = document.getElementById("importItemBody");
+    body.innerHTML = "";
 
-  items.forEach((item) => {
-    const row = document.createElement("div");
-    row.className = "item-row";
-    row.innerHTML = `
-        <select class="item-name" required>
-            ${products
-              .map(
-                (p) =>
-                  `<option value="${p.id}" ${
-                    p.id === item.productId ? "selected" : ""
-                  }>${p.name}</option>`
-              )
-              .join("")}
-        </select>
-        <input type="number" class="item-qty" min="1" value="${
-          item.quantity || 1
-        }" oninput="calculateTotal()">
-        <input type="number" class="item-price" min="0" value="${
-          item.price || 0
-        }" oninput="calculateTotal()">
-        <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
-        `;
-    container.appendChild(row);
-  });
+    items.forEach((item, index) => {
+        addProductRow(item.productId, item.quantity, item.price);
+    });
 
-  calculateTotal();
+    calculateTotal();
 }
 window.loadProductItems = loadProductItems;
 
-// Thêm dòng sản phẩm mới
+
+// Thêm một dòng sản phẩm
 function addProductItem() {
-  const container = document.getElementById("productItems");
-  if (!container) return;
-
-  const div = document.createElement("div");
-  div.classList.add("item-row");
-
-  div.innerHTML = `
-    <select class="item-name" required>
-      <option value="">-- Chọn sản phẩm --</option>
-      ${productData
-        .map((p) => `<option value="${p.id}">${p.name}</option>`)
-        .join("")}
-    </select>
-    <input type="number" class="item-qty" min="1" value="1" oninput="calculateTotal()">
-    <input type="number" class="item-price" min="0" placeholder="Giá nhập" oninput="calculateTotal()">
-    <button type="button" class="remove-item" onclick="removeProductItem(this)">Xóa</button>
-  `;
-
-  container.appendChild(div);
-  calculateTotal();
+    addProductRow("", 1, 0);
+    calculateTotal();
 }
 window.addProductItem = addProductItem;
 
-// Xóa dòng sản phẩm
+
+// Hàm tạo 1 dòng mới
+function addProductRow(productId = "", quantity = 1, price = 0) {
+    const body = document.getElementById("importItemBody");
+
+    // chống trùng sản phẩm
+    if (productId) {
+        const exists = [...body.querySelectorAll(".item-row-select")]
+            .some(select => select.value === productId);
+        if (exists) {
+            alert("Sản phẩm này đã có trong phiếu!");
+            return;
+        }
+    }
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td class="item-stt"></td>
+
+        <td>
+            <select class="item-row-select" onchange="calculateTotal()">
+                <option value="">-- Chọn --</option>
+                ${productData.map(
+                    p => `<option value="${p.id}" ${p.id === productId ? "selected" : ""}>
+                            ${p.id} - ${p.name}
+                          </option>`
+                ).join("")}
+            </select>
+        </td>
+
+        <td><input type="number" class="item-row-qty" min="1" value="${quantity}" oninput="calculateTotal()"></td>
+
+        <td><input type="number" class="item-row-price" min="0" value="${price}" oninput="calculateTotal()"></td>
+
+        <td class="item-row-total">0</td>
+
+        <td><button type="button" class="item-delete-btn" onclick="removeProductItem(this)">X</button></td>
+    `;
+
+    body.appendChild(row);
+
+    updateSTT();
+}
+window.addProductRow = addProductRow;
+
+
+// Xóa dòng
 function removeProductItem(btn) {
-  btn.parentElement.remove();
-  calculateTotal();
+    btn.closest("tr").remove();
+    updateSTT();
+    calculateTotal();
 }
 window.removeProductItem = removeProductItem;
 
-// Tính tổng giá trị phiếu
+
+// Cập nhật STT
+function updateSTT() {
+    document.querySelectorAll("#importItemBody tr").forEach((row, idx) => {
+        row.querySelector(".item-stt").textContent = idx + 1;
+    });
+}
+
+
+// Tính tổng
 function calculateTotal() {
-  let total = 0;
-  document.querySelectorAll("#productItems .item-row").forEach((row) => {
-    const qty = Number(row.querySelector(".item-qty").value) || 0;
-    const price = Number(row.querySelector(".item-price").value) || 0;
-    total += qty * price;
-  });
-  document.getElementById("importTotal").value = total.toLocaleString("vi-VN");
+    let total = 0;
+
+    document.querySelectorAll("#importItemBody tr").forEach(row => {
+        const qty = Number(row.querySelector(".item-row-qty").value) || 0;
+        const price = Number(row.querySelector(".item-row-price").value) || 0;
+        const sum = qty * price;
+
+        row.querySelector(".item-row-total").textContent =
+            sum.toLocaleString("vi-VN");
+
+        total += sum;
+    });
+
+    document.getElementById("importTotal").value = total.toLocaleString("vi-VN");
 }
 window.calculateTotal = calculateTotal;
 
