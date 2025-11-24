@@ -1,0 +1,359 @@
+/* USER AUTHENTICATION STYLES - MERGED & OPTIMIZED */
+#auth-section {
+    padding: 40px 20px;
+    background: white;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 40px 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tab {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.tab.active {
+    background: white;
+    color: #4CAF50;
+    border-bottom: 3px solid #4CAF50;
+}
+
+.tab:hover {
+    background: #e9ecef;
+}
+
+.tab-content {
+    padding: 30px;
+    position: relative;
+}
+
+.form-page {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-page.active {
+    display: block;
+    opacity: 1;
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #45a049;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-link {
+    color: #4CAF50;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.alert-success {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.error-text {
+    color: #c62828;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+.profile-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.info-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
+/* ================== PASSWORD BOX - IMPROVED VERSION ================== */
+.password-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-box .form-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    height: 48px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.password-box .form-input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.toggle-pass {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toggle-pass:hover {
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.toggle-pass:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.toggle-pass i {
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.toggle-pass.active {
+    color: #4CAF50;
+}
+
+.toggle-pass.active i {
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #auth-section {
+        padding: 20px 10px;
+        min-height: 60vh;
+    }
+    
+    .auth-container {
+        padding: 20px 10px;
+        min-height: 60vh;
+    }
+    
+    .tab-content {
+        padding: 20px 15px;
+    }
+    
+    .form-title {
+        font-size: 20px;
+    }
+    
+    .tab {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .container {
+        margin: 10px auto;
+    }
+    
+    .password-box .form-input {
+        height: 46px;
+        padding: 12px 42px 12px 12px;
+    }
+    
+    .toggle-pass {
+        width: 22px;
+        height: 22px;
+        right: 10px;
+    }
+    
+    .toggle-pass i {
+        font-size: 16px;
+    }
+}
+/* PROFILE OPTIMIZED STYLES */
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+.profile-actions button {
+    flex: 1;
+    max-width: 200px;
+    padding: 12px 20px;
+    font-size: 16px;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* Nút Chỉnh sửa thông tin */
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* Nút Đăng Xuất */
+.logout-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.logout-btn:hover {
+    background: #c82333;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    flex: 1;
+    padding: 12px 20px;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

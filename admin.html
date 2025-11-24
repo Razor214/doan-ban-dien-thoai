@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaiGonPhone - Website Bán Điện Thoại</title>
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/admin-login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <header class="headerbar">
+        <nav class="navbar">
+
+        </nav>
+    </header>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2 class="sidebar-title">SaiGonPhone</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="index.html" data-section="home" class="menu-item">🏠 Trang chủ</a>
+            <a href="#" data-section="product" class="menu-item">📱 Sản phẩm</a>
+            <a href="#" data-section="import" class="menu-item">📦 Nhập hàng</a>
+            <a href="#" data-section="category" class="menu-item">🗂️ Loại sản phẩm</a>
+            <a href="#" data-section="price" class="menu-item">💰 Giá bán</a>
+            <a href="#" data-section="order" class="menu-item">🧾 Đơn hàng</a>
+            <a href="#" data-section="customers" class="menu-item">👥 Khách hàng</a>
+            <a href="#" data-section="stock" class="stock">📦 Tồn kho</a>
+            <a href="#" onclick="logout()">🚪 Đăng xuất</a>
+        </nav>
+    </aside>
+    <div class="admin-container">
+
+        <!------------------ INPUT BODY HERE ------------------>
+
+        <!-- === QUẢN LÝ NHẬP SẢN PHẨM === -->
+        <section id="import-section" class="admin-section" style="display:none;">
+            <div class="admin6">
+                <h2>Quản lý phiếu nhập hàng<span class="close" onclick="confirmExit()">X</span></h2>
+                <div class="top-bar">
+                    <input type="text" id="searchImport" placeholder="Tìm theo mã phiếu...">
+                    <button onclick="searchImport()">Tìm kiếm</button>
+                    <button onclick="openImportModal('add')">Thêm phiếu nhập</button>
+                </div>
+
+                <div class="wraptable">
+                    <table id="ImportTable">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Ngày nhập</th>
+                                <th>Giá nhập (VNĐ)</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div class="popup" id="ImportPopup">
+            <div class="popup-content">
+                <form id="ImportForm">
+                    <label>Mã phiếu:</label>
+                    <input type="text" id="importCode" required>
+
+                    <label>Ngày nhập:</label>
+                    <input type="date" id="importDate" required>
+
+                    <label>Tổng giá trị:</label>
+                    <input type="text" id="importTotal" required>
+
+                    <label>Trạng thái:</label>
+                    <select id="importStatus">
+                        <option value="pending">pending</option>
+                        <option value="completed">completed</option>
+                    </select>
+
+                    <label>Chi tiết sản phẩm:</label>
+
+                    <table id="importItemTable" class="item-table">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập (VNĐ)</th>
+                                <th>Thành tiền (VNĐ)</th>
+                                <th>Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="importItemBody"></tbody>
+                    </table>
+
+                    <button type="button" onclick="addProductItem()" class="add-item-btn">
+                        + Thêm sản phẩm
+                    </button>
+
+
+                    <div class="popup-foot">
+                        <button type="submit">Lưu</button>
+                        <button type="button" id="cancelImport">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Popup chi tiết phiếu nhập -->
+        <div class="popup" id="ImportDetailPopup" style="display:none;">
+            <div class="popup-content" style="max-height:90vh;overflow-y:auto;">
+                <h3>Chi tiết phiếu nhập</h3>
+                <div id="ImportDetailContent"></div>
+                <button id="closeImportDetail" style="margin-top:10px;">Đóng</button>
+            </div>
+        </div>
+
+        <!-- === QUẢN LÝ DANH MỤC SẢN PHẨM === -->
+        <section id="product-section" class="admin-section" style="display:none">
+            <div class="admin6">
+                <h2>Quản lý danh mục sản phẩm <span class="close" onclick="confirmExit()">X</span></h2>
+                <div class="top-bar">
+                    <input type="text" id="searchProductCategory" placeholder="Tìm kiếm sản phẩm...">
+                    <button onclick="searchProductCategory()">Tìm kiếm</button>
+                    <button onclick="openProductModal('add')">Thêm sản phẩm</button>
+                </div>
+
+                <div class="wraptable">
+                    <table class="price-table" id="ProductTable">
+                        <thead>
+                            <tr>
+                                <th>Loại</th>
+                                <th>Mã</th>
+                                <th>Tên</th>
+                                <th>Hình ảnh</th>
+                                <th>Mô tả</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Popup thêm/sửa -->
+            <div class="popup" id="ProductPopup">
+                <div class="popup-content">
+                    <form id="ProductForm">
+                        <label>Loại sản phẩm:</label>
+                        <select id="prodType" required>
+                            <option value="">-- Chọn loại --</option>
+                        </select>
+
+
+                        <label>Mã:</label>
+                        <input type="text" id="prodCode" required>
+
+                        <label>Tên:</label>
+                        <input type="text" id="prodName" required>
+
+                        <label>Hình ảnh:</label>
+                        <input type="file" id="prodImg" accept="image/*">
+                        <img id="previewImg" src="assets/img/logo.png"
+                            style="width:100px;margin-top:5px;border-radius:8px;">
+
+                        <label>Mô tả:</label>
+                        <textarea id="prodDesc" rows="3" style="width:100%;"></textarea>
+                        <label>Trạng thái:</label>
+
+                        <select id="prodStatus">
+                            <option value="active">Đang hiển thị</option>
+                            <option value="hidden">Đã ẩn</option>
+                        </select>
+
+                        <label>Màu sắc:</label><input type="text" id="prodColor" required>
+                        <label>Dung lượng:</label><select id="prodStorage"></select>
+                        <label>RAM:</label><select id="prodRam"></select>
+                        <label>Màn hình:</label><input type="text" id="prodDisplay" required>
+                        <label>Camera:</label><input type="text" id="prodCamera" required>
+                        <label>Pin:</label><input type="text" id="prodBattery" required>
+                        <label>Chip:</label><input type="text" id="prodChip" required>
+                        <label>Hệ điều hành:</label><input type="text" id="prodOS" required>
+
+                        <div class="popup-foot">
+                            <button type="submit">Lưu</button>
+                            <button type="button" id="cancelProduct">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <!-- Popup chi tiết sản phẩm -->
+        <div class="popup" id="ProductDetailPopup" style="display:none;">
+            <div class="popup-content" style="width:400px;max-height:90vh;overflow:auto;">
+                <div id="ProductDetailContent"></div>
+                <button id="closeDetail" style="margin-top:10px;">Đóng</button>
+            </div>
+        </div>
+
+        <section id="price-section" class="admin-section" style="display:none;">
+            <div class="admin6">
+                <h2>Quản lý giá bán<span class="close" onclick="confirmExit()">x</span></h2>
+                <div class="top-bar">
+                    <input type="text" id="Timkiem" placeholder="Tìm kiếm sản phẩm...">
+                    <button onclick="searchProduct()">Tìm kiếm</button>
+                    <button onclick="openPriceModal('add')">Thêm sản phẩm</button>
+                </div>
+                <div class="wraptable">
+                    <table class="price-table" id="Bangsp">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Mã thương hiệu</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Giá vốn</th>
+                                <th>% Lợi nhuận</th>
+                                <th>Giá bán</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="khungbang"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="popup" id="popup">
+                <div class="popup-content">
+                    <form id="productadd">
+                        <label for="id">Mã:</label>
+                        <input type="text" id="id" placeholder="Nhập mã..." required>
+
+                        <label for="categoryId">Mã thương hiệu:</label>
+                        <input type="text" id="categoryId" placeholder="Mã thương hiệu..." required>
+                        <select id="categorySelect" required>
+                            <option value="">--Chọn thương hiệu--</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Nokia">Nokia</option>
+                            <option value="Huawei">Huawei</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Oppo">Oppo</option>
+                            <option value="Sony">Sony</option>
+                            <option value="LG">LG</option>
+                            <option value="Oneplus">OnePLus</option>
+                            <option value="Google">Google</option>
+                        </select>
+
+                        <label for="productId">Mã sản phẩm:</label>
+                        <input type="text" id="productId" placeholder="Mã sản phẩm..." required>
+                        <select id="productSelect" required>
+                            <option value="">--Chọn sản phẩm--</option>
+                            <option value="iPhone 15 Pro 156GB">iPhone 15 Pro 156GB</option>
+                            <option value="iPhone 16 Pro Max 512GB">iPhone 16 Pro Max 512GB</option>
+                            <option value="Samsung Galaxy S23 Ultra 512GB">Samsung Galaxy S23 Ultra 512GB</option>
+                            <option value="Xiaomi 13 Pro 256GB">Xiaomi 13 Pro 256GB</option>
+                            <option value="Huawei P60 Pro 256GB">Huawei P60 Pro 256GB</option>
+                            <option value="Sony Xperia 1 V 256GB">Sony Xperia 1 V 256GB</option>
+                            <option value="LG Velvet 2 128GB">LG Velvet 2 128GB</option>
+                            <option value="Nokia X30 5G 128 GB">Nokia X30 5G 128 GB</option>
+                            <option value="OnePlus 11 256GB">OnePlus 11 256GB</option>
+                            <option value=">Google Pixel 8 Pro 512GB">Google Pixel 8 Pro 512GB</option>
+                        </select>
+
+                        <label for="cost">Giá vốn (VND)</label>
+                        <input type="text" id="cost" required>
+
+                        <label for="profit">% Lợi nhuận: </label>
+                        <div style="display: flex; align-items: center;gap: 5px; ">
+                            <input type="number" id="profit" step="any" style="flex: 1" required><span>%</span>
+                        </div>
+
+                        <label for="sell">Giá bán: </label>
+                        <input type="text" id="sell">
+                        <div class="popup-foot">
+                            <button type="submit" id="saveBtn">Lưu</button>
+                            <button type="button" id="cancelBtn" onclick="closeModal()">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="popup" id="xacnhan">
+                <div class="popup-content small">
+                    <p> Bạn có chắc chắn muốn xóa sản phẩm ?</p>
+                    <div class="popup-foot">
+                        <button id="xacnhanxoa"> Có </button>
+                        <button id="xacnhankhong">Không</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <section class="admin-section" id="order-section" style="display: none;">
+            <div class="all" id="all">
+                <div class="topheader">
+                    <h2> Quản lý đơn đặt hàng</h2>
+                    <span class="close-main" onclick="closeMain()">x</span>
+                </div>
+                <div class="box">
+                    <label>Ngày đặt:</label>
+                    <input type="date" id="fromDate">
+                    <input type="date" id="toDate">
+                    <label>Tình trạng đơn hàng:</label>
+                    <select id="status">
+                        <option value="">--ALL--</option>
+                        <option value="newly ordered">newly ordered</option>
+                        <option value="processed">processed</option>
+                        <option value="delivered">delivered</option>
+                        <option value="cancelled">cancelled</option>
+                    </select>
+                    <button onclick="Orders()">Lọc</button>
+                    <button id="resetorder" onclick="ResetDate()">Đặt lại</button>
+                </div>
+                <div class="wraporders-table">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Mã khách hàng</th>
+                                <th>Ngày đặt</th>
+                                <th>Trạng thái</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderTable"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="details" class="details">
+                <div class="details-content">
+                    <h3> Chi tiết đơn hàng </h3>
+                    <div class="infoorder">
+                        <p><strong>Mã đơn: </strong><span id="detail-id"></span></p>
+                        <p><strong>Mã khách hàng: </strong><span id="detail-cus"></span></p>
+                        <P><strong>Ngày đặt: </strong><span id="detail-date"></span></P>
+                        <p><strong>Địa chỉ: </strong><span id="detail-product"></span></p>
+                        <label><strong>Tình trạng: </strong></label>
+                        <select id="detailsstatus">
+                            <option value="newly ordered">newly ordered</option>
+                            <option value="processed">processed</option>
+                            <option value="delivered">delivered</option>
+                            <option value="cancelled">cancelled</option>
+                        </select>
+                    </div>
+                    <h4>Phương thức thanh toán</h4>
+                    <table class="method-table" id="methodtable">
+                        <thead>
+                            <th>Phương thức</th>
+                            <th>Tình trạng</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <h4>Danh sách sản phẩm</h4>
+                    <table class="mini-table" id="list">
+                        <thead>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="popup-btn">
+                        <button onclick="update()">Cập nhật trạng thái</button>
+                        <button onclick="closeDetails()">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="stock-section" class="admin-section" style="display: none;">
+            <div id="inventory" class="inventory">
+                <div class="header-stock">
+                    <h2> Quản lý số lượng tồn kho</h2>
+                    <span class="closeinventory" onclick="closeInventory()"> x </span>
+                </div>
+                <div class="filter">
+                    <input type="text" id="Namesearch" placeholder="Mã...">
+                    <input type="text" id="Prosearch" placeholder="Mã sản phẩm...">
+                    <input type="text" id="Catesearch" placeholder="Mã thương hiệu...">
+                    <div class="date-filter">
+                        <label for="time">Thời gian: </label>
+                        <input type="date" id="startDate">
+                        <input type="date" id="endDate">
+                    </div>
+                    <button id="Btnsearch">Lọc</button>
+                    <button id="resetstock" onclick="ResetDateStock()">Đặt lại</button>
+                </div>
+                <div class="sum">
+                    <div class="sum-status">
+                        <span class="out">🔴<span id="outcount"></span> sản phẩm đã hết hàng</span>
+                        <span class="low">❗<span id="lowcount"></span> sản phẩm sắp hết hàng</span>
+                        <span class="ok">🟢<span id="okcount"></span> sản phẩm còn hàng </span>
+                    </div>
+                    <a href="#" class="view-details">Xem chi tiết</a>
+                </div>
+                <div class="tablestock-wrap">
+                    <table class="tablestock" id="Table">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Mã thương hiệu</th>
+                                <th>Số lượng nhập</th>
+                                <th>Số lượng bán</th>
+                                <th>Số lượng tồn</th>
+                                <th>Ngày cập nhật</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="detailModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeModal()">x</span>
+                    <h3>Chi tiết sản phẩm</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Mã:</label>
+                            <span id="modalMaSP"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Mã SP:</label>
+                            <span id="modalTenSP"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Mã danh mục:</label>
+                            <span id="modalNhanhieuSP"></span>
+                        </div>
+                        <div class="minTon">
+                            <label>*Số lượng tồn tối thiểu: </label>
+                            <input type="number" step="any" id="minTonLimit" required>
+                            <button id="confirmLimit"> Cập nhật </button>
+                        </div>
+                    </div>
+                    <h4>Lịch sử Nhập/Xuất gần nhất: </h4>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Hành động</th>
+                                <th>Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalHistoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="popup-modal" class="popup-modal">
+                <div class="modalcontent">
+                    <span class="close-popup" onclick="closeMiniPU()"> x </span>
+                    <h3>Số lượng tồn kho</h3>
+                    <div class="sum-section">
+                        <h4>🔴 Hết hàng <span id="sum-outcount">0</span></h4>
+                        <ul id="sum-outList"></ul>
+                    </div>
+                    <div class="sum-section">
+                        <h4>❗Sắp hết hàng <span id="sum-lowcount">0</span></h4>
+                        <ul id="sum-lowlist"></ul>
+                    </div>
+                    <div class="sum-section">
+                        <h4>🟢 Còn hàng <span id="sum-okcount">0</span></h4>
+                        <ul id="sum-oklist"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="popup" id="xacnhanStock">
+                <div class="popup-content small">
+                    <p> Bạn có chắc chắn muốn xóa sản phẩm ?</p>
+                    <div class="popup-foot">
+                        <button id="xacnhanxoaStock"> Có </button>
+                        <button id="xacnhankhongStock">Không</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--Quan ly loai san pham-->
+        <section id="category-section" class="admin-section" style="display:none;">
+            <div class="cover">
+                <h2>Quản lý loại sản phẩm (Thương hiệu)<span class="close" onclick="closeData1()">X</span></h2>
+                <button id="add" style="width: 100%; margin-bottom: 15px;">Thêm</button>
+                <div class="wrapper">
+                    <table class="table1">
+                        <thead>
+                            <tr>
+                                <th>Mã thương hiệu</th>
+                                <th>Tên thương hiệu</th>
+                                <th>Mã quốc gia xuất xứ</th>
+                                <th>Mô tả</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data1"></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="popup" id="category-popup">
+                <div class="popup-content">
+                    <form id="category-form">
+                        <label>Mã thương hiệu</label>
+                        <input type="text" required>
+
+                        <label>Thương hiệu</label>
+                        <input type="text" required>
+
+                        <label>Mã quốc gia xuất xứ</label>
+                        <input type="text" required>
+
+                        <label>Mô tả</label>
+                        <textarea autofocus rows="3" style="width: 100%" required></textarea>
+
+                        <label>Trạng thái</label>
+                        <select required>
+                            <option value="active">active</option>
+                            <option value="inactive">inactive</option>
+                        </select>
+
+                        <div class="popup-foot">
+                            <button type="submit">Lưu</button>
+                            <button type="button" id="category-cancel">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!--Quan ly khach hang-->
+        <section id="customers-section" class="admin-section" style="display: none">
+            <div class="cover">
+                <h2>Quản lý khách hàng
+                    <span class="close" onclick="closeData2()">X</span>
+                </h2>
+                <div class="wrapper">
+                    <table class="table1">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ và tên</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Email</th>
+                                <th>SĐT</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data2"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <div id="login-screen">
+            <div id="container">
+                <h2>Đăng nhập quản trị viên</h2>
+
+                <form id="login-form" onsubmit="login(); return false;">
+                    <div class="form-group">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" id="username" placeholder="Tên đăng nhập" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mật khẩu</label>
+                        <div class="password-box">
+                            <input type="password" id="password" placeholder="Mật khẩu" required>
+                            <span class="toggle-pass" onclick="togglePassword('password', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <button type="submit">Đăng nhập</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+    <script src="data/price.js"></script>
+    <script src="data/order.js"></script>
+    <script src="data/inventory.js"></script>
+    <script src="data/category.js"></script>
+    <script src="data/product.js"></script>
+    <script src="data/import.js"></script>
+    <script src="data/user.js"></script>
+    <script src="assets/js/user.js"></script>
+    <script src="assets/js/validators.js"></script>
+    <script src="assets/js/admin-login.js"></script>
+    <script src="assets/js/admin.js"></script>
+
+
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2025 SaiGonPhone | Thiết kế bởi Nhóm 4 – Khoa CNTT, Đại học Sài Gòn</p>
+        <p>Liên hệ: <a href="mailto:contact@SaiGonPhone.vn">contact@SaiGonPhone.vn</a></p>
+    </footer>
+</body>
+
+</html>
