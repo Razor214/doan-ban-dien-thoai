@@ -1,0 +1,36 @@
+--------------------------Đồ án Website Bán Điện Thoại--------------------------
+
+-----------------------Trường Đại học Sài Gòn – Khoa CNTT-----------------------
+
+Môn: Lập trình Web và Ứng dụng  
+Nhóm: 04
+
+Các thành viên của nhóm 04:
+
+| MSSV       | Họ tên                  |
+| ---------- | ----------------------- |
+| 3124410069 | Võ Khải Đăng            |
+| 3124560091 | Nguyễn Vương Hoàng Tịnh |
+| 3124410159 | Nguyễn Lê Tiến Khoa     |
+| 3124560059 | Trương Đình Ngân        |
+| 3124410140 | Trương Gia Khải         |
+| 3124410215 | Lê Uyên My              |
+
+Dữ liệu user: 
+| username   | mật khẩu   |
+| ---------- | ---------- |
+| bichngoc91 | ngoc2023   |
+| minhtran88 | minhpass88 |
+| huyphamqk  | huy123qk   |
+| lananh2000 | lananh2000 |
+| tuandang96 | tuan96pass |
+| nhuyhoang  | nhuy2024   |
+| longvuduc  | longpass   |
+| hongbui89  | hongbui89  |
+| quangdo77  | quang77do  |
+| maingo92   | ngoMai92   |
+
+Tài khoản admin: 
+| username   | mật khẩu   |
+| ---------- | ---------- |
+| admin      | admin123   |
